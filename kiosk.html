@@ -4,8 +4,211 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>เช็คชื่อ · ALPHA BADMINTON</title>
-<link rel="stylesheet" href="css/style.css">
 <style>
+:root {
+  --bg: #ffffff;
+  --bg-2: #f6f8fa;
+  --text: #1a1a1a;
+  --text-2: #6b7280;
+  --text-3: #9ca3af;
+  --border: #e5e7eb;
+  --primary: #1F4E78;
+  --primary-2: #18445f;
+  --primary-50: #ebf2f8;
+  --success: #15803d;
+  --success-bg: #f0fdf4;
+  --warning: #b45309;
+  --warning-bg: #fffbeb;
+  --danger: #b91c1c;
+  --danger-bg: #fef2f2;
+  --info: #0369a1;
+  --info-bg: #f0f9ff;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Sarabun", "Noto Sans Thai", sans-serif;
+  background: var(--bg-2);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+.container { max-width: 880px; margin: 0 auto; padding: 1rem; }
+h1, h2, h3 { font-weight: 500; margin-top: 0; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.05rem; }
+.card {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+.card + .card { margin-top: 12px; }
+button, .btn {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 0.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  display: inline-block;
+}
+button:hover, .btn:hover { background: var(--bg-2); }
+button.primary, .btn.primary {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+button.primary:hover, .btn.primary:hover { background: var(--primary-2); }
+button:disabled, .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 12px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  width: 100%;
+  color: var(--text);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-50);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 1rem;
+  background: var(--bg);
+  border-bottom: 0.5px solid var(--border);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.header h1 { margin: 0; font-size: 1rem; font-weight: 500; color: var(--primary); }
+.muted { color: var(--text-2); font-size: 12px; }
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.badge-success { background: var(--success-bg); color: var(--success); }
+.badge-warning { background: var(--warning-bg); color: var(--warning); }
+.badge-danger { background: var(--danger-bg); color: var(--danger); }
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin: 8px 0;
+  font-size: 14px;
+}
+.alert-success { background: var(--success-bg); color: var(--success); }
+.alert-warning { background: var(--warning-bg); color: var(--warning); }
+.alert-danger { background: var(--danger-bg); color: var(--danger); }
+.alert-info { background: var(--info-bg); color: var(--info); }
+.text-center { text-align: center; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.camera-card {
+  background: #000;
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  position: relative;
+}
+.camera-card video, .camera-card canvas {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.camera-card video {
+  transform: scaleX(-1);
+}
+.camera-card canvas {
+  position: absolute; top: 0; left: 0;
+  transform: scaleX(-1);
+}
+.camera-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  color: white;
+  padding: 12px;
+  font-size: 13px;
+  z-index: 1;
+}
+.status-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(4px);
+  font-size: 11px;
+  font-weight: 500;
+}
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 8px;
+}
+.list-row:hover { background: var(--bg-2); }
+.stepper {
+  display: flex;
+  gap: 8px;
+  margin: 1rem 0;
+}
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  background: var(--bg-2);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  opacity: 0.45;
+  transition: all 0.2s;
+}
+.step.active {
+  background: var(--primary-50);
+  color: var(--primary);
+  opacity: 1;
+  font-weight: 500;
+}
+.step.done {
+  background: var(--success-bg);
+  color: var(--success);
+  opacity: 1;
+}
+progress {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: none;
+}
+progress::-webkit-progress-bar { background: var(--bg-2); border-radius: 4px; }
+progress::-webkit-progress-value { background: var(--primary); border-radius: 4px; }
+progress::-moz-progress-bar { background: var(--primary); border-radius: 4px; }
+.back-btn {
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
   .kiosk-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -40,7 +243,7 @@
   <h1>🏸 ALPHA BADMINTON · เช็คชื่อ</h1>
   <div style="display: flex; align-items: center; gap: 12px;">
     <span class="muted" id="clock"></span>
-    <a href="index.html" class="btn" style="font-size: 12px; padding: 6px 12px;">← กลับหน้าหลัก</a>
+    <a href="index.html" class="btn back-btn">← กลับหน้าหลัก</a>
   </div>
 </div>
 
@@ -83,9 +286,97 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-<script src="js/config.js"></script>
-<script src="js/api.js"></script>
-<script src="js/face.js"></script>
+<script>
+const CONFIG = {
+  API_URL: 'https://script.google.com/macros/s/AKfycbzarzLBCNsC9CLRNkwcdUo1RZZCrHpkkswhzNQWNuKJxqQZ28XIBHdd-JEWwkor1pdy/exec',
+  API_KEY: 'ALPHA BADMINTON-KRABI',
+  BUSINESS_NAME: 'ALPHA BADMINTON KRABI',
+  FACE_MATCH_THRESHOLD: 0.5,
+  FACE_DESCRIPTOR_SAMPLES: 5,
+  MODELS_URL: 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights',
+};
+
+const api = {
+  async call(action, params = {}) {
+    const res = await fetch(CONFIG.API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ apiKey: CONFIG.API_KEY, action, params }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'API error');
+    return data.data;
+  },
+  ping() { return this.call('ping'); },
+  getCourses() { return this.call('getCourses'); },
+  getMember(uuid) { return this.call('getMember', { uuid }); },
+  searchMember(query) { return this.call('searchMember', { query }); },
+  getMembersForFaceMatch() { return this.call('getMembersForFaceMatch'); },
+  createMember(data) { return this.call('createMember', data); },
+  registerFace(personUuid, descriptors) {
+    return this.call('registerFace', { personUuid, descriptors });
+  },
+  getActiveEnrollments(memberUuid) {
+    return this.call('getActiveEnrollments', { memberUuid });
+  },
+  checkIn(personUuid, enrollmentUuid, coachUuid, method) {
+    return this.call('checkIn', { personUuid, enrollmentUuid, coachUuid, method });
+  },
+  getAttendanceToday() { return this.call('getAttendanceToday'); },
+  getMemberAttendance(memberUuid, limit) {
+    return this.call('getMemberAttendance', { memberUuid, limit });
+  },
+};
+
+const Face = {
+  loaded: false,
+  async loadModels() {
+    if (this.loaded) return;
+    await faceapi.nets.tinyFaceDetector.loadFromUri(CONFIG.MODELS_URL);
+    await faceapi.nets.faceLandmark68Net.loadFromUri(CONFIG.MODELS_URL);
+    await faceapi.nets.faceRecognitionNet.loadFromUri(CONFIG.MODELS_URL);
+    this.loaded = true;
+  },
+  async detectFaceWithDescriptor(videoEl) {
+    return await faceapi
+      .detectSingleFace(videoEl, new faceapi.TinyFaceDetectorOptions({
+        inputSize: 320, scoreThreshold: 0.5
+      }))
+      .withFaceLandmarks()
+      .withFaceDescriptor();
+  },
+  computeMatch(queryDescriptor, candidates, threshold) {
+    threshold = threshold || CONFIG.FACE_MATCH_THRESHOLD;
+    let best = null;
+    candidates.forEach(c => {
+      if (!c.FaceDescriptors) return;
+      try {
+        const data = typeof c.FaceDescriptors === 'string'
+          ? JSON.parse(c.FaceDescriptors) : c.FaceDescriptors;
+        ['front', 'left', 'right'].forEach(pose => {
+          if (!data[pose]) return;
+          const stored = new Float32Array(data[pose]);
+          const dist = faceapi.euclideanDistance(queryDescriptor, stored);
+          if (dist < threshold && (!best || dist < best.distance)) {
+            best = { member: c, pose: pose, distance: dist };
+          }
+        });
+      } catch (e) {}
+    });
+    return best;
+  },
+  averageDescriptors(descriptors) {
+    if (descriptors.length === 0) return null;
+    const dim = descriptors[0].length;
+    const avg = new Float32Array(dim);
+    descriptors.forEach(d => {
+      for (let i = 0; i < dim; i++) avg[i] += d[i];
+    });
+    for (let i = 0; i < dim; i++) avg[i] /= descriptors.length;
+    return Array.from(avg);
+  },
+};
+</script>
 <script>
 const videoEl = document.getElementById('video');
 const overlayEl = document.getElementById('overlay');
@@ -93,6 +384,7 @@ const cameraStatusEl = document.getElementById('cameraStatus');
 let candidates = [];
 let detecting = false;
 let coolingDown = false;
+let todayAttendance = []; // เก็บ attendance วันนี้สำหรับตรวจซ้ำ
 
 function updateClock() {
   const d = new Date();
@@ -144,14 +436,14 @@ async function init() {
 
 async function loadRecent() {
   try {
-    const records = await api.getAttendanceToday();
+    todayAttendance = await api.getAttendanceToday();
     const list = document.getElementById('recentList');
-    document.getElementById('todayCount').textContent = '(' + records.length + ' คน)';
-    if (records.length === 0) {
+    document.getElementById('todayCount').textContent = '(' + todayAttendance.length + ' คน)';
+    if (todayAttendance.length === 0) {
       list.innerHTML = '<p class="muted">ยังไม่มีใครเช็คชื่อวันนี้</p>';
       return;
     }
-    list.innerHTML = records.slice(0, 10).map(r => {
+    list.innerHTML = todayAttendance.slice(0, 10).map(r => {
       const t = new Date(r.CheckInDateTime).toLocaleTimeString('th-TH',
         { hour: '2-digit', minute: '2-digit' });
       return '<div class="recent-item"><span>' + t + ' · ' + r.Name +
@@ -222,21 +514,43 @@ async function showCourses(member) {
     list.innerHTML = '';
     enrollments.forEach(e => {
       const div = document.createElement('div');
+      const alreadyCheckedIn = todayAttendance.some(a =>
+        a.PersonUUID === member.UUID && a.CourseUUID === e.CourseUUID && !a.IsVoided);
       div.className = 'list-row';
+      if (alreadyCheckedIn) {
+        div.style.opacity = '0.5';
+        div.style.pointerEvents = 'none';
+        div.style.cursor = 'not-allowed';
+      }
       const warn = e.RemainingSessions <= 2;
       const color = warn ? 'var(--warning)' : 'var(--text)';
       div.innerHTML =
         '<div style="flex:1;">' +
-          '<div style="font-weight:500;">' + (e.CourseName || '-') + '</div>' +
+          '<div style="font-weight:500;">' + (e.CourseName || '-') +
+          (alreadyCheckedIn ? ' <span class="badge badge-success">มาแล้ววันนี้</span>' : '') + '</div>' +
           '<div class="muted">หมด ' + (e.ExpiryDate || '-') + ' · เหลือ ' + e.DaysLeft + ' วัน</div>' +
         '</div>' +
         '<div style="text-align:right;">' +
           '<div class="course-remaining" style="color:' + color + ';">' + e.RemainingSessions + '</div>' +
           '<div class="muted">/ ' + e.TotalSessions + ' ครั้ง</div>' +
         '</div>';
-      div.onclick = () => doCheckIn(member, e);
+      if (!alreadyCheckedIn) {
+        div.onclick = () => doCheckIn(member, e);
+      }
       list.appendChild(div);
     });
+
+    // ถ้าทุกคอร์สมาแล้ววันนี้ → แสดงข้อความ
+    const allCheckedIn = enrollments.every(e =>
+      todayAttendance.some(a =>
+        a.PersonUUID === member.UUID && a.CourseUUID === e.CourseUUID && !a.IsVoided));
+    if (allCheckedIn) {
+      const info = document.createElement('div');
+      info.className = 'alert alert-info';
+      info.innerHTML = 'ⓘ คุณมาเรียนทุกคอร์สแล้ววันนี้ ไม่ต้อง check-in ซ้ำ';
+      list.appendChild(info);
+      setTimeout(reset, 5000);
+    }
   } catch (err) {
     list.innerHTML = '<div class="alert alert-danger">' + err.message + '</div>';
     setTimeout(reset, 5000);
@@ -244,8 +558,20 @@ async function showCourses(member) {
 }
 
 async function checkInStaff(member) {
+  // เช็คว่าเข้างานวันนี้แล้วยัง
+  const alreadyIn = todayAttendance.some(a =>
+    a.PersonUUID === member.UUID && a.Role !== 'student' && !a.IsVoided);
+  if (alreadyIn) {
+    const t = todayAttendance.find(a => a.PersonUUID === member.UUID);
+    const time = new Date(t.CheckInDateTime).toLocaleTimeString('th-TH',
+      { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('resultArea').innerHTML =
+      '<div class="card"><div class="alert alert-info">ⓘ คุณเข้างานไปแล้ววันนี้ เวลา ' + time + '</div></div>';
+    setTimeout(reset, 4000);
+    return;
+  }
   try {
-    const result = await api.checkIn(member.UUID, null, null, 'face');
+    await api.checkIn(member.UUID, null, null, 'face');
     const t = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('resultArea').innerHTML =
       '<div class="card"><div class="alert alert-success">🎉 มาสนุกแล้ว เวลา ' + t + '</div></div>';
