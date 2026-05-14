@@ -2,231 +2,572 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>ลงทะเบียนใบหน้า · ALPHA BADMINTON</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap');
+
 :root {
-  --bg: #ffffff;
-  --bg-2: #f6f8fa;
-  --text: #1a1a1a;
-  --text-2: #6b7280;
-  --text-3: #9ca3af;
-  --border: #e5e7eb;
-  --primary: #1F4E78;
-  --primary-2: #18445f;
-  --primary-50: #ebf2f8;
-  --success: #15803d;
-  --success-bg: #f0fdf4;
-  --warning: #b45309;
-  --warning-bg: #fffbeb;
-  --danger: #b91c1c;
-  --danger-bg: #fef2f2;
-  --info: #0369a1;
-  --info-bg: #f0f9ff;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.05);
+  --teal-50: #F0FDFA;
+  --teal-100: #CCFBF1;
+  --teal-500: #14B8A6;
+  --teal-600: #0D9488;
+  --teal-700: #0F766E;
+  --teal-900: #134E4A;
+  --coral-50: #FFF7ED;
+  --coral-100: #FFEDD5;
+  --coral-500: #F97316;
+  --coral-600: #EA580C;
+  --coral-700: #C2410C;
+  --cream: #FDFBF7;
+  --stone-50: #FAFAF9;
+  --stone-100: #F5F5F4;
+  --stone-200: #E7E5E4;
+  --stone-300: #D6D3D1;
+  --stone-500: #78716C;
+  --stone-700: #44403C;
+  --stone-900: #1C1917;
+  --success: #16A34A;
+  --success-bg: #DCFCE7;
+  --warning: #EA580C;
+  --warning-bg: #FFEDD5;
+  --danger: #DC2626;
+  --danger-bg: #FEE2E2;
+  --info: #0284C7;
+  --info-bg: #E0F2FE;
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04);
+  --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.06);
+  --shadow-lg: 0 12px 32px rgba(28, 25, 23, 0.08);
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-full: 9999px;
 }
-* { box-sizing: border-box; }
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Sarabun", "Noto Sans Thai", sans-serif;
-  background: var(--bg-2);
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.5;
+  font-family: 'IBM Plex Sans Thai', system-ui, -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--stone-900);
+  font-size: 15px;
+  line-height: 1.6;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv11';
 }
-.container { max-width: 880px; margin: 0 auto; padding: 1rem; }
-h1, h2, h3 { font-weight: 500; margin-top: 0; }
-h2 { font-size: 1.25rem; }
-h3 { font-size: 1.05rem; }
-.card {
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-  box-shadow: var(--shadow);
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--stone-900);
 }
-.card + .card { margin-top: 12px; }
-button, .btn {
-  font-family: inherit;
-  font-size: 14px;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  border: 0.5px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  cursor: pointer;
-  transition: all 0.15s;
+h1 { font-size: 1.5rem; line-height: 1.2; }
+h2 { font-size: 1.5rem; line-height: 1.25; font-weight: 700; }
+h3 { font-size: 1.125rem; line-height: 1.4; }
+p { margin: 0; }
+
+/* ===== App Shell ===== */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(253, 251, 247, 0.92);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--stone-200);
+  padding: 14px 20px;
+}
+.app-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--stone-900);
   text-decoration: none;
-  display: inline-block;
+  letter-spacing: -0.01em;
 }
-button:hover, .btn:hover { background: var(--bg-2); }
-button.primary, .btn.primary {
-  background: var(--primary);
+.brand-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--teal-500) 0%, var(--teal-700) 100%);
+  border-radius: 10px;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
+}
+.brand-sub { color: var(--stone-500); font-weight: 500; font-size: 0.85rem; }
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+.container-wide { max-width: 1100px; }
+
+/* ===== Cards ===== */
+.card {
+  background: white;
+  border-radius: var(--r-lg);
+  padding: 24px;
+  border: 1px solid var(--stone-200);
+  box-shadow: var(--shadow-sm);
+}
+.card-elevated {
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+.card + .card { margin-top: 16px; }
+
+/* ===== Buttons ===== */
+.btn {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 20px;
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--stone-200);
+  background: white;
+  color: var(--stone-900);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.btn:hover {
+  border-color: var(--stone-300);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.btn:active { transform: translateY(0); }
+.btn-primary {
+  background: var(--teal-600);
+  border-color: var(--teal-600);
   color: white;
-  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
 }
-button.primary:hover, .btn.primary:hover { background: var(--primary-2); }
-button:disabled, .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary:hover {
+  background: var(--teal-700);
+  border-color: var(--teal-700);
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+}
+.btn-accent {
+  background: var(--coral-500);
+  border-color: var(--coral-500);
+  color: white;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25);
+}
+.btn-accent:hover {
+  background: var(--coral-600);
+  border-color: var(--coral-600);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
+}
+.btn-ghost {
+  border: none;
+  background: transparent;
+  color: var(--stone-700);
+}
+.btn-ghost:hover {
+  background: var(--stone-100);
+  transform: none;
+  box-shadow: none;
+}
+.btn-block { width: 100%; }
+.btn-sm { padding: 8px 14px; font-size: 13px; min-height: 36px; }
+.btn-lg { padding: 16px 24px; font-size: 16px; min-height: 56px; }
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== Form ===== */
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--stone-700);
+  margin-bottom: 6px;
+}
+.form-label-required::after {
+  content: ' *';
+  color: var(--coral-500);
+}
+.form-hint {
+  font-size: 12px;
+  color: var(--stone-500);
+  margin-top: 4px;
+}
 input, select, textarea {
   font-family: inherit;
-  font-size: 14px;
-  padding: 8px 12px;
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
+  font-size: 15px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-md);
+  background: white;
   width: 100%;
-  color: var(--text);
+  color: var(--stone-900);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-50);
+  border-color: var(--teal-500);
+  box-shadow: 0 0 0 4px var(--teal-50);
 }
-.header {
+textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+
+/* Radio group */
+.radio-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.radio-card {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 12px 1rem;
-  background: var(--bg);
-  border-bottom: 0.5px solid var(--border);
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: white;
 }
-.header h1 { margin: 0; font-size: 1rem; font-weight: 500; color: var(--primary); }
-.muted { color: var(--text-2); font-size: 12px; }
-.badge {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 500;
+.radio-card:hover { border-color: var(--stone-300); }
+.radio-card input { width: auto; margin: 0; }
+.radio-card.selected {
+  border-color: var(--teal-600);
+  background: var(--teal-50);
 }
-.badge-success { background: var(--success-bg); color: var(--success); }
-.badge-warning { background: var(--warning-bg); color: var(--warning); }
-.badge-danger { background: var(--danger-bg); color: var(--danger); }
+
+/* Checkbox */
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  background: var(--stone-50);
+  border-radius: var(--r-md);
+  cursor: pointer;
+}
+.checkbox-row input { width: auto; margin-top: 3px; }
+.checkbox-row label { cursor: pointer; flex: 1; font-size: 14px; line-height: 1.5; }
+
+/* ===== Badge / Pill ===== */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pill-success { background: var(--success-bg); color: var(--success); }
+.pill-warning { background: var(--warning-bg); color: var(--warning); }
+.pill-danger { background: var(--danger-bg); color: var(--danger); }
+.pill-info { background: var(--info-bg); color: var(--info); }
+.pill-stone { background: var(--stone-100); color: var(--stone-700); }
+
+/* ===== Alert ===== */
 .alert {
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  margin: 8px 0;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
   font-size: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
 }
-.alert-success { background: var(--success-bg); color: var(--success); }
-.alert-warning { background: var(--warning-bg); color: var(--warning); }
-.alert-danger { background: var(--danger-bg); color: var(--danger); }
-.alert-info { background: var(--info-bg); color: var(--info); }
-.text-center { text-align: center; }
-.mt-1 { margin-top: 8px; }
-.mt-2 { margin-top: 16px; }
+.alert-success { background: var(--success-bg); color: var(--success); border: 1px solid #BBF7D0; }
+.alert-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid #FED7AA; }
+.alert-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #FECACA; }
+.alert-info { background: var(--info-bg); color: var(--info); border: 1px solid #BAE6FD; }
+
+/* ===== Camera ===== */
 .camera-card {
-  background: #000;
-  border-radius: var(--radius);
+  background: var(--stone-900);
+  border-radius: var(--r-lg);
   overflow: hidden;
   aspect-ratio: 3/4;
   position: relative;
+  box-shadow: var(--shadow-md);
 }
 .camera-card video, .camera-card canvas {
   width: 100%; height: 100%; object-fit: cover;
 }
-.camera-card video {
-  transform: scaleX(-1);
-}
+.camera-card video { transform: scaleX(-1); }
 .camera-card canvas {
   position: absolute; top: 0; left: 0;
   transform: scaleX(-1);
 }
 .camera-overlay {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
+  position: absolute; bottom: 0; left: 0; right: 0;
   background: linear-gradient(transparent, rgba(0,0,0,0.7));
   color: white;
-  padding: 12px;
+  padding: 16px;
   font-size: 13px;
   z-index: 1;
 }
 .status-pill {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(4px);
-  font-size: 11px;
-  font-weight: 500;
-}
-.list-row {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-bottom: 8px;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 12px;
+  font-weight: 600;
 }
-.list-row:hover { background: var(--bg-2); }
+
+/* ===== Stepper ===== */
 .stepper {
   display: flex;
-  gap: 8px;
-  margin: 1rem 0;
+  gap: 4px;
+  margin: 20px 0 24px;
 }
 .step {
   flex: 1;
   text-align: center;
-  padding: 10px;
-  background: var(--bg-2);
-  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  background: var(--stone-100);
+  border-radius: var(--r-md);
   font-size: 13px;
-  opacity: 0.45;
-  transition: all 0.2s;
+  font-weight: 500;
+  color: var(--stone-500);
+  transition: all 0.25s;
 }
 .step.active {
-  background: var(--primary-50);
-  color: var(--primary);
-  opacity: 1;
-  font-weight: 500;
+  background: var(--teal-600);
+  color: white;
+  font-weight: 600;
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
 }
 .step.done {
-  background: var(--success-bg);
-  color: var(--success);
-  opacity: 1;
+  background: var(--teal-100);
+  color: var(--teal-700);
 }
-progress {
-  width: 100%;
-  height: 8px;
-  border-radius: 4px;
+
+/* ===== List items (courses, members) ===== */
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: white;
+  border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+.list-item:hover {
+  border-color: var(--teal-500);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.list-item.disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+.list-item-main { flex: 1; min-width: 0; }
+.list-item-title { font-weight: 600; font-size: 15px; margin-bottom: 2px; }
+.list-item-sub { font-size: 12.5px; color: var(--stone-500); }
+
+/* ===== Progress bar (course progress) ===== */
+.progress-bar {
+  height: 6px;
+  background: var(--stone-100);
+  border-radius: var(--r-full);
   overflow: hidden;
-  border: none;
+  margin: 8px 0;
 }
-progress::-webkit-progress-bar { background: var(--bg-2); border-radius: 4px; }
-progress::-webkit-progress-value { background: var(--primary); border-radius: 4px; }
-progress::-moz-progress-bar { background: var(--primary); border-radius: 4px; }
-.back-btn {
-  font-size: 12px;
-  padding: 6px 12px;
+.progress-bar-fill {
+  height: 100%;
+  background: var(--teal-500);
+  border-radius: var(--r-full);
+  transition: width 0.4s ease;
+}
+.progress-bar-fill.warning { background: var(--coral-500); }
+.progress-bar-fill.danger { background: var(--danger); }
+
+/* ===== Loading skeleton ===== */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--stone-100) 0%, var(--stone-50) 50%, var(--stone-100) 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--r-md);
+}
+
+/* ===== Utilities ===== */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.flex-1 { flex: 1; }
+.text-center { text-align: center; }
+.text-muted { color: var(--stone-500); }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 12px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mt-6 { margin-top: 24px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.w-full { width: 100%; }
+
+/* ===== Mobile tweaks ===== */
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  .app-header { padding: 12px 16px; }
+  .container { padding: 16px; }
+  .card { padding: 18px; border-radius: var(--r-md); }
+  h1 { font-size: 1.25rem; }
+  h2 { font-size: 1.25rem; }
+  .radio-group { grid-template-columns: 1fr; }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in { animation: fadeInUp 0.35s ease-out; }
+
+/* ===== Hero block (used on landing) ===== */
+.hero {
+  text-align: center;
+  padding: 24px 0 12px;
+}
+.hero-emoji {
+  font-size: 3rem;
+  display: inline-block;
+  filter: drop-shadow(0 4px 8px rgba(13, 148, 136, 0.2));
+  margin-bottom: 8px;
+}
+.hero-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  background: linear-gradient(135deg, var(--stone-900) 0%, var(--teal-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-sub { color: var(--stone-500); font-size: 1rem; margin-top: 6px; }
+
+/* ===== Menu cards (landing) ===== */
+.menu-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: white;
+  border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-lg);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
+}
+.menu-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--teal-500);
+  box-shadow: var(--shadow-md);
+}
+.menu-item.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.menu-item-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--teal-50);
+}
+.menu-item-icon.coral { background: var(--coral-50); }
+.menu-item-icon.warm { background: var(--warning-bg); }
+.menu-item-text { flex: 1; }
+.menu-item-title { font-weight: 600; font-size: 16px; }
+.menu-item-sub { color: var(--stone-500); font-size: 13px; margin-top: 2px; }
+.menu-item-arrow {
+  color: var(--stone-300);
+  font-size: 1.25rem;
+  transition: transform 0.2s;
+}
+.menu-item:hover .menu-item-arrow {
+  transform: translateX(4px);
+  color: var(--teal-600);
 }
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>🏸 ลงทะเบียนใบหน้า</h1>
-  <a href="index.html" class="btn back-btn">← กลับหน้าหลัก</a>
-</div>
 
-<div class="container">
-  <div class="card" id="setupCard">
-    <h3>เลือกสมาชิกที่จะลงทะเบียนใบหน้า</h3>
-    <input type="text" id="searchInput" placeholder="ค้นชื่อ / ชื่อเล่น / DisplayID / เบอร์โทร">
-    <div id="searchResults" class="mt-1"></div>
+<header class="app-header">
+  <div class="app-header-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-emoji">🎭</span>
+      <div>ลงทะเบียนใบหน้า<br><span class="brand-sub">3 ท่า</span></div>
+    </a>
+    <a href="index.html" class="btn btn-ghost btn-sm">← กลับ</a>
+  </div>
+</header>
+
+<main class="container animate-in">
+  <div class="card card-elevated" id="setupCard">
+    <h2>ค้นหาสมาชิก</h2>
+    <p class="text-muted text-sm mt-2 mb-4">พิมพ์ชื่อ / ชื่อเล่น / User ID / เบอร์โทร</p>
+    <input type="text" id="searchInput" placeholder="🔍 ค้นหา...">
+    <div id="searchResults" class="mt-3"></div>
   </div>
 
   <div id="wizard" style="display:none;">
-    <div class="card">
-      <p class="muted" style="margin:0;">กำลังลงทะเบียนใบหน้าให้</p>
-      <h2 id="memberLabel"></h2>
+    <div class="card card-elevated">
+      <p class="text-muted text-sm">กำลังลงทะเบียนใบหน้าให้</p>
+      <h2 id="memberLabel" class="mt-2"></h2>
 
       <div class="stepper">
         <div class="step" id="step1">1. หน้าตรง</div>
@@ -234,19 +575,19 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 4px; }
         <div class="step" id="step3">3. หันขวา</div>
       </div>
 
-      <div class="camera-card" style="aspect-ratio:1;max-width:400px;margin:0 auto;">
+      <div class="camera-card" style="aspect-ratio:1;max-width:380px;margin:0 auto;">
         <video id="video" autoplay muted playsinline></video>
         <canvas id="overlay"></canvas>
       </div>
 
-      <p id="instructionText" style="text-align:center;font-size:18px;margin:1rem 0;"></p>
-      <progress id="captureProgress" value="0" max="5"></progress>
-      <p class="muted text-center" id="captureLabel"></p>
+      <p id="instructionText" class="text-center mt-4" style="font-size: 1.05rem; font-weight: 600;"></p>
+      <div class="progress-bar mt-3"><div class="progress-bar-fill" id="captureProgress" style="width:0%;"></div></div>
+      <p class="text-muted text-sm text-center mt-2" id="captureLabel"></p>
 
       <div id="resultArea"></div>
     </div>
   </div>
-</div>
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 <script>
@@ -257,6 +598,35 @@ const CONFIG = {
   FACE_MATCH_THRESHOLD: 0.5,
   FACE_DESCRIPTOR_SAMPLES: 5,
   MODELS_URL: 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights',
+  CACHE_TTL_MS: 30000,
+};
+
+// Browser-side cache to avoid hitting API repeatedly
+const Cache = {
+  get(key) {
+    try {
+      const raw = localStorage.getItem('ab_' + key);
+      if (!raw) return null;
+      const { data, expires } = JSON.parse(raw);
+      if (Date.now() > expires) {
+        localStorage.removeItem('ab_' + key);
+        return null;
+      }
+      return data;
+    } catch (e) { return null; }
+  },
+  set(key, data, ttlMs) {
+    try {
+      localStorage.setItem('ab_' + key, JSON.stringify({
+        data,
+        expires: Date.now() + (ttlMs || CONFIG.CACHE_TTL_MS),
+      }));
+    } catch (e) {}
+  },
+  clear(key) {
+    if (key) localStorage.removeItem('ab_' + key);
+    else Object.keys(localStorage).filter(k => k.startsWith('ab_')).forEach(k => localStorage.removeItem(k));
+  },
 };
 
 const api = {
@@ -270,13 +640,28 @@ const api = {
     if (!data.ok) throw new Error(data.error || 'API error');
     return data.data;
   },
+
+  // Cached version: try cache first, then fetch
+  async callCached(action, params = {}, ttlMs) {
+    const key = action + '_' + JSON.stringify(params);
+    const cached = Cache.get(key);
+    if (cached) return cached;
+    const data = await this.call(action, params);
+    Cache.set(key, data, ttlMs);
+    return data;
+  },
+
   ping() { return this.call('ping'); },
-  getCourses() { return this.call('getCourses'); },
+  getCourses() { return this.callCached('getCourses', {}, 5 * 60 * 1000); },
   getMember(uuid) { return this.call('getMember', { uuid }); },
   searchMember(query) { return this.call('searchMember', { query }); },
-  getMembersForFaceMatch() { return this.call('getMembersForFaceMatch'); },
-  createMember(data) { return this.call('createMember', data); },
+  getMembersForFaceMatch() { return this.callCached('getMembersForFaceMatch', {}, 60000); },
+  createMember(data) {
+    Cache.clear();
+    return this.call('createMember', data);
+  },
   registerFace(personUuid, descriptors) {
+    Cache.clear();
     return this.call('registerFace', { personUuid, descriptors });
   },
   getActiveEnrollments(memberUuid) {
@@ -286,9 +671,6 @@ const api = {
     return this.call('checkIn', { personUuid, enrollmentUuid, coachUuid, method });
   },
   getAttendanceToday() { return this.call('getAttendanceToday'); },
-  getMemberAttendance(memberUuid, limit) {
-    return this.call('getMemberAttendance', { memberUuid, limit });
-  },
 };
 
 const Face = {
@@ -348,6 +730,13 @@ const NEEDED = CONFIG.FACE_DESCRIPTOR_SAMPLES;
 const stepLabels = ['', 'หน้าตรง', 'หันซ้าย ~30°', 'หันขวา ~30°'];
 const stepKeys = ['', 'front', 'left', 'right'];
 
+// Auto-select if uuid in URL (from register.html redirect)
+const urlParams = new URLSearchParams(window.location.search);
+const presetUuid = urlParams.get('uuid');
+if (presetUuid) {
+  selectMember(presetUuid);
+}
+
 let searchTimer;
 document.getElementById('searchInput').addEventListener('input', e => {
   clearTimeout(searchTimer);
@@ -357,30 +746,36 @@ document.getElementById('searchInput').addEventListener('input', e => {
 async function doSearch(q) {
   const container = document.getElementById('searchResults');
   if (q.length < 2) { container.innerHTML = ''; return; }
+  container.innerHTML = '<p class="text-muted text-sm">⏳ ค้นหา...</p>';
   try {
     const results = await api.searchMember(q);
-    if (results.length === 0) { container.innerHTML = '<p class="muted">ไม่พบสมาชิก</p>'; return; }
-    container.innerHTML = results.map(m =>
-      '<div class="list-row" onclick="selectMember(\'' + m.UUID + '\')">' +
-        '<div style="flex:1;">' +
-          '<div style="font-weight:500;">' + (m.Nickname || m.FirstName) +
-          ' ' + (m.LastName || '') + '</div>' +
-          '<div class="muted">' + m.DisplayID + ' · ' + (m.Phone || '') + '</div>' +
-        '</div>' +
-      '</div>').join('');
+    if (results.length === 0) {
+      container.innerHTML = '<p class="text-muted text-sm">ไม่พบสมาชิก</p>';
+      return;
+    }
+    container.innerHTML = results.map(m => `
+      <div class="list-item" onclick="selectMember('${m.UUID}')">
+        <div class="list-item-main">
+          <div class="list-item-title">${m.Nickname || m.FirstName} ${m.LastName || ''}</div>
+          <div class="list-item-sub">${m.DisplayID} · ${m.Phone || ''}</div>
+        </div>
+        <span class="menu-item-arrow">→</span>
+      </div>
+    `).join('');
   } catch (e) {
-    container.innerHTML = '<div class="alert alert-danger">' + e.message + '</div>';
+    container.innerHTML = '<div class="alert alert-danger"><span>✗</span><div>' + e.message + '</div></div>';
   }
 }
 
 async function selectMember(uuid) {
   try {
-    currentMember = await api.getMember(uuid);
     document.getElementById('setupCard').style.display = 'none';
-    document.getElementById('wizard').style.display = 'block';
+    const w = document.getElementById('wizard');
+    w.style.display = 'block';
+    document.getElementById('memberLabel').textContent = 'กำลังโหลด...';
+    currentMember = await api.getMember(uuid);
     document.getElementById('memberLabel').textContent =
-      (currentMember.Nickname || currentMember.FirstName) + ' ' +
-      (currentMember.LastName || '') + ' · ' + currentMember.DisplayID;
+      (currentMember.Nickname || currentMember.FirstName) + ' · ' + currentMember.DisplayID;
     await startCamera();
     startStep(1);
   } catch (e) { alert(e.message); }
@@ -406,10 +801,8 @@ function startStep(n) {
     const el = document.getElementById('step' + i);
     el.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
   }
-  document.getElementById('instructionText').textContent =
-    'กรุณา' + stepLabels[n] + ' ช้า ๆ และค้างไว้';
-  document.getElementById('captureProgress').value = 0;
-  document.getElementById('captureProgress').max = NEEDED;
+  document.getElementById('instructionText').textContent = 'กรุณา' + stepLabels[n];
+  document.getElementById('captureProgress').style.width = '0%';
   document.getElementById('captureLabel').textContent = '';
   capturing = true;
   captureLoop();
@@ -423,19 +816,20 @@ async function captureLoop() {
     ctx.clearRect(0, 0, overlayEl.width, overlayEl.height);
     if (detection) {
       const box = detection.detection.box;
-      ctx.strokeStyle = '#22c55e';
+      ctx.strokeStyle = '#14B8A6';
       ctx.lineWidth = 3;
       ctx.strokeRect(box.x, box.y, box.width, box.height);
-
       const key = stepKeys[currentStep];
       samples[key].push(Array.from(detection.descriptor));
       const n = samples[key].length;
-      document.getElementById('captureProgress').value = n;
-      document.getElementById('captureLabel').textContent = 'เก็บตัวอย่าง ' + n + ' / ' + NEEDED;
+      const pct = (n / NEEDED) * 100;
+      document.getElementById('captureProgress').style.width = pct + '%';
+      document.getElementById('captureLabel').textContent = `เก็บตัวอย่าง ${n} / ${NEEDED}`;
       if (n >= NEEDED) {
         capturing = false;
         if (currentStep < 3) {
-          await new Promise(r => setTimeout(r, 1000));
+          document.getElementById('captureLabel').textContent = '✓ เสร็จ ' + stepLabels[currentStep] + ' · กำลังเปลี่ยน...';
+          await new Promise(r => setTimeout(r, 1200));
           startStep(currentStep + 1);
         } else {
           submitAll();
@@ -458,13 +852,23 @@ async function submitAll() {
     };
     await api.registerFace(currentMember.UUID, descriptors);
     for (let i = 1; i <= 3; i++) document.getElementById('step' + i).className = 'step done';
-    document.getElementById('resultArea').innerHTML =
-      '<div class="alert alert-success mt-2">✅ ลงทะเบียนใบหน้าสำเร็จ! ใช้สแกนหน้าเช็คชื่อได้แล้ว</div>' +
-      '<button class="primary" style="width:100%;margin-top:8px;" onclick="location.reload()">ลงทะเบียนคนถัดไป</button>';
+    document.getElementById('resultArea').innerHTML = `
+      <div class="alert alert-success mt-4 animate-in">
+        <span style="font-size: 1.5rem;">🎉</span>
+        <div>
+          <strong>ลงทะเบียนใบหน้าสำเร็จ!</strong><br>
+          <span class="text-sm">ใช้สแกนหน้าเช็คชื่อได้แล้ว</span>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <a href="kiosk.html" class="btn btn-primary btn-block">📷 ทดสอบเช็คชื่อ</a>
+      </div>
+      <button class="btn btn-ghost btn-block mt-2" onclick="location.reload()">ลงทะเบียนคนถัดไป</button>
+    `;
     if (videoEl.srcObject) videoEl.srcObject.getTracks().forEach(t => t.stop());
   } catch (e) {
     document.getElementById('resultArea').innerHTML =
-      '<div class="alert alert-danger mt-2">' + e.message + '</div>';
+      '<div class="alert alert-danger mt-4"><span>✗</span><div>' + e.message + '</div></div>';
   }
 }
 </script>
