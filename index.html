@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALPHA BADMINTON KRABI</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="header">
+  <h1>🏸 ALPHA BADMINTON KRABI</h1>
+  <span class="muted" id="apiStatus">⏳ ตรวจสอบ API...</span>
+</div>
+
+<div class="container mt-2">
+  <div class="card text-center">
+    <h2 style="color: var(--primary);">เลือกหน้าที่ต้องการใช้</h2>
+    <div style="display: grid; gap: 12px; margin-top: 1.5rem;">
+      <a class="btn primary" href="kiosk.html" style="padding: 18px; font-size: 16px;">
+        📷 Kiosk เช็คชื่อด้วยใบหน้า
+      </a>
+      <a class="btn" href="face-register.html" style="padding: 18px; font-size: 16px;">
+        🎭 ลงทะเบียนใบหน้า (3 ท่า)
+      </a>
+      <a class="btn" href="admin.html" style="padding: 18px; font-size: 16px; opacity: 0.6;">
+        👨‍💼 Admin Dashboard <span class="muted">(เร็ว ๆ นี้)</span>
+      </a>
+      <a class="btn" href="register.html" style="padding: 18px; font-size: 16px; opacity: 0.6;">
+        ✍️ ฟอร์มสมัครสมาชิก <span class="muted">(เร็ว ๆ นี้)</span>
+      </a>
+      <a class="btn" href="portal.html" style="padding: 18px; font-size: 16px; opacity: 0.6;">
+        👤 Student Portal <span class="muted">(เร็ว ๆ นี้)</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="card mt-2 muted text-center" style="font-size: 11px;">
+    v1.0 · Powered by Google Apps Script + face-api.js
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+(async () => {
+  try {
+    const res = await api.ping();
+    document.getElementById('apiStatus').innerHTML = '<span class="badge badge-success">✓ API connected</span>';
+  } catch (e) {
+    document.getElementById('apiStatus').innerHTML = '<span class="badge badge-danger">✗ API error</span>';
+    console.error(e);
+  }
+})();
+</script>
+</body>
+</html>
