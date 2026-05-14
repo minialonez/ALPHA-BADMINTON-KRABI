@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เช็คชื่อ · ALPHA BADMINTON</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .kiosk-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  @media (max-width: 768px) { .kiosk-layout { grid-template-columns: 1fr; } }
+  .panel { display: flex; flex-direction: column; gap: 12px; }
+  .course-remaining {
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .recent {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 12px;
+  }
+  .recent-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .recent-item:last-child { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏸 ALPHA BADMINTON · เช็คชื่อ</h1>
+  <div class="muted" id="clock"></div>
+</div>
+
+<div class="kiosk-layout">
+  <div class="camera-card">
+    <video id="video" autoplay muted playsinline></video>
+    <canvas id="overlay"></canvas>
+    <div class="camera-overlay">
+      <span class="status-pill" id="cameraStatus">🎥 กำลังเริ่มกล้อง...</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="card" id="statusCard">
+      <h3 id="statusTitle">⏳ กำลังโหลด...</h3>
+      <p class="muted" id="statusMessage">โหลด face recognition model ครั้งแรกอาจใช้เวลา 30-60 วินาที</p>
+      <progress id="loadProgress" value="0" max="100"></progress>
+    </div>
+
+    <div class="card" id="memberCard" style="display: none;">
+      <p class="muted" style="margin: 0;">ยินดีต้อนรับ</p>
+      <h2 id="memberName" style="margin: 4px 0;"></h2>
+      <p class="muted" id="memberId" style="margin: 0;"></p>
+    </div>
+
+    <div class="card" id="coursesCard" style="display: none;">
+      <p style="margin-top: 0;"><strong>เลือกคอร์สที่จะใช้วันนี้</strong></p>
+      <div id="coursesList"></div>
+    </div>
+
+    <div id="resultArea"></div>
+
+    <div class="card">
+      <p style="margin-top: 0;"><strong>มาเรียนแล้ววันนี้</strong> <span class="muted" id="todayCount"></span></p>
+      <div class="recent" id="recentList">
+        <p class="muted">กำลังโหลด...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/face.js"></script>
+<script>
+const videoEl = document.getElementById('video');
+const overlayEl = document.getElementById('overlay');
+const cameraStatusEl = document.getElementById('cameraStatus');
+let candidates = [];
+let detecting = false;
+let coolingDown = false;
+
+function updateClock() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short' }) + ' · ' +
+    d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+}
+updateClock();
+setInterval(updateClock, 30000);
+
+function setStatus(title, message, isError) {
+  document.getElementById('statusTitle').textContent = title;
+  document.getElementById('statusMessage').textContent = message || '';
+  document.getElementById('statusCard').style.background = isError ? 'var(--danger-bg)' : '';
+}
+
+async function init() {
+  try {
+    setStatus('⏳ โหลด face models...', '');
+    document.getElementById('loadProgress').value = 10;
+    await Face.loadModels();
+    document.getElementById('loadProgress').value = 50;
+
+    setStatus('⏳ โหลดข้อมูลสมาชิก...');
+    candidates = await api.getMembersForFaceMatch();
+    document.getElementById('loadProgress').value = 75;
+
+    setStatus('⏳ เริ่มกล้อง...');
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
+    });
+    videoEl.srcObject = stream;
+    await new Promise(r => videoEl.onloadedmetadata = r);
+    overlayEl.width = videoEl.videoWidth;
+    overlayEl.height = videoEl.videoHeight;
+    document.getElementById('loadProgress').value = 100;
+
+    setStatus('✅ พร้อมใช้งาน', 'สมาชิกในระบบ ' + candidates.length + ' คน · มองเข้ากล้องเพื่อเช็คชื่อ');
+    cameraStatusEl.textContent = '👀 กำลังตรวจจับใบหน้า...';
+
+    loadRecent();
+    setInterval(loadRecent, 30000);
+    detectLoop();
+  } catch (e) {
+    setStatus('❌ เกิดข้อผิดพลาด', e.message, true);
+    console.error(e);
+  }
+}
+
+async function loadRecent() {
+  try {
+    const records = await api.getAttendanceToday();
+    const list = document.getElementById('recentList');
+    document.getElementById('todayCount').textContent = '(' + records.length + ' คน)';
+    if (records.length === 0) {
+      list.innerHTML = '<p class="muted">ยังไม่มีใครเช็คชื่อวันนี้</p>';
+      return;
+    }
+    list.innerHTML = records.slice(0, 10).map(r => {
+      const t = new Date(r.CheckInDateTime).toLocaleTimeString('th-TH',
+        { hour: '2-digit', minute: '2-digit' });
+      return '<div class="recent-item"><span>' + t + ' · ' + r.Name +
+             '</span><span class="muted">' + r.Role + '</span></div>';
+    }).join('');
+  } catch (e) {
+    console.error('loadRecent', e);
+  }
+}
+
+async function detectLoop() {
+  if (coolingDown) { setTimeout(detectLoop, 300); return; }
+  if (!detecting) {
+    detecting = true;
+    try {
+      const detection = await Face.detectFaceWithDescriptor(videoEl);
+      const ctx = overlayEl.getContext('2d');
+      ctx.clearRect(0, 0, overlayEl.width, overlayEl.height);
+      if (detection) {
+        const box = detection.detection.box;
+        ctx.strokeStyle = '#22c55e';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(box.x, box.y, box.width, box.height);
+        const match = Face.computeMatch(detection.descriptor, candidates);
+        if (match) {
+          await onMatch(match);
+        }
+      }
+    } catch (e) {
+      console.error('detect', e);
+    } finally {
+      detecting = false;
+    }
+  }
+  setTimeout(detectLoop, 300);
+}
+
+async function onMatch(match) {
+  coolingDown = true;
+  cameraStatusEl.textContent = '✅ ' + (match.member.Nickname || match.member.FirstName);
+  document.getElementById('statusCard').style.display = 'none';
+  const memberCard = document.getElementById('memberCard');
+  memberCard.style.display = 'block';
+  document.getElementById('memberName').textContent =
+    match.member.Nickname ? match.member.Nickname + ' (' + match.member.FirstName + ')' : match.member.FirstName;
+  document.getElementById('memberId').textContent =
+    match.member.DisplayID + ' · ' + match.member.Role;
+
+  if (match.member.Role === 'staff' || match.member.Role === 'admin') {
+    await checkInStaff(match.member);
+  } else {
+    await showCourses(match.member);
+  }
+}
+
+async function showCourses(member) {
+  const card = document.getElementById('coursesCard');
+  card.style.display = 'block';
+  const list = document.getElementById('coursesList');
+  list.innerHTML = '<p class="muted">กำลังโหลดคอร์ส...</p>';
+  try {
+    const enrollments = await api.getActiveEnrollments(member.UUID);
+    if (enrollments.length === 0) {
+      list.innerHTML = '<div class="alert alert-warning">❌ ไม่มีคอร์สที่ active · ติดต่อแอดมิน</div>';
+      setTimeout(reset, 5000);
+      return;
+    }
+    list.innerHTML = '';
+    enrollments.forEach(e => {
+      const div = document.createElement('div');
+      div.className = 'list-row';
+      const warn = e.RemainingSessions <= 2;
+      const color = warn ? 'var(--warning)' : 'var(--text)';
+      div.innerHTML =
+        '<div style="flex:1;">' +
+          '<div style="font-weight:500;">' + (e.CourseName || '-') + '</div>' +
+          '<div class="muted">หมด ' + (e.ExpiryDate || '-') + ' · เหลือ ' + e.DaysLeft + ' วัน</div>' +
+        '</div>' +
+        '<div style="text-align:right;">' +
+          '<div class="course-remaining" style="color:' + color + ';">' + e.RemainingSessions + '</div>' +
+          '<div class="muted">/ ' + e.TotalSessions + ' ครั้ง</div>' +
+        '</div>';
+      div.onclick = () => doCheckIn(member, e);
+      list.appendChild(div);
+    });
+  } catch (err) {
+    list.innerHTML = '<div class="alert alert-danger">' + err.message + '</div>';
+    setTimeout(reset, 5000);
+  }
+}
+
+async function checkInStaff(member) {
+  try {
+    const result = await api.checkIn(member.UUID, null, null, 'face');
+    const t = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('resultArea').innerHTML =
+      '<div class="card"><div class="alert alert-success">✅ เข้างานแล้ว เวลา ' + t + '</div></div>';
+    loadRecent();
+    setTimeout(reset, 4000);
+  } catch (e) { showError(e.message); }
+}
+
+async function doCheckIn(member, enrollment) {
+  document.getElementById('coursesCard').style.display = 'none';
+  try {
+    const result = await api.checkIn(member.UUID, enrollment.UUID, null, 'face');
+    const warnHtml = (result.warnings || []).map(w =>
+      '<div class="alert alert-warning">⚠️ ' + w.text + '</div>').join('');
+    document.getElementById('resultArea').innerHTML =
+      '<div class="card">' +
+        '<div class="alert alert-success">✅ เช็คชื่อสำเร็จ — ' + result.enrollment.CourseName + '</div>' +
+        '<p style="font-size:16px;">เหลือ <strong style="font-size:24px;color:var(--primary);">' +
+          result.enrollment.Remaining + '</strong> / ' + result.enrollment.Total + ' ครั้ง</p>' +
+        '<p class="muted">หมดอายุ ' + result.enrollment.ExpiryDate +
+          ' (เหลือ ' + result.enrollment.DaysLeft + ' วัน)</p>' +
+        warnHtml +
+      '</div>';
+    loadRecent();
+    setTimeout(reset, 6000);
+  } catch (e) { showError(e.message); }
+}
+
+function showError(msg) {
+  document.getElementById('resultArea').innerHTML =
+    '<div class="card"><div class="alert alert-danger">❌ ' + msg + '</div></div>';
+  setTimeout(reset, 5000);
+}
+
+function reset() {
+  coolingDown = false;
+  document.getElementById('statusCard').style.display = 'block';
+  document.getElementById('memberCard').style.display = 'none';
+  document.getElementById('coursesCard').style.display = 'none';
+  document.getElementById('resultArea').innerHTML = '';
+  setStatus('✅ พร้อมใช้งาน', 'สมาชิกในระบบ ' + candidates.length + ' คน · มองเข้ากล้องเพื่อเช็คชื่อ');
+  cameraStatusEl.textContent = '👀 กำลังตรวจจับใบหน้า...';
+}
+
+init();
+</script>
+</body>
+</html>

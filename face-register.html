@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ลงทะเบียนใบหน้า · ALPHA BADMINTON</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="header">
+  <h1>🏸 ลงทะเบียนใบหน้า</h1>
+  <a href="index.html" class="muted" style="text-decoration:none;">← กลับ</a>
+</div>
+
+<div class="container">
+  <div class="card" id="setupCard">
+    <h3>เลือกสมาชิกที่จะลงทะเบียนใบหน้า</h3>
+    <input type="text" id="searchInput" placeholder="ค้นชื่อ / ชื่อเล่น / DisplayID / เบอร์โทร">
+    <div id="searchResults" class="mt-1"></div>
+  </div>
+
+  <div id="wizard" style="display:none;">
+    <div class="card">
+      <p class="muted" style="margin:0;">กำลังลงทะเบียนใบหน้าให้</p>
+      <h2 id="memberLabel"></h2>
+
+      <div class="stepper">
+        <div class="step" id="step1">1. หน้าตรง</div>
+        <div class="step" id="step2">2. หันซ้าย</div>
+        <div class="step" id="step3">3. หันขวา</div>
+      </div>
+
+      <div class="camera-card" style="aspect-ratio:1;max-width:400px;margin:0 auto;">
+        <video id="video" autoplay muted playsinline></video>
+        <canvas id="overlay"></canvas>
+      </div>
+
+      <p id="instructionText" style="text-align:center;font-size:18px;margin:1rem 0;"></p>
+      <progress id="captureProgress" value="0" max="5"></progress>
+      <p class="muted text-center" id="captureLabel"></p>
+
+      <div id="resultArea"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/face.js"></script>
+<script>
+let currentMember = null;
+let currentStep = 1;
+const samples = { front: [], left: [], right: [] };
+const NEEDED = CONFIG.FACE_DESCRIPTOR_SAMPLES;
+const stepLabels = ['', 'หน้าตรง', 'หันซ้าย ~30°', 'หันขวา ~30°'];
+const stepKeys = ['', 'front', 'left', 'right'];
+
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => doSearch(e.target.value), 300);
+});
+
+async function doSearch(q) {
+  const container = document.getElementById('searchResults');
+  if (q.length < 2) { container.innerHTML = ''; return; }
+  try {
+    const results = await api.searchMember(q);
+    if (results.length === 0) { container.innerHTML = '<p class="muted">ไม่พบสมาชิก</p>'; return; }
+    container.innerHTML = results.map(m =>
+      '<div class="list-row" onclick="selectMember(\'' + m.UUID + '\')">' +
+        '<div style="flex:1;">' +
+          '<div style="font-weight:500;">' + (m.Nickname || m.FirstName) +
+          ' ' + (m.LastName || '') + '</div>' +
+          '<div class="muted">' + m.DisplayID + ' · ' + (m.Phone || '') + '</div>' +
+        '</div>' +
+      '</div>').join('');
+  } catch (e) {
+    container.innerHTML = '<div class="alert alert-danger">' + e.message + '</div>';
+  }
+}
+
+async function selectMember(uuid) {
+  try {
+    currentMember = await api.getMember(uuid);
+    document.getElementById('setupCard').style.display = 'none';
+    document.getElementById('wizard').style.display = 'block';
+    document.getElementById('memberLabel').textContent =
+      (currentMember.Nickname || currentMember.FirstName) + ' ' +
+      (currentMember.LastName || '') + ' · ' + currentMember.DisplayID;
+    await startCamera();
+    startStep(1);
+  } catch (e) { alert(e.message); }
+}
+window.selectMember = selectMember;
+
+const videoEl = document.getElementById('video');
+const overlayEl = document.getElementById('overlay');
+let capturing = false;
+
+async function startCamera() {
+  await Face.loadModels();
+  const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+  videoEl.srcObject = stream;
+  await new Promise(r => videoEl.onloadedmetadata = r);
+  overlayEl.width = videoEl.videoWidth;
+  overlayEl.height = videoEl.videoHeight;
+}
+
+function startStep(n) {
+  currentStep = n;
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('step' + i);
+    el.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+  }
+  document.getElementById('instructionText').textContent =
+    'กรุณา' + stepLabels[n] + ' ช้า ๆ และค้างไว้';
+  document.getElementById('captureProgress').value = 0;
+  document.getElementById('captureProgress').max = NEEDED;
+  document.getElementById('captureLabel').textContent = '';
+  capturing = true;
+  captureLoop();
+}
+
+async function captureLoop() {
+  if (!capturing) return;
+  try {
+    const detection = await Face.detectFaceWithDescriptor(videoEl);
+    const ctx = overlayEl.getContext('2d');
+    ctx.clearRect(0, 0, overlayEl.width, overlayEl.height);
+    if (detection) {
+      const box = detection.detection.box;
+      ctx.strokeStyle = '#22c55e';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(box.x, box.y, box.width, box.height);
+
+      const key = stepKeys[currentStep];
+      samples[key].push(Array.from(detection.descriptor));
+      const n = samples[key].length;
+      document.getElementById('captureProgress').value = n;
+      document.getElementById('captureLabel').textContent = 'เก็บตัวอย่าง ' + n + ' / ' + NEEDED;
+      if (n >= NEEDED) {
+        capturing = false;
+        if (currentStep < 3) {
+          await new Promise(r => setTimeout(r, 1000));
+          startStep(currentStep + 1);
+        } else {
+          submitAll();
+        }
+        return;
+      }
+    }
+  } catch (e) { console.error(e); }
+  setTimeout(captureLoop, 300);
+}
+
+async function submitAll() {
+  document.getElementById('instructionText').textContent = '⏳ กำลังบันทึก...';
+  document.getElementById('captureLabel').textContent = '';
+  try {
+    const descriptors = {
+      front: Face.averageDescriptors(samples.front),
+      left:  Face.averageDescriptors(samples.left),
+      right: Face.averageDescriptors(samples.right),
+    };
+    await api.registerFace(currentMember.UUID, descriptors);
+    for (let i = 1; i <= 3; i++) document.getElementById('step' + i).className = 'step done';
+    document.getElementById('resultArea').innerHTML =
+      '<div class="alert alert-success mt-2">✅ ลงทะเบียนใบหน้าสำเร็จ! ใช้สแกนหน้าเช็คชื่อได้แล้ว</div>' +
+      '<button class="primary" style="width:100%;margin-top:8px;" onclick="location.reload()">ลงทะเบียนคนถัดไป</button>';
+    if (videoEl.srcObject) videoEl.srcObject.getTracks().forEach(t => t.stop());
+  } catch (e) {
+    document.getElementById('resultArea').innerHTML =
+      '<div class="alert alert-danger mt-2">' + e.message + '</div>';
+  }
+}
+</script>
+</body>
+</html>
