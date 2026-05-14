@@ -1,70 +1,60 @@
-# ALPHA BADMINTON KRABI
+# ALPHA BADMINTON KRABI v2.0
 
-ระบบจัดการคอร์สแบดมินตัน · ทุกอย่างใน **ไฟล์เดียวต่อหน้า** ไม่มี folder ซับซ้อน
+ระบบจัดการคอร์สแบดมินตัน · UI ใหม่ทันสมัย · 4 หน้า
 
-## โครงสร้างไฟล์ (เรียบง่าย)
+## ⚡ ที่แก้ใหม่ใน v2.0
+
+| ปรับปรุง | รายละเอียด |
+|---|---|
+| 🚀 **เร็วขึ้น** | localStorage cache · ลด API call ซ้ำ |
+| ✍️ **หน้าสมัครสมาชิก** | ฟอร์มสมัครพร้อม PDPA consent + auto User ID |
+| 🎨 **UI ใหม่** | Modern Sport Studio · teal + coral · IBM Plex Sans Thai |
+| 📱 **Mobile-first** | ปุ่มใหญ่ touch-friendly · sticky header |
+| 🎭 **Face register flow** | สมัครเสร็จ → ลงใบหน้าต่อทันที (URL param) |
+
+## โครงสร้างไฟล์
 
 ```
-alpha-badminton-single/
-├── index.html           ← หน้าหลัก · มี CSS + JS ในตัว
-├── kiosk.html           ← Kiosk เช็คชื่อ · มี CSS + JS ในตัว
-├── face-register.html   ← ลงทะเบียนใบหน้า · มี CSS + JS ในตัว
+alpha-badminton-v2/
+├── index.html           ← หน้าหลัก
+├── register.html        ← สมัครสมาชิก (NEW!)
+├── face-register.html   ← ลงทะเบียนใบหน้า
+├── kiosk.html           ← เช็คชื่อ
 └── README.md
 ```
 
-**3 ไฟล์ HTML — เปิดแต่ละไฟล์เดี่ยว ๆ ก็ทำงานได้** ไม่ต้องสนใจ folder อื่น
+**4 ไฟล์ HTML — เปิดเดี่ยว ๆ ก็ทำงานได้**
 
-## วิธี Deploy บน GitHub Pages
+## วิธี Deploy
 
-### 🔴 ก่อนอื่น — ลบของเก่าก่อน (ถ้ามี)
+1. ลบไฟล์เก่าทั้งหมดใน GitHub repo
+2. Upload 4 ไฟล์ใหม่
+3. รอ 1-2 นาที
+4. เปิด URL + Hard refresh
 
-ใน GitHub repo:
-1. คลิก folder `js` → คลิก "..." → Delete directory → Commit (ถ้ามี)
-2. คลิก folder `css` → คลิก "..." → Delete directory → Commit (ถ้ามี)
-3. คลิก `kiosk.html` เก่า → Delete → Commit
-4. คลิก `index.html` เก่า → Delete → Commit
-5. คลิก `face-register.html` เก่า → Delete → Commit
+## วิธีใช้
 
-หรือง่ายกว่า: ลบ repo ทั้งหมดแล้วสร้างใหม่
+```
+1. สมัครสมาชิกใหม่
+   → เปิด register.html → กรอกฟอร์ม → ได้ User ID เช่น F26001
+   
+2. ลงทะเบียนใบหน้า  
+   → เปิด face-register.html → ค้นชื่อ → 3 ท่า
+   (หรือกดจากหน้า "สมัครสำเร็จ" เลย)
+   
+3. เช็คชื่อ
+   → เปิด kiosk.html (ตั้งเป็น iPad หน้าร้าน)
+   → นักเรียนมองกล้อง → เลือกคอร์ส → ✓
+```
 
-### 🟢 Upload ไฟล์ใหม่
+## Design system
 
-1. ใน repo → "Add file" → "Upload files"
-2. Drag 3 ไฟล์ HTML ลงไป (ไม่มี folder ให้ปวดหัว!)
-3. Commit changes
-4. รอ 1-2 นาที
-5. เปิด: `https://<USERNAME>.github.io/ALPHA-BADMINTON-KRABI/`
-
-## ความแตกต่างกับเวอร์ชั่นเก่า
-
-| เก่า (แยกไฟล์) | ใหม่ (รวมไฟล์) |
-|---|---|
-| 8 ไฟล์ · 2 folders | 3 ไฟล์ · 0 folders |
-| แก้ที่เดียว = update ทุกหน้า | แก้แต่ละหน้าเอง |
-| ไฟล์เล็ก ~2-5 KB | ไฟล์ใหญ่ ~20-25 KB ต่อหน้า |
-| ต้องเข้าใจ folder structure | เปิดไฟล์ก็เห็นทุกอย่าง |
+- **Font:** IBM Plex Sans Thai (Google Fonts)
+- **Colors:** Teal 600 (primary) · Coral 500 (accent) · Cream (bg)
+- **Radius:** 8 / 12 / 16 / 24px
+- **Touch targets:** 44px+ height ทุกปุ่ม
+- **Dark text on light cream** = อ่านสบายตา ทุกวัย
 
 ## เปลี่ยน API_KEY
 
-ถ้าจะเปลี่ยน API_KEY ต้องแก้ **3 ไฟล์**:
-
-ในแต่ละไฟล์ ค้นหา (Ctrl+F): `API_KEY:`
-
-แล้วเปลี่ยน:
-```javascript
-API_KEY: 'ALPHA BADMINTON-KRABI',
-```
-
-## วิธีใช้งาน
-
-1. **เปิด index.html** → เห็นเมนู + status "✓ API connected"
-2. **เปิด face-register.html** → ลงทะเบียนใบหน้าให้สมาชิก
-3. **เปิด kiosk.html** → ระบบเช็คชื่อด้วยใบหน้า
-
-## ปุ่มย้อนกลับ
-
-ทุกหน้ามีปุ่ม "← กลับหน้าหลัก" มุมขวาบน คลิกแล้วกลับไป index.html
-
-## ป้องกัน Check-in ซ้ำ
-
-ระบบจะเช็ค: ถ้าวันนี้คุณเช็คชื่อคอร์สนี้แล้ว → ปุ่มจะ disable เห็น "มาแล้ววันนี้" — ป้องกันการ check-in ซ้ำที่จะหัก session มากกว่าจริง
+แก้ใน **4 ไฟล์ HTML** ค้นหา (Ctrl+F): `API_KEY:`
