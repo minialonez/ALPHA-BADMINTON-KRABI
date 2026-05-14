@@ -8,72 +8,41 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap');
 
 :root {
-  --teal-50: #F0FDFA;
-  --teal-100: #CCFBF1;
-  --teal-500: #14B8A6;
-  --teal-600: #0D9488;
-  --teal-700: #0F766E;
-  --teal-900: #134E4A;
-  --coral-50: #FFF7ED;
-  --coral-100: #FFEDD5;
-  --coral-500: #F97316;
-  --coral-600: #EA580C;
-  --coral-700: #C2410C;
+  --teal-50: #F0FDFA; --teal-100: #CCFBF1; --teal-500: #14B8A6;
+  --teal-600: #0D9488; --teal-700: #0F766E; --teal-900: #134E4A;
+  --coral-50: #FFF7ED; --coral-100: #FFEDD5; --coral-500: #F97316;
+  --coral-600: #EA580C; --coral-700: #C2410C;
   --cream: #FDFBF7;
-  --stone-50: #FAFAF9;
-  --stone-100: #F5F5F4;
-  --stone-200: #E7E5E4;
-  --stone-300: #D6D3D1;
-  --stone-500: #78716C;
-  --stone-700: #44403C;
+  --stone-50: #FAFAF9; --stone-100: #F5F5F4; --stone-200: #E7E5E4;
+  --stone-300: #D6D3D1; --stone-500: #78716C; --stone-700: #44403C;
   --stone-900: #1C1917;
-  --success: #16A34A;
-  --success-bg: #DCFCE7;
-  --warning: #EA580C;
-  --warning-bg: #FFEDD5;
-  --danger: #DC2626;
-  --danger-bg: #FEE2E2;
-  --info: #0284C7;
-  --info-bg: #E0F2FE;
+  --success: #16A34A; --success-bg: #DCFCE7;
+  --warning: #EA580C; --warning-bg: #FFEDD5;
+  --danger: #DC2626; --danger-bg: #FEE2E2;
+  --info: #0284C7; --info-bg: #E0F2FE;
   --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04);
   --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.06);
   --shadow-lg: 0 12px 32px rgba(28, 25, 23, 0.08);
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 16px;
-  --r-xl: 24px;
-  --r-full: 9999px;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px; --r-full: 9999px;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; padding: 0; }
 body {
   font-family: 'IBM Plex Sans Thai', system-ui, -apple-system, sans-serif;
-  background: var(--cream);
-  color: var(--stone-900);
-  font-size: 15px;
-  line-height: 1.6;
-  min-height: 100vh;
+  background: var(--cream); color: var(--stone-900);
+  font-size: 15px; line-height: 1.6; min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  font-feature-settings: 'cv11';
 }
 
-h1, h2, h3, h4 {
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin: 0;
-  color: var(--stone-900);
-}
+h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; margin: 0; color: var(--stone-900); }
 h1 { font-size: 1.5rem; line-height: 1.2; }
 h2 { font-size: 1.5rem; line-height: 1.25; font-weight: 700; }
 h3 { font-size: 1.125rem; line-height: 1.4; }
 p { margin: 0; }
 
-/* ===== App Shell ===== */
 .app-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  position: sticky; top: 0; z-index: 50;
   background: rgba(253, 251, 247, 0.92);
   backdrop-filter: saturate(180%) blur(12px);
   -webkit-backdrop-filter: saturate(180%) blur(12px);
@@ -81,207 +50,99 @@ p { margin: 0; }
   padding: 14px 20px;
 }
 .app-header-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
   gap: 16px;
 }
 .brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--stone-900);
-  text-decoration: none;
-  letter-spacing: -0.01em;
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 1.05rem; color: var(--stone-900);
+  text-decoration: none; letter-spacing: -0.01em;
+  cursor: pointer;
 }
 .brand-emoji {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
   background: linear-gradient(135deg, var(--teal-500) 0%, var(--teal-700) 100%);
-  border-radius: 10px;
-  font-size: 1.1rem;
+  border-radius: 10px; font-size: 1.1rem;
   box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
 }
 .brand-sub { color: var(--stone-500); font-weight: 500; font-size: 0.85rem; }
 
-.container {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 24px 20px 48px;
-}
+.container { max-width: 720px; margin: 0 auto; padding: 24px 20px 48px; }
 .container-wide { max-width: 1100px; }
 
-/* ===== Cards ===== */
 .card {
-  background: white;
-  border-radius: var(--r-lg);
-  padding: 24px;
-  border: 1px solid var(--stone-200);
-  box-shadow: var(--shadow-sm);
+  background: white; border-radius: var(--r-lg); padding: 24px;
+  border: 1px solid var(--stone-200); box-shadow: var(--shadow-sm);
 }
-.card-elevated {
-  border: none;
-  box-shadow: var(--shadow-md);
-}
+.card-elevated { border: none; box-shadow: var(--shadow-md); }
 .card + .card { margin-top: 16px; }
 
-/* ===== Buttons ===== */
 .btn {
-  font-family: inherit;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 12px 20px;
-  border-radius: var(--r-md);
-  border: 1.5px solid var(--stone-200);
-  background: white;
-  color: var(--stone-900);
-  cursor: pointer;
-  transition: all 0.18s ease;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
+  font-family: inherit; font-weight: 600; font-size: 15px;
+  padding: 12px 20px; border-radius: var(--r-md);
+  border: 1.5px solid var(--stone-200); background: white;
+  color: var(--stone-900); cursor: pointer; transition: all 0.18s ease;
+  text-decoration: none; display: inline-flex;
+  align-items: center; justify-content: center; gap: 8px; min-height: 44px;
 }
-.btn:hover {
-  border-color: var(--stone-300);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
+.btn:hover { border-color: var(--stone-300); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .btn:active { transform: translateY(0); }
 .btn-primary {
-  background: var(--teal-600);
-  border-color: var(--teal-600);
-  color: white;
+  background: var(--teal-600); border-color: var(--teal-600); color: white;
   box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
 }
-.btn-primary:hover {
-  background: var(--teal-700);
-  border-color: var(--teal-700);
-  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
-}
+.btn-primary:hover { background: var(--teal-700); border-color: var(--teal-700); box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35); }
 .btn-accent {
-  background: var(--coral-500);
-  border-color: var(--coral-500);
-  color: white;
+  background: var(--coral-500); border-color: var(--coral-500); color: white;
   box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25);
 }
-.btn-accent:hover {
-  background: var(--coral-600);
-  border-color: var(--coral-600);
-  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
-}
-.btn-ghost {
-  border: none;
-  background: transparent;
-  color: var(--stone-700);
-}
-.btn-ghost:hover {
-  background: var(--stone-100);
-  transform: none;
-  box-shadow: none;
-}
+.btn-accent:hover { background: var(--coral-600); border-color: var(--coral-600); }
+.btn-ghost { border: none; background: transparent; color: var(--stone-700); }
+.btn-ghost:hover { background: var(--stone-100); transform: none; box-shadow: none; }
+.btn-danger-ghost { border: none; background: transparent; color: var(--danger); }
 .btn-block { width: 100%; }
 .btn-sm { padding: 8px 14px; font-size: 13px; min-height: 36px; }
 .btn-lg { padding: 16px 24px; font-size: 16px; min-height: 56px; }
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none !important;
-  box-shadow: none !important;
-}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
-/* ===== Form ===== */
 .form-group { margin-bottom: 18px; }
-.form-label {
-  display: block;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--stone-700);
-  margin-bottom: 6px;
-}
-.form-label-required::after {
-  content: ' *';
-  color: var(--coral-500);
-}
-.form-hint {
-  font-size: 12px;
-  color: var(--stone-500);
-  margin-top: 4px;
-}
+.form-label { display: block; font-weight: 600; font-size: 14px; color: var(--stone-700); margin-bottom: 6px; }
+.form-label-required::after { content: ' *'; color: var(--coral-500); }
+.form-hint { font-size: 12px; color: var(--stone-500); margin-top: 4px; }
 input, select, textarea {
-  font-family: inherit;
-  font-size: 15px;
-  padding: 12px 14px;
-  border: 1.5px solid var(--stone-200);
-  border-radius: var(--r-md);
-  background: white;
-  width: 100%;
-  color: var(--stone-900);
+  font-family: inherit; font-size: 15px; padding: 12px 14px;
+  border: 1.5px solid var(--stone-200); border-radius: var(--r-md);
+  background: white; width: 100%; color: var(--stone-900);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--teal-500);
-  box-shadow: 0 0 0 4px var(--teal-50);
+  outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 4px var(--teal-50);
 }
 textarea { resize: vertical; min-height: 80px; font-family: inherit; }
 
-/* Radio group */
-.radio-group {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
+.radio-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .radio-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1.5px solid var(--stone-200);
-  border-radius: var(--r-md);
-  cursor: pointer;
-  transition: all 0.15s;
-  background: white;
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+  border: 1.5px solid var(--stone-200); border-radius: var(--r-md);
+  cursor: pointer; transition: all 0.15s; background: white;
 }
 .radio-card:hover { border-color: var(--stone-300); }
 .radio-card input { width: auto; margin: 0; }
-.radio-card.selected {
-  border-color: var(--teal-600);
-  background: var(--teal-50);
-}
+.radio-card.selected { border-color: var(--teal-600); background: var(--teal-50); }
 
-/* Checkbox */
 .checkbox-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 14px;
-  background: var(--stone-50);
-  border-radius: var(--r-md);
-  cursor: pointer;
+  display: flex; align-items: flex-start; gap: 10px; padding: 14px;
+  background: var(--stone-50); border-radius: var(--r-md); cursor: pointer;
 }
 .checkbox-row input { width: auto; margin-top: 3px; }
 .checkbox-row label { cursor: pointer; flex: 1; font-size: 14px; line-height: 1.5; }
 
-/* ===== Badge / Pill ===== */
 .pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: var(--r-full);
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: var(--r-full);
+  font-size: 12px; font-weight: 600; white-space: nowrap;
 }
 .pill-success { background: var(--success-bg); color: var(--success); }
 .pill-warning { background: var(--warning-bg); color: var(--warning); }
@@ -289,335 +150,217 @@ textarea { resize: vertical; min-height: 80px; font-family: inherit; }
 .pill-info { background: var(--info-bg); color: var(--info); }
 .pill-stone { background: var(--stone-100); color: var(--stone-700); }
 
-/* ===== Alert ===== */
 .alert {
-  padding: 14px 16px;
-  border-radius: var(--r-md);
-  font-size: 14px;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  line-height: 1.5;
+  padding: 14px 16px; border-radius: var(--r-md); font-size: 14px;
+  display: flex; align-items: flex-start; gap: 10px; line-height: 1.5;
 }
 .alert-success { background: var(--success-bg); color: var(--success); border: 1px solid #BBF7D0; }
 .alert-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid #FED7AA; }
 .alert-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #FECACA; }
 .alert-info { background: var(--info-bg); color: var(--info); border: 1px solid #BAE6FD; }
 
-/* ===== Camera ===== */
 .camera-card {
-  background: var(--stone-900);
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  aspect-ratio: 3/4;
-  position: relative;
+  background: var(--stone-900); border-radius: var(--r-lg);
+  overflow: hidden; aspect-ratio: 3/4; position: relative;
   box-shadow: var(--shadow-md);
 }
-.camera-card video, .camera-card canvas {
-  width: 100%; height: 100%; object-fit: cover;
-}
+.camera-card video, .camera-card canvas { width: 100%; height: 100%; object-fit: cover; }
 .camera-card video { transform: scaleX(-1); }
-.camera-card canvas {
-  position: absolute; top: 0; left: 0;
-  transform: scaleX(-1);
-}
+.camera-card canvas { position: absolute; top: 0; left: 0; transform: scaleX(-1); }
 .camera-overlay {
   position: absolute; bottom: 0; left: 0; right: 0;
   background: linear-gradient(transparent, rgba(0,0,0,0.7));
-  color: white;
-  padding: 16px;
-  font-size: 13px;
-  z-index: 1;
+  color: white; padding: 16px; font-size: 13px; z-index: 1;
 }
 .status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: var(--r-full);
-  background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  font-size: 12px;
-  font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: var(--r-full);
+  background: rgba(255,255,255,0.18); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); font-size: 12px; font-weight: 600;
 }
 
-/* ===== Stepper ===== */
-.stepper {
-  display: flex;
-  gap: 4px;
-  margin: 20px 0 24px;
-}
+.stepper { display: flex; gap: 4px; margin: 20px 0 24px; }
 .step {
-  flex: 1;
-  text-align: center;
-  padding: 10px 12px;
-  background: var(--stone-100);
-  border-radius: var(--r-md);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--stone-500);
+  flex: 1; text-align: center; padding: 10px 12px;
+  background: var(--stone-100); border-radius: var(--r-md);
+  font-size: 13px; font-weight: 500; color: var(--stone-500);
   transition: all 0.25s;
 }
 .step.active {
-  background: var(--teal-600);
-  color: white;
-  font-weight: 600;
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
+  background: var(--teal-600); color: white; font-weight: 600;
+  transform: scale(1.02); box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
 }
-.step.done {
-  background: var(--teal-100);
-  color: var(--teal-700);
-}
+.step.done { background: var(--teal-100); color: var(--teal-700); }
 
-/* ===== List items (courses, members) ===== */
 .list-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  background: white;
-  border: 1.5px solid var(--stone-200);
-  border-radius: var(--r-md);
-  cursor: pointer;
-  transition: all 0.18s;
-  margin-bottom: 10px;
-  text-decoration: none;
-  color: inherit;
+  display: flex; align-items: center; gap: 14px; padding: 16px;
+  background: white; border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-md); cursor: pointer; transition: all 0.18s;
+  margin-bottom: 10px; text-decoration: none; color: inherit;
 }
-.list-item:hover {
-  border-color: var(--teal-500);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-.list-item.disabled {
-  opacity: 0.55;
-  pointer-events: none;
-}
+.list-item:hover { border-color: var(--teal-500); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.list-item.disabled { opacity: 0.55; pointer-events: none; }
 .list-item-main { flex: 1; min-width: 0; }
 .list-item-title { font-weight: 600; font-size: 15px; margin-bottom: 2px; }
 .list-item-sub { font-size: 12.5px; color: var(--stone-500); }
 
-/* ===== Progress bar (course progress) ===== */
 .progress-bar {
-  height: 6px;
-  background: var(--stone-100);
-  border-radius: var(--r-full);
-  overflow: hidden;
-  margin: 8px 0;
+  height: 6px; background: var(--stone-100);
+  border-radius: var(--r-full); overflow: hidden; margin: 8px 0;
 }
-.progress-bar-fill {
-  height: 100%;
-  background: var(--teal-500);
-  border-radius: var(--r-full);
-  transition: width 0.4s ease;
-}
+.progress-bar-fill { height: 100%; background: var(--teal-500); border-radius: var(--r-full); transition: width 0.4s ease; }
 .progress-bar-fill.warning { background: var(--coral-500); }
-.progress-bar-fill.danger { background: var(--danger); }
 
-/* ===== Loading skeleton ===== */
 @keyframes shimmer {
   0% { background-position: -1000px 0; }
   100% { background-position: 1000px 0; }
 }
 .skeleton {
   background: linear-gradient(90deg, var(--stone-100) 0%, var(--stone-50) 50%, var(--stone-100) 100%);
-  background-size: 1000px 100%;
-  animation: shimmer 1.5s infinite;
+  background-size: 1000px 100%; animation: shimmer 1.5s infinite;
   border-radius: var(--r-md);
 }
 
-/* ===== Utilities ===== */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap-2 { gap: 8px; }
-.gap-3 { gap: 12px; }
-.gap-4 { gap: 16px; }
+.flex { display: flex; } .flex-col { flex-direction: column; }
+.items-center { align-items: center; } .justify-between { justify-content: space-between; }
+.gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; }
 .flex-1 { flex: 1; }
-.text-center { text-align: center; }
-.text-muted { color: var(--stone-500); }
-.text-sm { font-size: 13px; }
-.text-xs { font-size: 12px; }
-.mt-2 { margin-top: 8px; }
-.mt-3 { margin-top: 12px; }
-.mt-4 { margin-top: 16px; }
-.mt-6 { margin-top: 24px; }
-.mb-3 { margin-bottom: 12px; }
-.mb-4 { margin-bottom: 16px; }
+.text-center { text-align: center; } .text-muted { color: var(--stone-500); }
+.text-sm { font-size: 13px; } .text-xs { font-size: 12px; }
+.mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; } .mt-6 { margin-top: 24px; }
+.mb-3 { margin-bottom: 12px; } .mb-4 { margin-bottom: 16px; }
 .w-full { width: 100%; }
 
-/* ===== Mobile tweaks ===== */
 @media (max-width: 640px) {
   body { font-size: 14px; }
   .app-header { padding: 12px 16px; }
   .container { padding: 16px; }
   .card { padding: 18px; border-radius: var(--r-md); }
-  h1 { font-size: 1.25rem; }
-  h2 { font-size: 1.25rem; }
+  h1 { font-size: 1.25rem; } h2 { font-size: 1.25rem; }
   .radio-group { grid-template-columns: 1fr; }
 }
 
-/* ===== Animations ===== */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-in { animation: fadeInUp 0.35s ease-out; }
 
-/* ===== Hero block (used on landing) ===== */
-.hero {
-  text-align: center;
-  padding: 24px 0 12px;
-}
+.hero { text-align: center; padding: 24px 0 12px; }
 .hero-emoji {
-  font-size: 3rem;
-  display: inline-block;
+  font-size: 3rem; display: inline-block;
   filter: drop-shadow(0 4px 8px rgba(13, 148, 136, 0.2));
   margin-bottom: 8px;
 }
 .hero-title {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1.15;
   background: linear-gradient(135deg, var(--stone-900) 0%, var(--teal-700) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 }
 .hero-sub { color: var(--stone-500); font-size: 1rem; margin-top: 6px; }
 
-/* ===== Menu cards (landing) ===== */
-.menu-grid {
-  display: grid;
-  gap: 12px;
-  margin-top: 24px;
-}
+.menu-grid { display: grid; gap: 12px; margin-top: 24px; }
 .menu-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  background: white;
-  border: 1.5px solid var(--stone-200);
-  border-radius: var(--r-lg);
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.2s;
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 20px; background: white;
+  border: 1.5px solid var(--stone-200); border-radius: var(--r-lg);
+  text-decoration: none; color: inherit; transition: all 0.2s; cursor: pointer;
 }
-.menu-item:hover {
-  transform: translateY(-2px);
-  border-color: var(--teal-500);
-  box-shadow: var(--shadow-md);
-}
-.menu-item.disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
+.menu-item:hover { transform: translateY(-2px); border-color: var(--teal-500); box-shadow: var(--shadow-md); }
+.menu-item.disabled { opacity: 0.5; pointer-events: none; }
 .menu-item-icon {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--r-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  background: var(--teal-50);
+  flex-shrink: 0; width: 48px; height: 48px;
+  border-radius: var(--r-md); display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; background: var(--teal-50);
 }
 .menu-item-icon.coral { background: var(--coral-50); }
 .menu-item-icon.warm { background: var(--warning-bg); }
+.menu-item-icon.blue { background: var(--info-bg); }
 .menu-item-text { flex: 1; }
 .menu-item-title { font-weight: 600; font-size: 16px; }
 .menu-item-sub { color: var(--stone-500); font-size: 13px; margin-top: 2px; }
-.menu-item-arrow {
-  color: var(--stone-300);
-  font-size: 1.25rem;
-  transition: transform 0.2s;
+.menu-item-arrow { color: var(--stone-300); font-size: 1.25rem; transition: transform 0.2s; }
+.menu-item:hover .menu-item-arrow { transform: translateX(4px); color: var(--teal-600); }
+
+/* PIN input */
+.pin-input {
+  font-size: 1.5rem !important; font-weight: 700; text-align: center;
+  letter-spacing: 0.5em; padding-left: 0.5em !important;
 }
-.menu-item:hover .menu-item-arrow {
-  transform: translateX(4px);
-  color: var(--teal-600);
+
+/* Family member card */
+.member-card {
+  background: white; border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-lg); padding: 20px; margin-bottom: 12px;
+  transition: all 0.2s;
 }
+.member-card.head { border-color: var(--teal-500); background: linear-gradient(180deg, var(--teal-50) 0%, white 50%); }
+.member-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.member-avatar {
+  width: 48px; height: 48px; border-radius: var(--r-full);
+  background: var(--teal-100); color: var(--teal-700);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.1rem; flex-shrink: 0;
+}
+.member-name { font-weight: 700; font-size: 1.05rem; }
+.member-id { font-size: 12px; color: var(--stone-500); }
+
+.add-member-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 18px; width: 100%;
+  background: var(--teal-50); border: 1.5px dashed var(--teal-500);
+  border-radius: var(--r-lg); color: var(--teal-700);
+  font-weight: 600; cursor: pointer; transition: all 0.2s;
+  margin-top: 8px;
+}
+.add-member-btn:hover { background: var(--teal-100); }
+
+/* Spinner */
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid var(--stone-200); border-top-color: var(--teal-600);
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Toast notification */
+.toast-area {
+  position: fixed; top: 20px; right: 20px; left: 20px;
+  display: flex; flex-direction: column; gap: 8px; z-index: 1000;
+  max-width: 400px; margin-left: auto;
+  pointer-events: none;
+}
+.toast {
+  background: white; padding: 14px 18px; border-radius: var(--r-md);
+  box-shadow: var(--shadow-lg); animation: slideIn 0.3s ease;
+  font-size: 14px; pointer-events: auto;
+  border-left: 4px solid var(--teal-500);
+}
+.toast.success { border-left-color: var(--success); }
+.toast.danger { border-left-color: var(--danger); }
+.toast.warning { border-left-color: var(--warning); }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 </style>
 </head>
 <body>
 
 <header class="app-header">
   <div class="app-header-inner">
-    <div class="brand">
+    <div class="brand" onclick="Router.go('home')">
       <span class="brand-emoji">🏸</span>
-      <div>
-        ALPHA BADMINTON<br>
-        <span class="brand-sub">Krabi</span>
-      </div>
+      <div>ALPHA BADMINTON<br><span class="brand-sub">Krabi</span></div>
     </div>
-    <span id="apiStatus" class="pill pill-stone">⏳ เชื่อมต่อ...</span>
+    <div class="flex items-center gap-3">
+      <span id="apiStatus" class="pill pill-stone">⏳ เชื่อมต่อ...</span>
+      <span id="familyBadge"></span>
+    </div>
   </div>
 </header>
 
-<main class="container animate-in">
-  <section class="hero">
-    <div class="hero-emoji">🏸</div>
-    <h1 class="hero-title">ยินดีต้อนรับ</h1>
-    <p class="hero-sub">เลือกเมนูที่ต้องการใช้งาน</p>
-  </section>
+<main id="app"></main>
 
-  <div class="menu-grid">
-    <a href="kiosk.html" class="menu-item">
-      <span class="menu-item-icon">📷</span>
-      <div class="menu-item-text">
-        <div class="menu-item-title">เช็คชื่อด้วยใบหน้า</div>
-        <div class="menu-item-sub">สำหรับ iPad หน้าร้าน · นักเรียนสแกนหน้าเข้าเรียน</div>
-      </div>
-      <span class="menu-item-arrow">→</span>
-    </a>
-
-    <a href="register.html" class="menu-item">
-      <span class="menu-item-icon coral">✍️</span>
-      <div class="menu-item-text">
-        <div class="menu-item-title">สมัครสมาชิกใหม่</div>
-        <div class="menu-item-sub">ระบบจะสร้าง User ID ให้อัตโนมัติ (เช่น F26001)</div>
-      </div>
-      <span class="menu-item-arrow">→</span>
-    </a>
-
-    <a href="face-register.html" class="menu-item">
-      <span class="menu-item-icon warm">🎭</span>
-      <div class="menu-item-text">
-        <div class="menu-item-title">ลงทะเบียนใบหน้า</div>
-        <div class="menu-item-sub">เก็บใบหน้า 3 มุม สำหรับสแกนเช็คชื่อ</div>
-      </div>
-      <span class="menu-item-arrow">→</span>
-    </a>
-
-    <a href="admin.html" class="menu-item disabled">
-      <span class="menu-item-icon">👨‍💼</span>
-      <div class="menu-item-text">
-        <div class="menu-item-title">Admin Dashboard</div>
-        <div class="menu-item-sub">เร็ว ๆ นี้ — รายชื่อสมาชิก, ยอดเงิน, รายงาน</div>
-      </div>
-      <span class="menu-item-arrow">→</span>
-    </a>
-
-    <a href="portal.html" class="menu-item disabled">
-      <span class="menu-item-icon">👤</span>
-      <div class="menu-item-text">
-        <div class="menu-item-title">Portal นักเรียน</div>
-        <div class="menu-item-sub">เร็ว ๆ นี้ — นักเรียนเช็คคอร์สตัวเอง</div>
-      </div>
-      <span class="menu-item-arrow">→</span>
-    </a>
-  </div>
-
-  <p class="text-center text-xs text-muted mt-6">
-    v2.0 · ระบบจัดการคอร์สแบดมินตัน
-  </p>
-</main>
-
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 <script>
 const CONFIG = {
   API_URL: 'https://script.google.com/macros/s/AKfycbzarzLBCNsC9CLRNkwcdUo1RZZCrHpkkswhzNQWNuKJxqQZ28XIBHdd-JEWwkor1pdy/exec',
@@ -629,25 +372,20 @@ const CONFIG = {
   CACHE_TTL_MS: 30000,
 };
 
-// Browser-side cache to avoid hitting API repeatedly
 const Cache = {
   get(key) {
     try {
       const raw = localStorage.getItem('ab_' + key);
       if (!raw) return null;
       const { data, expires } = JSON.parse(raw);
-      if (Date.now() > expires) {
-        localStorage.removeItem('ab_' + key);
-        return null;
-      }
+      if (Date.now() > expires) { localStorage.removeItem('ab_' + key); return null; }
       return data;
     } catch (e) { return null; }
   },
   set(key, data, ttlMs) {
     try {
       localStorage.setItem('ab_' + key, JSON.stringify({
-        data,
-        expires: Date.now() + (ttlMs || CONFIG.CACHE_TTL_MS),
+        data, expires: Date.now() + (ttlMs || CONFIG.CACHE_TTL_MS),
       }));
     } catch (e) {}
   },
@@ -668,8 +406,6 @@ const api = {
     if (!data.ok) throw new Error(data.error || 'API error');
     return data.data;
   },
-
-  // Cached version: try cache first, then fetch
   async callCached(action, params = {}, ttlMs) {
     const key = action + '_' + JSON.stringify(params);
     const cached = Cache.get(key);
@@ -678,27 +414,102 @@ const api = {
     Cache.set(key, data, ttlMs);
     return data;
   },
-
   ping() { return this.call('ping'); },
   getCourses() { return this.callCached('getCourses', {}, 5 * 60 * 1000); },
   getMember(uuid) { return this.call('getMember', { uuid }); },
   searchMember(query) { return this.call('searchMember', { query }); },
   getMembersForFaceMatch() { return this.callCached('getMembersForFaceMatch', {}, 60000); },
-  createMember(data) {
-    Cache.clear();
-    return this.call('createMember', data);
-  },
+  createMember(data) { Cache.clear(); return this.call('createMember', data); },
   registerFace(personUuid, descriptors) {
     Cache.clear();
     return this.call('registerFace', { personUuid, descriptors });
   },
-  getActiveEnrollments(memberUuid) {
-    return this.call('getActiveEnrollments', { memberUuid });
-  },
+  getActiveEnrollments(memberUuid) { return this.call('getActiveEnrollments', { memberUuid }); },
   checkIn(personUuid, enrollmentUuid, coachUuid, method) {
     return this.call('checkIn', { personUuid, enrollmentUuid, coachUuid, method });
   },
   getAttendanceToday() { return this.call('getAttendanceToday'); },
+  // Note: Family endpoints (familyLookup, familyRegister, familyLogin, familyAddMember)
+  // are simulated using existing createMember + searchMember by phone for now.
+  // For full server-side family support, Apps Script needs new endpoints.
+};
+
+// ============================================================
+// FAMILY: Phone-based grouping
+// Family data stored as JSON in localStorage:
+// { phone, familyName, pin (SHA-256), headUUID, memberUUIDs: [...] }
+// Server-side: every member shares ParentPhone = family phone
+// ============================================================
+const Family = {
+  async hashPIN(pin) {
+    const enc = new TextEncoder().encode('ab_salt_v3:' + pin);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  },
+  storage: {
+    save(family) {
+      localStorage.setItem('ab_family_' + family.phone, JSON.stringify(family));
+      localStorage.setItem('ab_active_family', family.phone);
+    },
+    get(phone) {
+      const raw = localStorage.getItem('ab_family_' + phone);
+      return raw ? JSON.parse(raw) : null;
+    },
+    getActive() {
+      const phone = localStorage.getItem('ab_active_family');
+      if (!phone) return null;
+      return this.get(phone);
+    },
+    clear() {
+      localStorage.removeItem('ab_active_family');
+    },
+    listAll() {
+      return Object.keys(localStorage)
+        .filter(k => k.startsWith('ab_family_'))
+        .map(k => JSON.parse(localStorage.getItem(k)));
+    },
+  },
+  async createFamily(phone, familyName, pin) {
+    const family = {
+      phone, familyName,
+      pinHash: await this.hashPIN(pin),
+      memberUUIDs: [],
+      headUUID: null,
+      createdAt: Date.now(),
+    };
+    this.storage.save(family);
+    return family;
+  },
+  async verifyPIN(phone, pin) {
+    const fam = this.storage.get(phone);
+    if (!fam) return null;
+    const hash = await this.hashPIN(pin);
+    if (hash !== fam.pinHash) return null;
+    this.storage.save({ ...fam }); // refresh active
+    localStorage.setItem('ab_active_family', phone);
+    return fam;
+  },
+  addMemberToFamily(phone, memberUUID, isHead) {
+    const fam = this.storage.get(phone);
+    if (!fam) return null;
+    if (!fam.memberUUIDs.includes(memberUUID)) {
+      fam.memberUUIDs.push(memberUUID);
+    }
+    if (isHead && !fam.headUUID) fam.headUUID = memberUUID;
+    this.storage.save(fam);
+    return fam;
+  },
+  async loadFamilyMembers(family) {
+    // fetch each member via API
+    const results = [];
+    for (const uuid of family.memberUUIDs) {
+      try {
+        const m = await api.getMember(uuid);
+        if (m) results.push(m);
+      } catch (e) { console.warn('Failed to load member', uuid, e); }
+    }
+    return results;
+  },
 };
 
 const Face = {
@@ -712,11 +523,8 @@ const Face = {
   },
   async detectFaceWithDescriptor(videoEl) {
     return await faceapi
-      .detectSingleFace(videoEl, new faceapi.TinyFaceDetectorOptions({
-        inputSize: 320, scoreThreshold: 0.5
-      }))
-      .withFaceLandmarks()
-      .withFaceDescriptor();
+      .detectSingleFace(videoEl, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 }))
+      .withFaceLandmarks().withFaceDescriptor();
   },
   computeMatch(queryDescriptor, candidates, threshold) {
     threshold = threshold || CONFIG.FACE_MATCH_THRESHOLD;
@@ -724,14 +532,13 @@ const Face = {
     candidates.forEach(c => {
       if (!c.FaceDescriptors) return;
       try {
-        const data = typeof c.FaceDescriptors === 'string'
-          ? JSON.parse(c.FaceDescriptors) : c.FaceDescriptors;
+        const data = typeof c.FaceDescriptors === 'string' ? JSON.parse(c.FaceDescriptors) : c.FaceDescriptors;
         ['front', 'left', 'right'].forEach(pose => {
           if (!data[pose]) return;
           const stored = new Float32Array(data[pose]);
           const dist = faceapi.euclideanDistance(queryDescriptor, stored);
           if (dist < threshold && (!best || dist < best.distance)) {
-            best = { member: c, pose: pose, distance: dist };
+            best = { member: c, pose, distance: dist };
           }
         });
       } catch (e) {}
@@ -742,25 +549,1016 @@ const Face = {
     if (descriptors.length === 0) return null;
     const dim = descriptors[0].length;
     const avg = new Float32Array(dim);
-    descriptors.forEach(d => {
-      for (let i = 0; i < dim; i++) avg[i] += d[i];
-    });
+    descriptors.forEach(d => { for (let i = 0; i < dim; i++) avg[i] += d[i]; });
     for (let i = 0; i < dim; i++) avg[i] /= descriptors.length;
     return Array.from(avg);
   },
 };
+
+// Toast notifications
+function toast(msg, type) {
+  const area = document.getElementById('toastArea') || (() => {
+    const d = document.createElement('div'); d.id = 'toastArea'; d.className = 'toast-area';
+    document.body.appendChild(d); return d;
+  })();
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  area.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+// ============================================================
+// Router — hash-based SPA
+// ============================================================
+const Router = {
+  routes: {},
+  add(name, renderFn) { this.routes[name] = renderFn; },
+  go(name, params) {
+    const hash = '#/' + name + (params ? '?' + new URLSearchParams(params).toString() : '');
+    if (location.hash === hash) {
+      this.render();
+    } else {
+      location.hash = hash;
+    }
+  },
+  parseHash() {
+    const h = location.hash.replace(/^#\/?/, '') || 'home';
+    const [name, qs] = h.split('?');
+    const params = {};
+    if (qs) new URLSearchParams(qs).forEach((v, k) => params[k] = v);
+    return { name, params };
+  },
+  render() {
+    const { name, params } = this.parseHash();
+    const fn = this.routes[name] || this.routes['home'];
+    const root = document.getElementById('app');
+    root.innerHTML = '<div class="container animate-in"><div class="text-center" style="padding:48px;"><div class="spinner"></div></div></div>';
+    Promise.resolve(fn(params)).then(html => {
+      if (typeof html === 'string') root.innerHTML = html;
+      // Bind radio cards
+      document.querySelectorAll('.radio-card').forEach(card => {
+        const input = card.querySelector('input[type="radio"]');
+        if (!input) return;
+        if (input.checked) card.classList.add('selected');
+        input.addEventListener('change', () => {
+          document.querySelectorAll('.radio-card').forEach(c => {
+            const ci = c.querySelector('input[type="radio"]');
+            if (ci && ci.name === input.name) c.classList.toggle('selected', ci.checked);
+          });
+        });
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }).catch(err => {
+      console.error(err);
+      root.innerHTML = '<div class="container"><div class="alert alert-danger">' + err.message + '</div></div>';
+    });
+  },
+  init() {
+    window.addEventListener('hashchange', () => this.render());
+    this.render();
+  },
+};
 </script>
 <script>
+// ============================================================
+// PAGE: HOME — main menu
+// ============================================================
+Router.add('home', () => {
+  const family = Family.storage.getActive();
+  return `
+    <div class="container">
+      <section class="hero">
+        <div class="hero-emoji">🏸</div>
+        <h1 class="hero-title">ยินดีต้อนรับ</h1>
+        <p class="hero-sub">${family ? 'ครอบครัว ' + family.familyName : 'เลือกเมนูที่ต้องการ'}</p>
+      </section>
+
+      <div class="menu-grid">
+        ${family ? `
+          <div class="menu-item" onclick="Router.go('portal')">
+            <span class="menu-item-icon blue">👨‍👩‍👧</span>
+            <div class="menu-item-text">
+              <div class="menu-item-title">Portal ครอบครัว ${family.familyName}</div>
+              <div class="menu-item-sub">${family.memberUUIDs.length} สมาชิก · ดูคอร์สและประวัติ</div>
+            </div>
+            <span class="menu-item-arrow">→</span>
+          </div>
+        ` : ''}
+
+        <div class="menu-item" onclick="Router.go('kiosk')">
+          <span class="menu-item-icon">📷</span>
+          <div class="menu-item-text">
+            <div class="menu-item-title">เช็คชื่อด้วยใบหน้า</div>
+            <div class="menu-item-sub">สำหรับ iPad หน้าร้าน</div>
+          </div>
+          <span class="menu-item-arrow">→</span>
+        </div>
+
+        ${!family ? `
+          <div class="menu-item" onclick="Router.go('register')">
+            <span class="menu-item-icon coral">✍️</span>
+            <div class="menu-item-text">
+              <div class="menu-item-title">สมัครสมาชิกใหม่</div>
+              <div class="menu-item-sub">ครอบครัวใหม่ · กรอกเบอร์เดียวลูกหลายคน</div>
+            </div>
+            <span class="menu-item-arrow">→</span>
+          </div>
+
+          <div class="menu-item" onclick="Router.go('login')">
+            <span class="menu-item-icon warm">🔐</span>
+            <div class="menu-item-text">
+              <div class="menu-item-title">เข้าสู่ระบบ Portal</div>
+              <div class="menu-item-sub">มีบัญชีอยู่แล้ว · เบอร์โทร + PIN 6 หลัก</div>
+            </div>
+            <span class="menu-item-arrow">→</span>
+          </div>
+        ` : `
+          <div class="menu-item" onclick="Family.storage.clear(); Router.render();">
+            <span class="menu-item-icon">🚪</span>
+            <div class="menu-item-text">
+              <div class="menu-item-title">ออกจากระบบ</div>
+              <div class="menu-item-sub">กลับสู่หน้าแรก</div>
+            </div>
+            <span class="menu-item-arrow">→</span>
+          </div>
+        `}
+      </div>
+
+      <p class="text-center text-xs text-muted mt-6">v3.0 · ระบบจัดการคอร์สแบดมินตัน</p>
+    </div>
+  `;
+});
+
+// ============================================================
+// PAGE: LOGIN — กรอกเบอร์ + PIN
+// ============================================================
+Router.add('login', () => `
+  <div class="container animate-in">
+    <div class="card card-elevated">
+      <div class="text-center mb-4">
+        <div style="font-size:3rem;">🔐</div>
+        <h2>เข้าสู่ระบบ Portal</h2>
+        <p class="text-muted text-sm mt-2">กรอกเบอร์โทรและ PIN ที่ตั้งไว้</p>
+      </div>
+
+      <form onsubmit="event.preventDefault(); doLogin();">
+        <div class="form-group">
+          <label class="form-label form-label-required">เบอร์โทรศัพท์</label>
+          <input type="tel" id="loginPhone" required pattern="[0-9]{9,10}" placeholder="0812345678" autocomplete="tel">
+        </div>
+        <div class="form-group">
+          <label class="form-label form-label-required">PIN 6 หลัก</label>
+          <input type="password" id="loginPin" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="• • • • • •" autocomplete="off">
+        </div>
+        <button class="btn btn-primary btn-block btn-lg mt-4" id="loginBtn">เข้าสู่ระบบ</button>
+      </form>
+
+      <div class="text-center mt-4">
+        <a onclick="Router.go('register')" class="btn btn-ghost btn-sm">ยังไม่มีบัญชี? สมัครใหม่</a>
+      </div>
+    </div>
+
+    <button class="btn btn-ghost btn-block mt-4" onclick="Router.go('home')">← กลับหน้าแรก</button>
+  </div>
+`);
+
+async function doLogin() {
+  const phone = document.getElementById('loginPhone').value.trim();
+  const pin = document.getElementById('loginPin').value.trim();
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = '⏳ ตรวจสอบ...';
+  try {
+    const fam = await Family.verifyPIN(phone, pin);
+    if (!fam) {
+      toast('เบอร์โทรหรือ PIN ไม่ถูกต้อง', 'danger');
+      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+      return;
+    }
+    toast('เข้าสู่ระบบ ' + fam.familyName + ' สำเร็จ', 'success');
+    Router.go('portal');
+  } catch (e) {
+    toast(e.message, 'danger');
+    btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+  }
+}
+
+// ============================================================
+// PAGE: REGISTER — สมัครครอบครัวใหม่
+// Step 1: เบอร์ + ชื่อครอบครัว + PIN
+// Step 2: ข้อมูลสมาชิกคนแรก (หัวหน้าครอบครัว)
+// ============================================================
+let regState = { step: 1, phone: '', familyName: '', pin: '' };
+
+Router.add('register', () => {
+  regState = { step: 1, phone: '', familyName: '', pin: '' };
+  return registerStep1Html();
+});
+
+function registerStep1Html() {
+  return `
+    <div class="container animate-in">
+      <div class="card card-elevated">
+        <h2>สมัครครอบครัวใหม่</h2>
+        <p class="text-muted text-sm mt-2 mb-4">เริ่มต้นด้วยเบอร์โทรและตั้งชื่อครอบครัว</p>
+
+        <div class="stepper">
+          <div class="step active">1. ตั้งค่าครอบครัว</div>
+          <div class="step">2. สมาชิกคนแรก</div>
+        </div>
+
+        <form onsubmit="event.preventDefault(); regNext1();">
+          <div class="form-group">
+            <label class="form-label form-label-required">เบอร์โทรครอบครัว</label>
+            <input type="tel" id="regPhone" required pattern="[0-9]{9,10}" placeholder="0812345678" autocomplete="tel">
+            <p class="form-hint">ใช้เบอร์เดียวสำหรับทั้งครอบครัว</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label form-label-required">ชื่อครอบครัว</label>
+            <input type="text" id="regFamilyName" required placeholder="เช่น ใจดี · บ้านโอ๊ต · The Smiths" maxlength="40">
+            <p class="form-hint">ตั้งชื่อให้สนุก ไว้ใช้เรียกในระบบ</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label form-label-required">PIN 6 หลัก</label>
+            <input type="password" id="regPin1" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="• • • • • •" autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label form-label-required">ยืนยัน PIN 6 หลัก</label>
+            <input type="password" id="regPin2" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="• • • • • •" autocomplete="off">
+            <p class="form-hint">กรอกซ้ำเพื่อยืนยัน</p>
+          </div>
+
+          <button class="btn btn-primary btn-block btn-lg mt-4">ถัดไป →</button>
+        </form>
+      </div>
+
+      <button class="btn btn-ghost btn-block mt-4" onclick="Router.go('home')">← กลับหน้าแรก</button>
+    </div>
+  `;
+}
+
+function regNext1() {
+  const phone = document.getElementById('regPhone').value.trim();
+  const familyName = document.getElementById('regFamilyName').value.trim();
+  const pin1 = document.getElementById('regPin1').value.trim();
+  const pin2 = document.getElementById('regPin2').value.trim();
+
+  if (pin1 !== pin2) { toast('PIN ทั้งสองครั้งไม่ตรงกัน', 'danger'); return; }
+  if (Family.storage.get(phone)) {
+    toast('เบอร์นี้มีบัญชีอยู่แล้ว · เข้าสู่ระบบแทน', 'warning');
+    setTimeout(() => Router.go('login'), 1200);
+    return;
+  }
+
+  regState = { step: 2, phone, familyName, pin: pin1 };
+  document.getElementById('app').innerHTML = registerStep2Html();
+  // re-bind radios
+  Router.render = Router.render; // noop
+  document.querySelectorAll('.radio-card').forEach(card => {
+    const input = card.querySelector('input[type="radio"]');
+    if (!input) return;
+    if (input.checked) card.classList.add('selected');
+    input.addEventListener('change', () => {
+      document.querySelectorAll('.radio-card').forEach(c => {
+        const ci = c.querySelector('input[type="radio"]');
+        if (ci && ci.name === input.name) c.classList.toggle('selected', ci.checked);
+      });
+    });
+  });
+}
+
+function registerStep2Html() {
+  return `
+    <div class="container animate-in">
+      <div class="card card-elevated">
+        <h2>ข้อมูลสมาชิกคนแรก</h2>
+        <p class="text-muted text-sm mt-2 mb-4">คนแรกจะเป็นหัวหน้าครอบครัว (ปกติคือพ่อหรือแม่)</p>
+
+        <div class="stepper">
+          <div class="step done">✓ ตั้งค่าครอบครัว</div>
+          <div class="step active">2. สมาชิกคนแรก</div>
+        </div>
+
+        <form onsubmit="event.preventDefault(); regFinalize();">
+          <div class="form-group">
+            <label class="form-label form-label-required">ชื่อจริง</label>
+            <input type="text" id="m_FirstName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label-required">นามสกุล</label>
+            <input type="text" id="m_LastName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ชื่อเล่น</label>
+            <input type="text" id="m_Nickname">
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label-required">วันเดือนปีเกิด</label>
+            <input type="date" id="m_DOB" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">เพศ</label>
+            <div class="radio-group">
+              <label class="radio-card"><input type="radio" name="Gender" value="male"> ชาย</label>
+              <label class="radio-card"><input type="radio" name="Gender" value="female"> หญิง</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label-required">ประเภทลูกค้า</label>
+            <div class="radio-group">
+              <label class="radio-card"><input type="radio" name="CustomerType" value="thai" checked> 🇹🇭 คนไทย</label>
+              <label class="radio-card"><input type="radio" name="CustomerType" value="foreigner"> 🌍 ต่างชาติ (x2)</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">โรคประจำตัว / แพ้อาหาร</label>
+            <textarea id="m_MedicalNotes" placeholder="เช่น แพ้ถั่ว, โรคหอบหืด — ไว้แจ้งโค้ช"></textarea>
+          </div>
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="consent" required>
+            <label for="consent">
+              <strong>ยินยอม PDPA</strong><br>
+              <span class="text-muted text-sm">ข้าพเจ้ายินยอมให้เก็บข้อมูลส่วนตัวรวมถึงข้อมูลใบหน้า เพื่อใช้ในระบบเช็คชื่อและการจัดการคอร์ส · ข้อมูลจะไม่ถูกเผยแพร่</span>
+            </label>
+          </div>
+
+          <button class="btn btn-primary btn-block btn-lg mt-4" id="regFinalBtn">✓ สมัครครอบครัว</button>
+        </form>
+      </div>
+
+      <button class="btn btn-ghost btn-block mt-4" onclick="regState.step=1; document.getElementById('app').innerHTML = registerStep1Html();">← ย้อนกลับ</button>
+    </div>
+  `;
+}
+
+async function regFinalize() {
+  const btn = document.getElementById('regFinalBtn');
+  btn.disabled = true; btn.textContent = '⏳ กำลังสมัคร...';
+
+  const gender = document.querySelector('input[name="Gender"]:checked');
+  const custType = document.querySelector('input[name="CustomerType"]:checked');
+
+  const memberData = {
+    FirstName: document.getElementById('m_FirstName').value.trim(),
+    LastName: document.getElementById('m_LastName').value.trim(),
+    Nickname: document.getElementById('m_Nickname').value.trim(),
+    DOB: document.getElementById('m_DOB').value,
+    Gender: gender ? gender.value : '',
+    Phone: regState.phone,
+    CustomerType: custType ? custType.value : 'thai',
+    ParentPhone: regState.phone,
+    ParentName: regState.familyName,
+    MedicalNotes: document.getElementById('m_MedicalNotes').value.trim(),
+  };
+
+  try {
+    const result = await api.createMember(memberData);
+    const family = await Family.createFamily(regState.phone, regState.familyName, regState.pin);
+    Family.addMemberToFamily(regState.phone, result.UUID, true);
+
+    document.getElementById('app').innerHTML = `
+      <div class="container animate-in">
+        <div class="card card-elevated text-center">
+          <div style="font-size:4rem;margin-bottom:12px;">🎉</div>
+          <h2>สมัครครอบครัวสำเร็จ!</h2>
+          <p class="text-muted mt-2">ยินดีต้อนรับ ครอบครัว <strong>${family.familyName}</strong></p>
+          <div class="card mt-4" style="background: var(--teal-50); border-color: var(--teal-100); padding: 18px;">
+            <p class="text-sm text-muted">User ID ของหัวหน้าครอบครัว</p>
+            <p style="font-size:2.25rem;font-weight:700;color:var(--teal-700);letter-spacing:0.05em;margin:4px 0;">${result.DisplayID}</p>
+            <p class="text-xs text-muted">${memberData.FirstName} ${memberData.LastName}</p>
+          </div>
+          <div class="alert alert-info mt-4" style="text-align:left;">
+            <span>💡</span>
+            <div><strong>ขั้นตอนถัดไป:</strong><br>
+            ลงทะเบียนใบหน้าเพื่อสแกนเช็คชื่อได้สะดวก หรือไว้ทำทีหลังก็ได้</div>
+          </div>
+          <div class="flex flex-col gap-2 mt-4">
+            <button class="btn btn-primary btn-block" onclick="Router.go('face-register', {uuid: '${result.UUID}'})">🎭 ลงทะเบียนใบหน้าเลย</button>
+            <button class="btn btn-block" onclick="Router.go('portal')">ไปที่ Portal (ทำทีหลัง)</button>
+          </div>
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    toast('เกิดข้อผิดพลาด: ' + e.message, 'danger');
+    btn.disabled = false; btn.textContent = '✓ สมัครครอบครัว';
+  }
+}
+
+// ============================================================
+// PAGE: PORTAL — ดูสมาชิกทั้งครอบครัว
+// ============================================================
+Router.add('portal', async () => {
+  const family = Family.storage.getActive();
+  if (!family) { Router.go('login'); return ''; }
+
+  // Update header badge
+  setTimeout(() => {
+    const el = document.getElementById('familyBadge');
+    if (el) el.innerHTML = `<span class="pill pill-info">👨‍👩‍👧 ${family.familyName}</span>`;
+  }, 0);
+
+  let members = [];
+  try {
+    members = await Family.loadFamilyMembers(family);
+  } catch (e) {
+    return `<div class="container"><div class="alert alert-danger">${e.message}</div></div>`;
+  }
+
+  const memberCards = await Promise.all(members.map(async (m) => {
+    let enrollments = [];
+    try { enrollments = await api.getActiveEnrollments(m.UUID); } catch (e) {}
+    const hasFace = !!m.FaceDescriptors;
+    const isHead = family.headUUID === m.UUID;
+    const initials = ((m.Nickname || m.FirstName || '?').slice(0, 1) + (m.LastName || '').slice(0, 1)).toUpperCase();
+
+    const enrHtml = enrollments.length === 0 ?
+      '<p class="text-muted text-sm">ยังไม่มีคอร์ส active</p>' :
+      enrollments.map(e => {
+        const warn = e.RemainingSessions <= 2;
+        const pct = e.TotalSessions > 0 ? (e.UsedSessions / e.TotalSessions * 100) : 0;
+        return `<div class="mt-3">
+          <div class="flex justify-between items-center">
+            <div class="text-sm" style="font-weight:600;">${e.CourseName}</div>
+            <div style="font-weight:700;color:${warn ? 'var(--coral-600)' : 'var(--teal-600)'};">${e.RemainingSessions}<span class="text-muted text-sm" style="font-weight:500;">/${e.TotalSessions}</span></div>
+          </div>
+          <div class="progress-bar"><div class="progress-bar-fill ${warn?'warning':''}" style="width:${pct}%;"></div></div>
+          <div class="text-xs text-muted">หมด ${e.ExpiryDate} · เหลือ ${e.DaysLeft} วัน</div>
+        </div>`;
+      }).join('');
+
+    return `
+      <div class="member-card ${isHead ? 'head' : ''}">
+        <div class="member-card-header">
+          <div class="member-avatar">${initials}</div>
+          <div style="flex:1;">
+            <div class="member-name">${m.Nickname || m.FirstName} ${m.LastName || ''}
+              ${isHead ? '<span class="pill pill-info" style="margin-left:6px;">หัวหน้าครอบครัว</span>' : ''}
+            </div>
+            <div class="member-id">${m.DisplayID}</div>
+          </div>
+          <span class="pill ${hasFace ? 'pill-success' : 'pill-warning'}">${hasFace ? '✓ ใบหน้า' : '⚠ ยังไม่ลง'}</span>
+        </div>
+        ${enrHtml}
+        <div class="flex gap-2 mt-4">
+          ${!hasFace ? `<button class="btn btn-primary btn-sm flex-1" onclick="Router.go('face-register', {uuid: '${m.UUID}'})">🎭 ลงใบหน้า</button>` : ''}
+        </div>
+      </div>
+    `;
+  }));
+
+  return `
+    <div class="container animate-in">
+      <div class="text-center mb-4">
+        <p class="text-muted text-sm">👨‍👩‍👧 ครอบครัว</p>
+        <h2>${family.familyName}</h2>
+        <p class="text-muted text-sm">${family.phone}</p>
+      </div>
+
+      ${memberCards.join('')}
+
+      <button class="add-member-btn" onclick="Router.go('add-member')">
+        <span style="font-size:1.25rem;">➕</span> เพิ่มสมาชิกในครอบครัว
+      </button>
+
+      <div class="flex gap-2 mt-6">
+        <button class="btn flex-1" onclick="Router.go('kiosk')">📷 ไป Kiosk</button>
+        <button class="btn btn-ghost flex-1" onclick="Family.storage.clear(); Router.go('home');">ออกจากระบบ</button>
+      </div>
+    </div>
+  `;
+});
+
+// ============================================================
+// PAGE: ADD-MEMBER — เพิ่มสมาชิกในครอบครัวเดียวกัน
+// ============================================================
+Router.add('add-member', () => {
+  const family = Family.storage.getActive();
+  if (!family) { Router.go('login'); return ''; }
+
+  return `
+    <div class="container animate-in">
+      <div class="card card-elevated">
+        <h2>เพิ่มสมาชิกใหม่</h2>
+        <p class="text-muted text-sm mt-2 mb-4">ในครอบครัว <strong>${family.familyName}</strong> (${family.phone})</p>
+
+        <form onsubmit="event.preventDefault(); addMemberSubmit();">
+          <div class="form-group">
+            <label class="form-label form-label-required">ชื่อจริง</label>
+            <input type="text" id="am_FirstName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label-required">นามสกุล</label>
+            <input type="text" id="am_LastName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ชื่อเล่น</label>
+            <input type="text" id="am_Nickname">
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label-required">วันเดือนปีเกิด</label>
+            <input type="date" id="am_DOB" required>
+            <p class="form-hint">ใช้คำนวณว่าเป็นเด็กหรือผู้ใหญ่</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">เพศ</label>
+            <div class="radio-group">
+              <label class="radio-card"><input type="radio" name="Gender" value="male"> ชาย</label>
+              <label class="radio-card"><input type="radio" name="Gender" value="female"> หญิง</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">โรคประจำตัว / แพ้อาหาร</label>
+            <textarea id="am_MedicalNotes"></textarea>
+          </div>
+          <button class="btn btn-primary btn-block btn-lg mt-4" id="addMemberBtn">✓ เพิ่มสมาชิก</button>
+        </form>
+      </div>
+
+      <button class="btn btn-ghost btn-block mt-4" onclick="Router.go('portal')">← กลับ Portal</button>
+    </div>
+  `;
+});
+
+async function addMemberSubmit() {
+  const family = Family.storage.getActive();
+  if (!family) return Router.go('login');
+  const btn = document.getElementById('addMemberBtn');
+  btn.disabled = true; btn.textContent = '⏳ กำลังเพิ่ม...';
+
+  const gender = document.querySelector('input[name="Gender"]:checked');
+
+  const data = {
+    FirstName: document.getElementById('am_FirstName').value.trim(),
+    LastName: document.getElementById('am_LastName').value.trim(),
+    Nickname: document.getElementById('am_Nickname').value.trim(),
+    DOB: document.getElementById('am_DOB').value,
+    Gender: gender ? gender.value : '',
+    Phone: family.phone,
+    ParentPhone: family.phone,
+    ParentName: family.familyName,
+    CustomerType: 'thai',
+    MedicalNotes: document.getElementById('am_MedicalNotes').value.trim(),
+  };
+
+  try {
+    const result = await api.createMember(data);
+    Family.addMemberToFamily(family.phone, result.UUID, false);
+    toast('เพิ่ม ' + (data.Nickname || data.FirstName) + ' สำเร็จ! ID: ' + result.DisplayID, 'success');
+
+    document.getElementById('app').innerHTML = `
+      <div class="container animate-in">
+        <div class="card card-elevated text-center">
+          <div style="font-size:3rem;">🎉</div>
+          <h2>เพิ่มสมาชิกสำเร็จ</h2>
+          <div class="card mt-4" style="background: var(--teal-50);">
+            <p class="text-muted text-sm">User ID</p>
+            <p style="font-size:1.75rem;font-weight:700;color:var(--teal-700);">${result.DisplayID}</p>
+            <p>${data.FirstName} ${data.LastName}${data.Nickname ? ' ('+data.Nickname+')' : ''}</p>
+          </div>
+          <div class="flex flex-col gap-2 mt-4">
+            <button class="btn btn-primary btn-block" onclick="Router.go('face-register', {uuid: '${result.UUID}'})">🎭 ลงใบหน้าให้ ${data.Nickname || data.FirstName}</button>
+            <button class="btn btn-block" onclick="Router.go('portal')">กลับ Portal</button>
+          </div>
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    toast(e.message, 'danger');
+    btn.disabled = false; btn.textContent = '✓ เพิ่มสมาชิก';
+  }
+}
+
+// ============================================================
+// PAGE: FACE-REGISTER — ลงทะเบียนใบหน้า
+// ============================================================
+let faceState = { member: null, step: 1, samples: { front: [], left: [], right: [] }, capturing: false };
+
+Router.add('face-register', async (params) => {
+  if (!params.uuid) {
+    return `<div class="container"><div class="alert alert-warning">ไม่พบ UUID · กลับไปเลือกสมาชิก</div>
+      <button class="btn btn-ghost btn-block mt-4" onclick="Router.go('portal')">← กลับ Portal</button></div>`;
+  }
+  try {
+    faceState.member = await api.getMember(params.uuid);
+    faceState.step = 1;
+    faceState.samples = { front: [], left: [], right: [] };
+    setTimeout(() => initFaceCamera(), 100);
+    return faceRegisterHtml();
+  } catch (e) {
+    return `<div class="container"><div class="alert alert-danger">${e.message}</div></div>`;
+  }
+});
+
+function faceRegisterHtml() {
+  const m = faceState.member;
+  const stepLabels = ['', 'หน้าตรง', 'หันซ้าย ~30°', 'หันขวา ~30°'];
+  return `
+    <div class="container animate-in">
+      <div class="card card-elevated">
+        <p class="text-muted text-sm">ลงทะเบียนใบหน้าให้</p>
+        <h2>${m.Nickname || m.FirstName} <span class="text-muted text-sm" style="font-weight:500;">· ${m.DisplayID}</span></h2>
+
+        <div class="stepper">
+          <div class="step ${faceState.step >= 1 ? (faceState.step > 1 ? 'done' : 'active') : ''}">1. หน้าตรง</div>
+          <div class="step ${faceState.step >= 2 ? (faceState.step > 2 ? 'done' : 'active') : ''}">2. หันซ้าย</div>
+          <div class="step ${faceState.step >= 3 ? 'active' : ''}">3. หันขวา</div>
+        </div>
+
+        <div class="camera-card" style="aspect-ratio:1;max-width:380px;margin:0 auto;">
+          <video id="faceVideo" autoplay muted playsinline></video>
+          <canvas id="faceOverlay"></canvas>
+        </div>
+
+        <p id="faceInstruction" class="text-center mt-4" style="font-size:1.05rem;font-weight:600;">กรุณา${stepLabels[faceState.step] || 'หน้าตรง'}</p>
+        <div class="progress-bar mt-3"><div class="progress-bar-fill" id="faceProgress" style="width:0%;"></div></div>
+        <p class="text-muted text-sm text-center mt-2" id="faceLabel"></p>
+
+        <div id="faceResult"></div>
+      </div>
+
+      <button class="btn btn-ghost btn-block mt-4" onclick="faceState.capturing=false; Router.go(Family.storage.getActive() ? 'portal' : 'home');">← ยกเลิก</button>
+    </div>
+  `;
+}
+
+async function initFaceCamera() {
+  try {
+    await Face.loadModels();
+    const v = document.getElementById('faceVideo');
+    const c = document.getElementById('faceOverlay');
+    if (!v) return;
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+    v.srcObject = stream;
+    await new Promise(r => v.onloadedmetadata = r);
+    c.width = v.videoWidth; c.height = v.videoHeight;
+    faceState.capturing = true;
+    faceCaptureLoop();
+  } catch (e) {
+    toast('เปิดกล้องไม่ได้: ' + e.message, 'danger');
+  }
+}
+
+async function faceCaptureLoop() {
+  if (!faceState.capturing) return;
+  const v = document.getElementById('faceVideo');
+  const c = document.getElementById('faceOverlay');
+  if (!v || !c) return;
+  try {
+    const detection = await Face.detectFaceWithDescriptor(v);
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, c.width, c.height);
+    if (detection) {
+      const box = detection.detection.box;
+      ctx.strokeStyle = '#14B8A6';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(box.x, box.y, box.width, box.height);
+
+      const stepKeys = ['', 'front', 'left', 'right'];
+      const key = stepKeys[faceState.step];
+      faceState.samples[key].push(Array.from(detection.descriptor));
+      const n = faceState.samples[key].length;
+      const pct = (n / CONFIG.FACE_DESCRIPTOR_SAMPLES) * 100;
+      const pg = document.getElementById('faceProgress');
+      if (pg) pg.style.width = pct + '%';
+      const lb = document.getElementById('faceLabel');
+      if (lb) lb.textContent = `เก็บตัวอย่าง ${n} / ${CONFIG.FACE_DESCRIPTOR_SAMPLES}`;
+
+      if (n >= CONFIG.FACE_DESCRIPTOR_SAMPLES) {
+        faceState.capturing = false;
+        if (faceState.step < 3) {
+          faceState.step++;
+          await new Promise(r => setTimeout(r, 1200));
+          document.getElementById('app').innerHTML = faceRegisterHtml();
+          setTimeout(() => initFaceCamera(), 100);
+        } else {
+          submitFaceData();
+        }
+        return;
+      }
+    }
+  } catch (e) { console.error(e); }
+  setTimeout(faceCaptureLoop, 300);
+}
+
+async function submitFaceData() {
+  document.getElementById('faceInstruction').textContent = '⏳ กำลังบันทึก...';
+  document.getElementById('faceLabel').textContent = '';
+  try {
+    const descriptors = {
+      front: Face.averageDescriptors(faceState.samples.front),
+      left:  Face.averageDescriptors(faceState.samples.left),
+      right: Face.averageDescriptors(faceState.samples.right),
+    };
+    await api.registerFace(faceState.member.UUID, descriptors);
+    const v = document.getElementById('faceVideo');
+    if (v && v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
+    document.getElementById('faceResult').innerHTML = `
+      <div class="alert alert-success mt-4 animate-in">
+        <span style="font-size:1.5rem;">🎉</span>
+        <div><strong>ลงทะเบียนใบหน้าสำเร็จ!</strong><br>
+        <span class="text-sm">ใช้สแกนหน้าเช็คชื่อได้แล้ว</span></div>
+      </div>
+      <button class="btn btn-primary btn-block mt-4" onclick="Router.go(Family.storage.getActive() ? 'portal' : 'home')">${Family.storage.getActive() ? 'กลับ Portal' : 'กลับหน้าหลัก'}</button>
+    `;
+  } catch (e) {
+    document.getElementById('faceResult').innerHTML = `<div class="alert alert-danger mt-4"><span>✗</span><div>${e.message}</div></div>`;
+  }
+}
+
+// ============================================================
+// PAGE: KIOSK — เช็คชื่อ
+// ============================================================
+let kioskState = { candidates: [], detecting: false, coolingDown: false, todayAttendance: [] };
+
+Router.add('kiosk', () => {
+  setTimeout(() => initKiosk(), 100);
+  return `
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;max-width:1100px;margin:0 auto;padding:20px;" id="kioskGrid">
+      <div class="camera-card">
+        <video id="kioskVideo" autoplay muted playsinline></video>
+        <canvas id="kioskOverlay"></canvas>
+        <div class="camera-overlay"><span class="status-pill" id="kioskCamStatus">🎥 กำลังเริ่ม...</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card" id="kioskStatusCard">
+          <h3 id="kioskTitle">⏳ กำลังเตรียมระบบ</h3>
+          <p class="text-muted text-sm mt-2" id="kioskMsg">โหลด face recognition...</p>
+          <div class="progress-bar mt-3"><div class="progress-bar-fill" id="kioskProgress" style="width:0%;"></div></div>
+        </div>
+        <div class="card animate-in" id="kioskMemberCard" style="display:none;">
+          <p class="text-muted text-sm">ยินดีต้อนรับ</p>
+          <h2 id="kioskMemberName" class="mt-2"></h2>
+          <p class="text-muted text-sm mt-2" id="kioskMemberId"></p>
+        </div>
+        <div class="card animate-in" id="kioskCoursesCard" style="display:none;">
+          <h3 class="mb-3">เลือกคอร์ส</h3>
+          <div id="kioskCoursesList"></div>
+        </div>
+        <div id="kioskResultArea"></div>
+        <div class="card">
+          <div class="flex justify-between items-center mb-3">
+            <h3>📋 มาเรียนวันนี้</h3>
+            <span class="pill pill-stone" id="kioskTodayCount">0 คน</span>
+          </div>
+          <div id="kioskRecentList" style="max-height:240px;overflow-y:auto;"><p class="text-muted text-sm">กำลังโหลด...</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <button class="btn btn-ghost btn-block" onclick="stopKiosk(); Router.go('home');">← กลับหน้าแรก</button>
+    </div>
+    <style>@media (max-width:768px){#kioskGrid{grid-template-columns:1fr !important;padding:12px !important;}}</style>
+  `;
+});
+
+function stopKiosk() {
+  kioskState.coolingDown = true;
+  const v = document.getElementById('kioskVideo');
+  if (v && v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
+}
+
+async function initKiosk() {
+  try {
+    setKioskStatus('⏳ โหลดโมเดล...', 'face recognition model');
+    setKioskProgress(15);
+    await Face.loadModels();
+    setKioskProgress(50);
+    setKioskStatus('⏳ โหลดข้อมูลสมาชิก...');
+    kioskState.candidates = await api.getMembersForFaceMatch();
+    setKioskProgress(75);
+    setKioskStatus('⏳ เปิดกล้อง...');
+    const v = document.getElementById('kioskVideo');
+    const c = document.getElementById('kioskOverlay');
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
+    });
+    v.srcObject = stream;
+    await new Promise(r => v.onloadedmetadata = r);
+    c.width = v.videoWidth; c.height = v.videoHeight;
+    setKioskProgress(100);
+    setKioskStatus('✓ พร้อมใช้งาน', 'สมาชิก ' + kioskState.candidates.length + ' คน · มองเข้ากล้อง');
+    const cs = document.getElementById('kioskCamStatus'); if (cs) cs.textContent = '👀 กำลังตรวจจับ...';
+    kioskLoadRecent();
+    kioskState.detectInterval = setInterval(kioskLoadRecent, 30000);
+    kioskDetectLoop();
+  } catch (e) {
+    setKioskStatus('✗ เกิดข้อผิดพลาด', e.message, true);
+  }
+}
+
+function setKioskStatus(title, msg, isErr) {
+  const t = document.getElementById('kioskTitle'); if (t) t.textContent = title;
+  const m = document.getElementById('kioskMsg'); if (m) m.textContent = msg || '';
+  const c = document.getElementById('kioskStatusCard');
+  if (c) c.style.borderColor = isErr ? 'var(--danger)' : '';
+}
+function setKioskProgress(pct) {
+  const p = document.getElementById('kioskProgress'); if (p) p.style.width = pct + '%';
+}
+
+async function kioskLoadRecent() {
+  try {
+    kioskState.todayAttendance = await api.getAttendanceToday();
+    const list = document.getElementById('kioskRecentList');
+    const cnt = document.getElementById('kioskTodayCount');
+    if (cnt) cnt.textContent = kioskState.todayAttendance.length + ' คน';
+    if (!list) return;
+    if (kioskState.todayAttendance.length === 0) {
+      list.innerHTML = '<p class="text-muted text-sm">ยังไม่มีใครมาเรียน</p>';
+      return;
+    }
+    list.innerHTML = kioskState.todayAttendance.slice(0, 12).map(r => {
+      const tm = new Date(r.CheckInDateTime).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+      const pillCls = r.Role === 'student' ? 'pill-info' : 'pill-success';
+      const roleLabel = r.Role === 'student' ? 'นักเรียน' : (r.Role === 'staff' ? 'ผู้ช่วย' : 'admin');
+      return `<div class="flex items-center gap-3" style="padding:10px 0;border-bottom:1px solid var(--stone-200);font-size:14px;">
+        <span style="font-variant-numeric:tabular-nums;color:var(--stone-500);font-size:13px;min-width:50px;">${tm}</span>
+        <span style="flex:1;font-weight:500;">${r.Name}</span>
+        <span class="pill ${pillCls}">${roleLabel}</span>
+      </div>`;
+    }).join('');
+  } catch (e) { console.error(e); }
+}
+
+async function kioskDetectLoop() {
+  if (kioskState.coolingDown) { setTimeout(kioskDetectLoop, 300); return; }
+  if (!kioskState.detecting) {
+    kioskState.detecting = true;
+    try {
+      const v = document.getElementById('kioskVideo');
+      const c = document.getElementById('kioskOverlay');
+      if (!v || !c) { kioskState.detecting = false; return; }
+      const detection = await Face.detectFaceWithDescriptor(v);
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, c.width, c.height);
+      if (detection) {
+        const box = detection.detection.box;
+        ctx.strokeStyle = '#14B8A6'; ctx.lineWidth = 3;
+        ctx.strokeRect(box.x, box.y, box.width, box.height);
+        const match = Face.computeMatch(detection.descriptor, kioskState.candidates);
+        if (match) await kioskOnMatch(match);
+      }
+    } catch (e) { console.error(e); }
+    finally { kioskState.detecting = false; }
+  }
+  setTimeout(kioskDetectLoop, 300);
+}
+
+async function kioskOnMatch(match) {
+  kioskState.coolingDown = true;
+  const cs = document.getElementById('kioskCamStatus'); if (cs) cs.textContent = '✓ ' + (match.member.Nickname || match.member.FirstName);
+  const sc = document.getElementById('kioskStatusCard'); if (sc) sc.style.display = 'none';
+  const mc = document.getElementById('kioskMemberCard'); if (mc) mc.style.display = 'block';
+  const mn = document.getElementById('kioskMemberName');
+  if (mn) mn.textContent = (match.member.Nickname || match.member.FirstName);
+  const roleLabel = match.member.Role === 'student' ? 'นักเรียน' : match.member.Role === 'staff' ? 'ผู้ช่วยสอน' : 'แอดมิน';
+  const mi = document.getElementById('kioskMemberId');
+  if (mi) mi.textContent = match.member.DisplayID + ' · ' + roleLabel;
+
+  if (match.member.Role === 'staff' || match.member.Role === 'admin') {
+    await kioskCheckInStaff(match.member);
+  } else {
+    await kioskShowCourses(match.member);
+  }
+}
+
+async function kioskShowCourses(member) {
+  const card = document.getElementById('kioskCoursesCard');
+  if (card) card.style.display = 'block';
+  const list = document.getElementById('kioskCoursesList');
+  if (!list) return;
+  list.innerHTML = '<p class="text-muted text-sm">กำลังโหลดคอร์ส...</p>';
+  try {
+    const enrollments = await api.getActiveEnrollments(member.UUID);
+    if (enrollments.length === 0) {
+      list.innerHTML = '<div class="alert alert-warning"><span>⚠️</span><div>ยังไม่มีคอร์สที่ active · ติดต่อแอดมิน</div></div>';
+      setTimeout(kioskReset, 5000);
+      return;
+    }
+    list.innerHTML = '';
+    let allCheckedIn = true;
+    enrollments.forEach(e => {
+      const alreadyCheckedIn = kioskState.todayAttendance.some(a =>
+        a.PersonUUID === member.UUID && a.CourseUUID === e.CourseUUID && !a.IsVoided);
+      if (!alreadyCheckedIn) allCheckedIn = false;
+      const div = document.createElement('div');
+      div.className = 'list-item' + (alreadyCheckedIn ? ' disabled' : '');
+      const warn = e.RemainingSessions <= 2;
+      const pct = e.TotalSessions > 0 ? (e.UsedSessions / e.TotalSessions * 100) : 0;
+      div.innerHTML = `
+        <div class="list-item-main">
+          <div class="list-item-title">${e.CourseName || '-'}${alreadyCheckedIn ? ' <span class="pill pill-success" style="margin-left:8px;">✓ มาแล้ว</span>' : ''}</div>
+          <div class="list-item-sub">หมด ${e.ExpiryDate || '-'} · เหลือ ${e.DaysLeft} วัน</div>
+          <div class="progress-bar"><div class="progress-bar-fill ${warn?'warning':''}" style="width:${pct}%;"></div></div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:1.75rem;font-weight:700;color:${warn?'var(--coral-600)':'var(--teal-600)'};">${e.RemainingSessions}</div>
+          <div class="text-xs text-muted">เหลือ / ${e.TotalSessions}</div>
+        </div>
+      `;
+      if (!alreadyCheckedIn) div.onclick = () => kioskDoCheckIn(member, e);
+      list.appendChild(div);
+    });
+    if (allCheckedIn) {
+      const info = document.createElement('div');
+      info.className = 'alert alert-info mt-3';
+      info.innerHTML = '<span>ⓘ</span><div>มาเรียนทุกคอร์สแล้ววันนี้</div>';
+      list.appendChild(info);
+      setTimeout(kioskReset, 5000);
+    }
+  } catch (err) {
+    list.innerHTML = `<div class="alert alert-danger"><span>✗</span><div>${err.message}</div></div>`;
+    setTimeout(kioskReset, 5000);
+  }
+}
+
+async function kioskCheckInStaff(member) {
+  const alreadyIn = kioskState.todayAttendance.some(a =>
+    a.PersonUUID === member.UUID && a.Role !== 'student' && !a.IsVoided);
+  if (alreadyIn) {
+    const t = kioskState.todayAttendance.find(a => a.PersonUUID === member.UUID);
+    const time = new Date(t.CheckInDateTime).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('kioskResultArea').innerHTML =
+      `<div class="card animate-in"><div class="alert alert-info"><span>ⓘ</span><div>เข้างานไปแล้ววันนี้ เวลา ${time}</div></div></div>`;
+    setTimeout(kioskReset, 4000);
+    return;
+  }
+  try {
+    await api.checkIn(member.UUID, null, null, 'face');
+    const tm = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('kioskResultArea').innerHTML =
+      `<div class="card animate-in"><div class="alert alert-success"><span>🎉</span><div><strong>มาสนุกแล้ว!</strong> เวลา ${tm}</div></div></div>`;
+    kioskLoadRecent();
+    setTimeout(kioskReset, 4000);
+  } catch (e) { kioskShowError(e.message); }
+}
+
+async function kioskDoCheckIn(member, enrollment) {
+  document.getElementById('kioskCoursesCard').style.display = 'none';
+  try {
+    const result = await api.checkIn(member.UUID, enrollment.UUID, null, 'face');
+    const warnHtml = (result.warnings || []).map(w =>
+      `<div class="alert alert-warning mt-2"><span>⚠️</span><div>${w.text}</div></div>`).join('');
+    document.getElementById('kioskResultArea').innerHTML = `
+      <div class="card animate-in">
+        <div class="alert alert-success"><span>🎉</span><div><strong>มาสนุกแล้ว!</strong> ${result.enrollment.CourseName}</div></div>
+        <div class="flex items-center justify-between mt-3" style="background: var(--teal-50); padding: 16px; border-radius: var(--r-md);">
+          <div>
+            <p class="text-sm text-muted">เหลือ</p>
+            <p style="font-size:2rem;font-weight:700;color:var(--teal-700);line-height:1;">${result.enrollment.Remaining} <span style="font-size:1rem;color:var(--stone-500);font-weight:500;">/ ${result.enrollment.Total} ครั้ง</span></p>
+          </div>
+          <div style="text-align:right;">
+            <p class="text-sm text-muted">หมดอายุ</p>
+            <p style="font-weight:600;">${result.enrollment.ExpiryDate}</p>
+            <p class="text-xs text-muted">เหลือ ${result.enrollment.DaysLeft} วัน</p>
+          </div>
+        </div>
+        ${warnHtml}
+      </div>
+    `;
+    kioskLoadRecent();
+    setTimeout(kioskReset, 6000);
+  } catch (e) { kioskShowError(e.message); }
+}
+
+function kioskShowError(msg) {
+  document.getElementById('kioskResultArea').innerHTML =
+    `<div class="card"><div class="alert alert-danger"><span>✗</span><div>${msg}</div></div></div>`;
+  setTimeout(kioskReset, 5000);
+}
+
+function kioskReset() {
+  kioskState.coolingDown = false;
+  document.getElementById('kioskStatusCard').style.display = 'block';
+  document.getElementById('kioskMemberCard').style.display = 'none';
+  document.getElementById('kioskCoursesCard').style.display = 'none';
+  document.getElementById('kioskResultArea').innerHTML = '';
+  setKioskStatus('✓ พร้อมใช้งาน', 'สมาชิก ' + kioskState.candidates.length + ' คน · มองเข้ากล้อง');
+  const cs = document.getElementById('kioskCamStatus'); if (cs) cs.textContent = '👀 กำลังตรวจจับ...';
+}
+
+// ============================================================
+// Bootstrap
+// ============================================================
 (async () => {
-  const el = document.getElementById('apiStatus');
+  Router.init();
   try {
     await api.ping();
-    el.className = 'pill pill-success';
-    el.textContent = '✓ ระบบพร้อมใช้';
+    document.getElementById('apiStatus').className = 'pill pill-success';
+    document.getElementById('apiStatus').textContent = '✓ พร้อมใช้';
   } catch (e) {
-    el.className = 'pill pill-danger';
-    el.textContent = '✗ เชื่อมต่อไม่ได้';
-    console.error(e);
+    document.getElementById('apiStatus').className = 'pill pill-danger';
+    document.getElementById('apiStatus').textContent = '✗ ออฟไลน์';
+  }
+  // Update family badge if logged in
+  const fam = Family.storage.getActive();
+  if (fam) {
+    document.getElementById('familyBadge').innerHTML = `<span class="pill pill-info">👨‍👩‍👧 ${fam.familyName}</span>`;
   }
 })();
 </script>
