@@ -2,252 +2,594 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>เช็คชื่อ · ALPHA BADMINTON</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap');
+
 :root {
-  --bg: #ffffff;
-  --bg-2: #f6f8fa;
-  --text: #1a1a1a;
-  --text-2: #6b7280;
-  --text-3: #9ca3af;
-  --border: #e5e7eb;
-  --primary: #1F4E78;
-  --primary-2: #18445f;
-  --primary-50: #ebf2f8;
-  --success: #15803d;
-  --success-bg: #f0fdf4;
-  --warning: #b45309;
-  --warning-bg: #fffbeb;
-  --danger: #b91c1c;
-  --danger-bg: #fef2f2;
-  --info: #0369a1;
-  --info-bg: #f0f9ff;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.05);
+  --teal-50: #F0FDFA;
+  --teal-100: #CCFBF1;
+  --teal-500: #14B8A6;
+  --teal-600: #0D9488;
+  --teal-700: #0F766E;
+  --teal-900: #134E4A;
+  --coral-50: #FFF7ED;
+  --coral-100: #FFEDD5;
+  --coral-500: #F97316;
+  --coral-600: #EA580C;
+  --coral-700: #C2410C;
+  --cream: #FDFBF7;
+  --stone-50: #FAFAF9;
+  --stone-100: #F5F5F4;
+  --stone-200: #E7E5E4;
+  --stone-300: #D6D3D1;
+  --stone-500: #78716C;
+  --stone-700: #44403C;
+  --stone-900: #1C1917;
+  --success: #16A34A;
+  --success-bg: #DCFCE7;
+  --warning: #EA580C;
+  --warning-bg: #FFEDD5;
+  --danger: #DC2626;
+  --danger-bg: #FEE2E2;
+  --info: #0284C7;
+  --info-bg: #E0F2FE;
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04);
+  --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.06);
+  --shadow-lg: 0 12px 32px rgba(28, 25, 23, 0.08);
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-full: 9999px;
 }
-* { box-sizing: border-box; }
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Sarabun", "Noto Sans Thai", sans-serif;
-  background: var(--bg-2);
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.5;
+  font-family: 'IBM Plex Sans Thai', system-ui, -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--stone-900);
+  font-size: 15px;
+  line-height: 1.6;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv11';
 }
-.container { max-width: 880px; margin: 0 auto; padding: 1rem; }
-h1, h2, h3 { font-weight: 500; margin-top: 0; }
-h2 { font-size: 1.25rem; }
-h3 { font-size: 1.05rem; }
-.card {
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-  box-shadow: var(--shadow);
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--stone-900);
 }
-.card + .card { margin-top: 12px; }
-button, .btn {
-  font-family: inherit;
-  font-size: 14px;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  border: 0.5px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  cursor: pointer;
-  transition: all 0.15s;
+h1 { font-size: 1.5rem; line-height: 1.2; }
+h2 { font-size: 1.5rem; line-height: 1.25; font-weight: 700; }
+h3 { font-size: 1.125rem; line-height: 1.4; }
+p { margin: 0; }
+
+/* ===== App Shell ===== */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(253, 251, 247, 0.92);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--stone-200);
+  padding: 14px 20px;
+}
+.app-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--stone-900);
   text-decoration: none;
-  display: inline-block;
+  letter-spacing: -0.01em;
 }
-button:hover, .btn:hover { background: var(--bg-2); }
-button.primary, .btn.primary {
-  background: var(--primary);
+.brand-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--teal-500) 0%, var(--teal-700) 100%);
+  border-radius: 10px;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
+}
+.brand-sub { color: var(--stone-500); font-weight: 500; font-size: 0.85rem; }
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+.container-wide { max-width: 1100px; }
+
+/* ===== Cards ===== */
+.card {
+  background: white;
+  border-radius: var(--r-lg);
+  padding: 24px;
+  border: 1px solid var(--stone-200);
+  box-shadow: var(--shadow-sm);
+}
+.card-elevated {
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+.card + .card { margin-top: 16px; }
+
+/* ===== Buttons ===== */
+.btn {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 20px;
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--stone-200);
+  background: white;
+  color: var(--stone-900);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.btn:hover {
+  border-color: var(--stone-300);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.btn:active { transform: translateY(0); }
+.btn-primary {
+  background: var(--teal-600);
+  border-color: var(--teal-600);
   color: white;
-  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
 }
-button.primary:hover, .btn.primary:hover { background: var(--primary-2); }
-button:disabled, .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary:hover {
+  background: var(--teal-700);
+  border-color: var(--teal-700);
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+}
+.btn-accent {
+  background: var(--coral-500);
+  border-color: var(--coral-500);
+  color: white;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.25);
+}
+.btn-accent:hover {
+  background: var(--coral-600);
+  border-color: var(--coral-600);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
+}
+.btn-ghost {
+  border: none;
+  background: transparent;
+  color: var(--stone-700);
+}
+.btn-ghost:hover {
+  background: var(--stone-100);
+  transform: none;
+  box-shadow: none;
+}
+.btn-block { width: 100%; }
+.btn-sm { padding: 8px 14px; font-size: 13px; min-height: 36px; }
+.btn-lg { padding: 16px 24px; font-size: 16px; min-height: 56px; }
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== Form ===== */
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--stone-700);
+  margin-bottom: 6px;
+}
+.form-label-required::after {
+  content: ' *';
+  color: var(--coral-500);
+}
+.form-hint {
+  font-size: 12px;
+  color: var(--stone-500);
+  margin-top: 4px;
+}
 input, select, textarea {
   font-family: inherit;
-  font-size: 14px;
-  padding: 8px 12px;
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
+  font-size: 15px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-md);
+  background: white;
   width: 100%;
-  color: var(--text);
+  color: var(--stone-900);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-50);
+  border-color: var(--teal-500);
+  box-shadow: 0 0 0 4px var(--teal-50);
 }
-.header {
+textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+
+/* Radio group */
+.radio-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.radio-card {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 12px 1rem;
-  background: var(--bg);
-  border-bottom: 0.5px solid var(--border);
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: white;
 }
-.header h1 { margin: 0; font-size: 1rem; font-weight: 500; color: var(--primary); }
-.muted { color: var(--text-2); font-size: 12px; }
-.badge {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 500;
+.radio-card:hover { border-color: var(--stone-300); }
+.radio-card input { width: auto; margin: 0; }
+.radio-card.selected {
+  border-color: var(--teal-600);
+  background: var(--teal-50);
 }
-.badge-success { background: var(--success-bg); color: var(--success); }
-.badge-warning { background: var(--warning-bg); color: var(--warning); }
-.badge-danger { background: var(--danger-bg); color: var(--danger); }
+
+/* Checkbox */
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  background: var(--stone-50);
+  border-radius: var(--r-md);
+  cursor: pointer;
+}
+.checkbox-row input { width: auto; margin-top: 3px; }
+.checkbox-row label { cursor: pointer; flex: 1; font-size: 14px; line-height: 1.5; }
+
+/* ===== Badge / Pill ===== */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pill-success { background: var(--success-bg); color: var(--success); }
+.pill-warning { background: var(--warning-bg); color: var(--warning); }
+.pill-danger { background: var(--danger-bg); color: var(--danger); }
+.pill-info { background: var(--info-bg); color: var(--info); }
+.pill-stone { background: var(--stone-100); color: var(--stone-700); }
+
+/* ===== Alert ===== */
 .alert {
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  margin: 8px 0;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
   font-size: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
 }
-.alert-success { background: var(--success-bg); color: var(--success); }
-.alert-warning { background: var(--warning-bg); color: var(--warning); }
-.alert-danger { background: var(--danger-bg); color: var(--danger); }
-.alert-info { background: var(--info-bg); color: var(--info); }
-.text-center { text-align: center; }
-.mt-1 { margin-top: 8px; }
-.mt-2 { margin-top: 16px; }
+.alert-success { background: var(--success-bg); color: var(--success); border: 1px solid #BBF7D0; }
+.alert-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid #FED7AA; }
+.alert-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #FECACA; }
+.alert-info { background: var(--info-bg); color: var(--info); border: 1px solid #BAE6FD; }
+
+/* ===== Camera ===== */
 .camera-card {
-  background: #000;
-  border-radius: var(--radius);
+  background: var(--stone-900);
+  border-radius: var(--r-lg);
   overflow: hidden;
   aspect-ratio: 3/4;
   position: relative;
+  box-shadow: var(--shadow-md);
 }
 .camera-card video, .camera-card canvas {
   width: 100%; height: 100%; object-fit: cover;
 }
-.camera-card video {
-  transform: scaleX(-1);
-}
+.camera-card video { transform: scaleX(-1); }
 .camera-card canvas {
   position: absolute; top: 0; left: 0;
   transform: scaleX(-1);
 }
 .camera-overlay {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
+  position: absolute; bottom: 0; left: 0; right: 0;
   background: linear-gradient(transparent, rgba(0,0,0,0.7));
   color: white;
-  padding: 12px;
+  padding: 16px;
   font-size: 13px;
   z-index: 1;
 }
 .status-pill {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(4px);
-  font-size: 11px;
-  font-weight: 500;
-}
-.list-row {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-bottom: 8px;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 12px;
+  font-weight: 600;
 }
-.list-row:hover { background: var(--bg-2); }
+
+/* ===== Stepper ===== */
 .stepper {
   display: flex;
-  gap: 8px;
-  margin: 1rem 0;
+  gap: 4px;
+  margin: 20px 0 24px;
 }
 .step {
   flex: 1;
   text-align: center;
-  padding: 10px;
-  background: var(--bg-2);
-  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  background: var(--stone-100);
+  border-radius: var(--r-md);
   font-size: 13px;
-  opacity: 0.45;
-  transition: all 0.2s;
+  font-weight: 500;
+  color: var(--stone-500);
+  transition: all 0.25s;
 }
 .step.active {
-  background: var(--primary-50);
-  color: var(--primary);
-  opacity: 1;
-  font-weight: 500;
+  background: var(--teal-600);
+  color: white;
+  font-weight: 600;
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
 }
 .step.done {
-  background: var(--success-bg);
-  color: var(--success);
-  opacity: 1;
-}
-progress {
-  width: 100%;
-  height: 8px;
-  border-radius: 4px;
-  overflow: hidden;
-  border: none;
-}
-progress::-webkit-progress-bar { background: var(--bg-2); border-radius: 4px; }
-progress::-webkit-progress-value { background: var(--primary); border-radius: 4px; }
-progress::-moz-progress-bar { background: var(--primary); border-radius: 4px; }
-.back-btn {
-  font-size: 12px;
-  padding: 6px 12px;
+  background: var(--teal-100);
+  color: var(--teal-700);
 }
 
-  .kiosk-layout {
+/* ===== List items (courses, members) ===== */
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: white;
+  border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+.list-item:hover {
+  border-color: var(--teal-500);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.list-item.disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+.list-item-main { flex: 1; min-width: 0; }
+.list-item-title { font-weight: 600; font-size: 15px; margin-bottom: 2px; }
+.list-item-sub { font-size: 12.5px; color: var(--stone-500); }
+
+/* ===== Progress bar (course progress) ===== */
+.progress-bar {
+  height: 6px;
+  background: var(--stone-100);
+  border-radius: var(--r-full);
+  overflow: hidden;
+  margin: 8px 0;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--teal-500);
+  border-radius: var(--r-full);
+  transition: width 0.4s ease;
+}
+.progress-bar-fill.warning { background: var(--coral-500); }
+.progress-bar-fill.danger { background: var(--danger); }
+
+/* ===== Loading skeleton ===== */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--stone-100) 0%, var(--stone-50) 50%, var(--stone-100) 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--r-md);
+}
+
+/* ===== Utilities ===== */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.flex-1 { flex: 1; }
+.text-center { text-align: center; }
+.text-muted { color: var(--stone-500); }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 12px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mt-6 { margin-top: 24px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.w-full { width: 100%; }
+
+/* ===== Mobile tweaks ===== */
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  .app-header { padding: 12px 16px; }
+  .container { padding: 16px; }
+  .card { padding: 18px; border-radius: var(--r-md); }
+  h1 { font-size: 1.25rem; }
+  h2 { font-size: 1.25rem; }
+  .radio-group { grid-template-columns: 1fr; }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in { animation: fadeInUp 0.35s ease-out; }
+
+/* ===== Hero block (used on landing) ===== */
+.hero {
+  text-align: center;
+  padding: 24px 0 12px;
+}
+.hero-emoji {
+  font-size: 3rem;
+  display: inline-block;
+  filter: drop-shadow(0 4px 8px rgba(13, 148, 136, 0.2));
+  margin-bottom: 8px;
+}
+.hero-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  background: linear-gradient(135deg, var(--stone-900) 0%, var(--teal-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-sub { color: var(--stone-500); font-size: 1rem; margin-top: 6px; }
+
+/* ===== Menu cards (landing) ===== */
+.menu-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: white;
+  border: 1.5px solid var(--stone-200);
+  border-radius: var(--r-lg);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
+}
+.menu-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--teal-500);
+  box-shadow: var(--shadow-md);
+}
+.menu-item.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.menu-item-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--teal-50);
+}
+.menu-item-icon.coral { background: var(--coral-50); }
+.menu-item-icon.warm { background: var(--warning-bg); }
+.menu-item-text { flex: 1; }
+.menu-item-title { font-weight: 600; font-size: 16px; }
+.menu-item-sub { color: var(--stone-500); font-size: 13px; margin-top: 2px; }
+.menu-item-arrow {
+  color: var(--stone-300);
+  font-size: 1.25rem;
+  transition: transform 0.2s;
+}
+.menu-item:hover .menu-item-arrow {
+  transform: translateX(4px);
+  color: var(--teal-600);
+}
+
+  .kiosk-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    padding: 1rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
     max-width: 1100px;
     margin: 0 auto;
+    padding: 20px;
   }
-  @media (max-width: 768px) { .kiosk-layout { grid-template-columns: 1fr; } }
+  @media (max-width: 768px) {
+    .kiosk-grid { grid-template-columns: 1fr; padding: 12px; gap: 14px; }
+  }
   .panel { display: flex; flex-direction: column; gap: 12px; }
   .course-remaining {
-    font-size: 24px;
-    font-weight: 500;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
   }
   .recent {
-    max-height: 200px;
+    max-height: 240px;
     overflow-y: auto;
-    font-size: 12px;
   }
-  .recent-item {
+  .recent-row {
     display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 0.5px solid var(--border);
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--stone-200);
+    font-size: 14px;
   }
-  .recent-item:last-child { border-bottom: none; }
+  .recent-row:last-child { border-bottom: none; }
+  .recent-time { font-variant-numeric: tabular-nums; color: var(--stone-500); font-size: 13px; min-width: 50px; }
+  .recent-name { flex: 1; font-weight: 500; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>🏸 ALPHA BADMINTON · เช็คชื่อ</h1>
-  <div style="display: flex; align-items: center; gap: 12px;">
-    <span class="muted" id="clock"></span>
-    <a href="index.html" class="btn back-btn">← กลับหน้าหลัก</a>
+<header class="app-header">
+  <div class="app-header-inner">
+    <div class="brand">
+      <span class="brand-emoji">📷</span>
+      <div>เช็คชื่อด้วยใบหน้า<br><span class="brand-sub" id="clock"></span></div>
+    </div>
+    <a href="index.html" class="btn btn-ghost btn-sm">← กลับ</a>
   </div>
-</div>
+</header>
 
-<div class="kiosk-layout">
+<main class="kiosk-grid">
   <div class="camera-card">
     <video id="video" autoplay muted playsinline></video>
     <canvas id="overlay"></canvas>
@@ -258,32 +600,35 @@ progress::-moz-progress-bar { background: var(--primary); border-radius: 4px; }
 
   <div class="panel">
     <div class="card" id="statusCard">
-      <h3 id="statusTitle">⏳ กำลังโหลด...</h3>
-      <p class="muted" id="statusMessage">โหลด face recognition model ครั้งแรกอาจใช้เวลา 30-60 วินาที</p>
-      <progress id="loadProgress" value="0" max="100"></progress>
+      <h3 id="statusTitle">⏳ กำลังเตรียมระบบ</h3>
+      <p class="text-muted text-sm mt-2" id="statusMessage">โหลด face recognition model ครั้งแรกอาจใช้เวลา 30-60 วินาที</p>
+      <div class="progress-bar mt-3"><div class="progress-bar-fill" id="loadProgress" style="width: 0%;"></div></div>
     </div>
 
-    <div class="card" id="memberCard" style="display: none;">
-      <p class="muted" style="margin: 0;">ยินดีต้อนรับ</p>
-      <h2 id="memberName" style="margin: 4px 0;"></h2>
-      <p class="muted" id="memberId" style="margin: 0;"></p>
+    <div class="card animate-in" id="memberCard" style="display: none;">
+      <p class="text-muted text-sm">ยินดีต้อนรับ</p>
+      <h2 id="memberName" class="mt-2"></h2>
+      <p class="text-muted text-sm mt-2" id="memberId"></p>
     </div>
 
-    <div class="card" id="coursesCard" style="display: none;">
-      <p style="margin-top: 0;"><strong>เลือกคอร์สที่จะใช้วันนี้</strong></p>
+    <div class="card animate-in" id="coursesCard" style="display: none;">
+      <h3 class="mb-3">เลือกคอร์สที่จะใช้วันนี้</h3>
       <div id="coursesList"></div>
     </div>
 
     <div id="resultArea"></div>
 
     <div class="card">
-      <p style="margin-top: 0;"><strong>มาเรียนแล้ววันนี้</strong> <span class="muted" id="todayCount"></span></p>
+      <div class="flex justify-between items-center mb-3">
+        <h3>📋 มาเรียนวันนี้</h3>
+        <span class="pill pill-stone" id="todayCount">0 คน</span>
+      </div>
       <div class="recent" id="recentList">
-        <p class="muted">กำลังโหลด...</p>
+        <p class="text-muted text-sm">กำลังโหลด...</p>
       </div>
     </div>
   </div>
-</div>
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 <script>
@@ -294,6 +639,35 @@ const CONFIG = {
   FACE_MATCH_THRESHOLD: 0.5,
   FACE_DESCRIPTOR_SAMPLES: 5,
   MODELS_URL: 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights',
+  CACHE_TTL_MS: 30000,
+};
+
+// Browser-side cache to avoid hitting API repeatedly
+const Cache = {
+  get(key) {
+    try {
+      const raw = localStorage.getItem('ab_' + key);
+      if (!raw) return null;
+      const { data, expires } = JSON.parse(raw);
+      if (Date.now() > expires) {
+        localStorage.removeItem('ab_' + key);
+        return null;
+      }
+      return data;
+    } catch (e) { return null; }
+  },
+  set(key, data, ttlMs) {
+    try {
+      localStorage.setItem('ab_' + key, JSON.stringify({
+        data,
+        expires: Date.now() + (ttlMs || CONFIG.CACHE_TTL_MS),
+      }));
+    } catch (e) {}
+  },
+  clear(key) {
+    if (key) localStorage.removeItem('ab_' + key);
+    else Object.keys(localStorage).filter(k => k.startsWith('ab_')).forEach(k => localStorage.removeItem(k));
+  },
 };
 
 const api = {
@@ -307,13 +681,28 @@ const api = {
     if (!data.ok) throw new Error(data.error || 'API error');
     return data.data;
   },
+
+  // Cached version: try cache first, then fetch
+  async callCached(action, params = {}, ttlMs) {
+    const key = action + '_' + JSON.stringify(params);
+    const cached = Cache.get(key);
+    if (cached) return cached;
+    const data = await this.call(action, params);
+    Cache.set(key, data, ttlMs);
+    return data;
+  },
+
   ping() { return this.call('ping'); },
-  getCourses() { return this.call('getCourses'); },
+  getCourses() { return this.callCached('getCourses', {}, 5 * 60 * 1000); },
   getMember(uuid) { return this.call('getMember', { uuid }); },
   searchMember(query) { return this.call('searchMember', { query }); },
-  getMembersForFaceMatch() { return this.call('getMembersForFaceMatch'); },
-  createMember(data) { return this.call('createMember', data); },
+  getMembersForFaceMatch() { return this.callCached('getMembersForFaceMatch', {}, 60000); },
+  createMember(data) {
+    Cache.clear();
+    return this.call('createMember', data);
+  },
   registerFace(personUuid, descriptors) {
+    Cache.clear();
     return this.call('registerFace', { personUuid, descriptors });
   },
   getActiveEnrollments(memberUuid) {
@@ -323,9 +712,6 @@ const api = {
     return this.call('checkIn', { personUuid, enrollmentUuid, coachUuid, method });
   },
   getAttendanceToday() { return this.call('getAttendanceToday'); },
-  getMemberAttendance(memberUuid, limit) {
-    return this.call('getMemberAttendance', { memberUuid, limit });
-  },
 };
 
 const Face = {
@@ -384,7 +770,7 @@ const cameraStatusEl = document.getElementById('cameraStatus');
 let candidates = [];
 let detecting = false;
 let coolingDown = false;
-let todayAttendance = []; // เก็บ attendance วันนี้สำหรับตรวจซ้ำ
+let todayAttendance = [];
 
 function updateClock() {
   const d = new Date();
@@ -398,21 +784,25 @@ setInterval(updateClock, 30000);
 function setStatus(title, message, isError) {
   document.getElementById('statusTitle').textContent = title;
   document.getElementById('statusMessage').textContent = message || '';
-  document.getElementById('statusCard').style.background = isError ? 'var(--danger-bg)' : '';
+  document.getElementById('statusCard').style.borderColor = isError ? 'var(--danger)' : '';
+}
+
+function setProgress(pct) {
+  document.getElementById('loadProgress').style.width = pct + '%';
 }
 
 async function init() {
   try {
-    setStatus('⏳ โหลด face models...', '');
-    document.getElementById('loadProgress').value = 10;
+    setStatus('⏳ โหลดโมเดล...', 'face recognition model');
+    setProgress(15);
     await Face.loadModels();
-    document.getElementById('loadProgress').value = 50;
+    setProgress(50);
 
     setStatus('⏳ โหลดข้อมูลสมาชิก...');
     candidates = await api.getMembersForFaceMatch();
-    document.getElementById('loadProgress').value = 75;
+    setProgress(75);
 
-    setStatus('⏳ เริ่มกล้อง...');
+    setStatus('⏳ เปิดกล้อง...');
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
     });
@@ -420,16 +810,16 @@ async function init() {
     await new Promise(r => videoEl.onloadedmetadata = r);
     overlayEl.width = videoEl.videoWidth;
     overlayEl.height = videoEl.videoHeight;
-    document.getElementById('loadProgress').value = 100;
+    setProgress(100);
 
-    setStatus('✅ พร้อมใช้งาน', 'สมาชิกในระบบ ' + candidates.length + ' คน · มองเข้ากล้องเพื่อเช็คชื่อ');
-    cameraStatusEl.textContent = '👀 กำลังตรวจจับใบหน้า...';
+    setStatus('✓ พร้อมใช้งาน', 'สมาชิก ' + candidates.length + ' คน · มองเข้ากล้องเพื่อเช็คชื่อ');
+    cameraStatusEl.textContent = '👀 กำลังตรวจจับ...';
 
     loadRecent();
     setInterval(loadRecent, 30000);
     detectLoop();
   } catch (e) {
-    setStatus('❌ เกิดข้อผิดพลาด', e.message, true);
+    setStatus('✗ เกิดข้อผิดพลาด', e.message, true);
     console.error(e);
   }
 }
@@ -438,20 +828,23 @@ async function loadRecent() {
   try {
     todayAttendance = await api.getAttendanceToday();
     const list = document.getElementById('recentList');
-    document.getElementById('todayCount').textContent = '(' + todayAttendance.length + ' คน)';
+    document.getElementById('todayCount').textContent = todayAttendance.length + ' คน';
     if (todayAttendance.length === 0) {
-      list.innerHTML = '<p class="muted">ยังไม่มีใครเช็คชื่อวันนี้</p>';
+      list.innerHTML = '<p class="text-muted text-sm">ยังไม่มีใครมาเรียน</p>';
       return;
     }
-    list.innerHTML = todayAttendance.slice(0, 10).map(r => {
+    list.innerHTML = todayAttendance.slice(0, 12).map(r => {
       const t = new Date(r.CheckInDateTime).toLocaleTimeString('th-TH',
         { hour: '2-digit', minute: '2-digit' });
-      return '<div class="recent-item"><span>' + t + ' · ' + r.Name +
-             '</span><span class="muted">' + r.Role + '</span></div>';
+      const pillCls = r.Role === 'student' ? 'pill-info' : 'pill-success';
+      const roleLabel = r.Role === 'student' ? 'นักเรียน' : (r.Role === 'staff' ? 'ผู้ช่วย' : 'admin');
+      return `<div class="recent-row">
+        <span class="recent-time">${t}</span>
+        <span class="recent-name">${r.Name}</span>
+        <span class="pill ${pillCls}">${roleLabel}</span>
+      </div>`;
     }).join('');
-  } catch (e) {
-    console.error('loadRecent', e);
-  }
+  } catch (e) { console.error('loadRecent', e); }
 }
 
 async function detectLoop() {
@@ -464,33 +857,30 @@ async function detectLoop() {
       ctx.clearRect(0, 0, overlayEl.width, overlayEl.height);
       if (detection) {
         const box = detection.detection.box;
-        ctx.strokeStyle = '#22c55e';
+        ctx.strokeStyle = '#14B8A6';
         ctx.lineWidth = 3;
         ctx.strokeRect(box.x, box.y, box.width, box.height);
         const match = Face.computeMatch(detection.descriptor, candidates);
-        if (match) {
-          await onMatch(match);
-        }
+        if (match) await onMatch(match);
       }
-    } catch (e) {
-      console.error('detect', e);
-    } finally {
-      detecting = false;
-    }
+    } catch (e) { console.error('detect', e); }
+    finally { detecting = false; }
   }
   setTimeout(detectLoop, 300);
 }
 
 async function onMatch(match) {
   coolingDown = true;
-  cameraStatusEl.textContent = '✅ ' + (match.member.Nickname || match.member.FirstName);
+  cameraStatusEl.textContent = '✓ ' + (match.member.Nickname || match.member.FirstName);
   document.getElementById('statusCard').style.display = 'none';
   const memberCard = document.getElementById('memberCard');
   memberCard.style.display = 'block';
   document.getElementById('memberName').textContent =
-    match.member.Nickname ? match.member.Nickname + ' (' + match.member.FirstName + ')' : match.member.FirstName;
+    (match.member.Nickname || match.member.FirstName);
+  const roleLabel = match.member.Role === 'student' ? 'นักเรียน' :
+                    match.member.Role === 'staff' ? 'ผู้ช่วยสอน' : 'แอดมิน';
   document.getElementById('memberId').textContent =
-    match.member.DisplayID + ' · ' + match.member.Role;
+    match.member.DisplayID + ' · ' + roleLabel;
 
   if (match.member.Role === 'staff' || match.member.Role === 'admin') {
     await checkInStaff(match.member);
@@ -503,62 +893,57 @@ async function showCourses(member) {
   const card = document.getElementById('coursesCard');
   card.style.display = 'block';
   const list = document.getElementById('coursesList');
-  list.innerHTML = '<p class="muted">กำลังโหลดคอร์ส...</p>';
+  list.innerHTML = '<p class="text-muted text-sm">กำลังโหลดคอร์ส...</p>';
   try {
     const enrollments = await api.getActiveEnrollments(member.UUID);
     if (enrollments.length === 0) {
-      list.innerHTML = '<div class="alert alert-warning">❌ ไม่มีคอร์สที่ active · ติดต่อแอดมิน</div>';
+      list.innerHTML = '<div class="alert alert-warning"><span>⚠️</span><div>ยังไม่มีคอร์สที่ active · ติดต่อแอดมินเพื่อสมัครคอร์ส</div></div>';
       setTimeout(reset, 5000);
       return;
     }
     list.innerHTML = '';
+    let allCheckedIn = true;
     enrollments.forEach(e => {
-      const div = document.createElement('div');
       const alreadyCheckedIn = todayAttendance.some(a =>
         a.PersonUUID === member.UUID && a.CourseUUID === e.CourseUUID && !a.IsVoided);
-      div.className = 'list-row';
-      if (alreadyCheckedIn) {
-        div.style.opacity = '0.5';
-        div.style.pointerEvents = 'none';
-        div.style.cursor = 'not-allowed';
-      }
+      if (!alreadyCheckedIn) allCheckedIn = false;
+
+      const div = document.createElement('div');
+      div.className = 'list-item' + (alreadyCheckedIn ? ' disabled' : '');
       const warn = e.RemainingSessions <= 2;
-      const color = warn ? 'var(--warning)' : 'var(--text)';
-      div.innerHTML =
-        '<div style="flex:1;">' +
-          '<div style="font-weight:500;">' + (e.CourseName || '-') +
-          (alreadyCheckedIn ? ' <span class="badge badge-success">มาแล้ววันนี้</span>' : '') + '</div>' +
-          '<div class="muted">หมด ' + (e.ExpiryDate || '-') + ' · เหลือ ' + e.DaysLeft + ' วัน</div>' +
-        '</div>' +
-        '<div style="text-align:right;">' +
-          '<div class="course-remaining" style="color:' + color + ';">' + e.RemainingSessions + '</div>' +
-          '<div class="muted">/ ' + e.TotalSessions + ' ครั้ง</div>' +
-        '</div>';
-      if (!alreadyCheckedIn) {
-        div.onclick = () => doCheckIn(member, e);
-      }
+      const progressCls = warn ? 'warning' : '';
+      const pct = e.TotalSessions > 0 ? (e.UsedSessions / e.TotalSessions * 100) : 0;
+      div.innerHTML = `
+        <div class="list-item-main">
+          <div class="list-item-title">${e.CourseName || '-'}
+            ${alreadyCheckedIn ? '<span class="pill pill-success" style="margin-left:8px;">✓ มาแล้ววันนี้</span>' : ''}
+          </div>
+          <div class="list-item-sub">หมด ${e.ExpiryDate || '-'} · เหลือ ${e.DaysLeft} วัน</div>
+          <div class="progress-bar"><div class="progress-bar-fill ${progressCls}" style="width: ${pct}%;"></div></div>
+        </div>
+        <div style="text-align:right;">
+          <div class="course-remaining" style="color: ${warn ? 'var(--coral-600)' : 'var(--teal-600)'}">${e.RemainingSessions}</div>
+          <div class="text-xs text-muted">เหลือ / ${e.TotalSessions} ครั้ง</div>
+        </div>
+      `;
+      if (!alreadyCheckedIn) div.onclick = () => doCheckIn(member, e);
       list.appendChild(div);
     });
 
-    // ถ้าทุกคอร์สมาแล้ววันนี้ → แสดงข้อความ
-    const allCheckedIn = enrollments.every(e =>
-      todayAttendance.some(a =>
-        a.PersonUUID === member.UUID && a.CourseUUID === e.CourseUUID && !a.IsVoided));
     if (allCheckedIn) {
       const info = document.createElement('div');
-      info.className = 'alert alert-info';
-      info.innerHTML = 'ⓘ คุณมาเรียนทุกคอร์สแล้ววันนี้ ไม่ต้อง check-in ซ้ำ';
+      info.className = 'alert alert-info mt-3';
+      info.innerHTML = '<span>ⓘ</span><div>คุณมาเรียนทุกคอร์สแล้ววันนี้ ไม่ต้อง check-in ซ้ำ</div>';
       list.appendChild(info);
       setTimeout(reset, 5000);
     }
   } catch (err) {
-    list.innerHTML = '<div class="alert alert-danger">' + err.message + '</div>';
+    list.innerHTML = '<div class="alert alert-danger"><span>✗</span><div>' + err.message + '</div></div>';
     setTimeout(reset, 5000);
   }
 }
 
 async function checkInStaff(member) {
-  // เช็คว่าเข้างานวันนี้แล้วยัง
   const alreadyIn = todayAttendance.some(a =>
     a.PersonUUID === member.UUID && a.Role !== 'student' && !a.IsVoided);
   if (alreadyIn) {
@@ -566,7 +951,7 @@ async function checkInStaff(member) {
     const time = new Date(t.CheckInDateTime).toLocaleTimeString('th-TH',
       { hour: '2-digit', minute: '2-digit' });
     document.getElementById('resultArea').innerHTML =
-      '<div class="card"><div class="alert alert-info">ⓘ คุณเข้างานไปแล้ววันนี้ เวลา ' + time + '</div></div>';
+      '<div class="card animate-in"><div class="alert alert-info"><span>ⓘ</span><div>เข้างานไปแล้ววันนี้ เวลา ' + time + '</div></div></div>';
     setTimeout(reset, 4000);
     return;
   }
@@ -574,7 +959,7 @@ async function checkInStaff(member) {
     await api.checkIn(member.UUID, null, null, 'face');
     const t = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('resultArea').innerHTML =
-      '<div class="card"><div class="alert alert-success">🎉 มาสนุกแล้ว เวลา ' + t + '</div></div>';
+      '<div class="card animate-in"><div class="alert alert-success"><span>🎉</span><div><strong>มาสนุกแล้ว!</strong> เวลา ' + t + '</div></div></div>';
     loadRecent();
     setTimeout(reset, 4000);
   } catch (e) { showError(e.message); }
@@ -585,16 +970,24 @@ async function doCheckIn(member, enrollment) {
   try {
     const result = await api.checkIn(member.UUID, enrollment.UUID, null, 'face');
     const warnHtml = (result.warnings || []).map(w =>
-      '<div class="alert alert-warning">⚠️ ' + w.text + '</div>').join('');
-    document.getElementById('resultArea').innerHTML =
-      '<div class="card">' +
-        '<div class="alert alert-success">🎉 มาสนุกแล้ว — ' + result.enrollment.CourseName + '</div>' +
-        '<p style="font-size:16px;">เหลือ <strong style="font-size:24px;color:var(--primary);">' +
-          result.enrollment.Remaining + '</strong> / ' + result.enrollment.Total + ' ครั้ง</p>' +
-        '<p class="muted">หมดอายุ ' + result.enrollment.ExpiryDate +
-          ' (เหลือ ' + result.enrollment.DaysLeft + ' วัน)</p>' +
-        warnHtml +
-      '</div>';
+      '<div class="alert alert-warning mt-2"><span>⚠️</span><div>' + w.text + '</div></div>').join('');
+    document.getElementById('resultArea').innerHTML = `
+      <div class="card animate-in">
+        <div class="alert alert-success"><span>🎉</span><div><strong>มาสนุกแล้ว!</strong> ${result.enrollment.CourseName}</div></div>
+        <div class="flex items-center justify-between mt-3" style="background: var(--teal-50); padding: 16px; border-radius: var(--r-md);">
+          <div>
+            <p class="text-sm text-muted">เหลือ</p>
+            <p style="font-size: 2rem; font-weight: 700; color: var(--teal-700); line-height: 1;">${result.enrollment.Remaining} <span style="font-size: 1rem; color: var(--stone-500); font-weight: 500;">/ ${result.enrollment.Total} ครั้ง</span></p>
+          </div>
+          <div style="text-align: right;">
+            <p class="text-sm text-muted">หมดอายุ</p>
+            <p style="font-weight: 600;">${result.enrollment.ExpiryDate}</p>
+            <p class="text-xs text-muted">เหลือ ${result.enrollment.DaysLeft} วัน</p>
+          </div>
+        </div>
+        ${warnHtml}
+      </div>
+    `;
     loadRecent();
     setTimeout(reset, 6000);
   } catch (e) { showError(e.message); }
@@ -602,7 +995,7 @@ async function doCheckIn(member, enrollment) {
 
 function showError(msg) {
   document.getElementById('resultArea').innerHTML =
-    '<div class="card"><div class="alert alert-danger">❌ ' + msg + '</div></div>';
+    '<div class="card"><div class="alert alert-danger"><span>✗</span><div>' + msg + '</div></div></div>';
   setTimeout(reset, 5000);
 }
 
@@ -612,8 +1005,8 @@ function reset() {
   document.getElementById('memberCard').style.display = 'none';
   document.getElementById('coursesCard').style.display = 'none';
   document.getElementById('resultArea').innerHTML = '';
-  setStatus('✅ พร้อมใช้งาน', 'สมาชิกในระบบ ' + candidates.length + ' คน · มองเข้ากล้องเพื่อเช็คชื่อ');
-  cameraStatusEl.textContent = '👀 กำลังตรวจจับใบหน้า...';
+  setStatus('✓ พร้อมใช้งาน', 'สมาชิก ' + candidates.length + ' คน · มองเข้ากล้องเพื่อเช็คชื่อ');
+  cameraStatusEl.textContent = '👀 กำลังตรวจจับ...';
 }
 
 init();
