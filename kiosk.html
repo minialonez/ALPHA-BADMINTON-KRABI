@@ -245,7 +245,7 @@ async function checkInStaff(member) {
     const result = await api.checkIn(member.UUID, null, null, 'face');
     const t = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('resultArea').innerHTML =
-      '<div class="card"><div class="alert alert-success">✅ เข้างานแล้ว เวลา ' + t + '</div></div>';
+      '<div class="card"><div class="alert alert-success">🎉 มาสนุกแล้ว เวลา ' + t + '</div></div>';
     loadRecent();
     setTimeout(reset, 4000);
   } catch (e) { showError(e.message); }
@@ -259,7 +259,7 @@ async function doCheckIn(member, enrollment) {
       '<div class="alert alert-warning">⚠️ ' + w.text + '</div>').join('');
     document.getElementById('resultArea').innerHTML =
       '<div class="card">' +
-        '<div class="alert alert-success">✅ เช็คชื่อสำเร็จ — ' + result.enrollment.CourseName + '</div>' +
+        '<div class="alert alert-success">🎉 มาสนุกแล้ว — ' + result.enrollment.CourseName + '</div>' +
         '<p style="font-size:16px;">เหลือ <strong style="font-size:24px;color:var(--primary);">' +
           result.enrollment.Remaining + '</strong> / ' + result.enrollment.Total + ' ครั้ง</p>' +
         '<p class="muted">หมดอายุ ' + result.enrollment.ExpiryDate +
