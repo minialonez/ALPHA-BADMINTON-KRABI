@@ -1,60 +1,66 @@
-# ALPHA BADMINTON KRABI v2.0
+# ALPHA BADMINTON KRABI v3.0
 
-ระบบจัดการคอร์สแบดมินตัน · UI ใหม่ทันสมัย · 4 หน้า
-
-## ⚡ ที่แก้ใหม่ใน v2.0
-
-| ปรับปรุง | รายละเอียด |
-|---|---|
-| 🚀 **เร็วขึ้น** | localStorage cache · ลด API call ซ้ำ |
-| ✍️ **หน้าสมัครสมาชิก** | ฟอร์มสมัครพร้อม PDPA consent + auto User ID |
-| 🎨 **UI ใหม่** | Modern Sport Studio · teal + coral · IBM Plex Sans Thai |
-| 📱 **Mobile-first** | ปุ่มใหญ่ touch-friendly · sticky header |
-| 🎭 **Face register flow** | สมัครเสร็จ → ลงใบหน้าต่อทันที (URL param) |
-
-## โครงสร้างไฟล์
+## 🎉 ไฟล์เดียวจบทุกอย่าง!
 
 ```
-alpha-badminton-v2/
-├── index.html           ← หน้าหลัก
-├── register.html        ← สมัครสมาชิก (NEW!)
-├── face-register.html   ← ลงทะเบียนใบหน้า
-├── kiosk.html           ← เช็คชื่อ
-└── README.md
+alpha-badminton-v3/
+└── index.html      ← ไฟล์เดียวทำได้ทุกอย่าง
 ```
 
-**4 ไฟล์ HTML — เปิดเดี่ยว ๆ ก็ทำงานได้**
+## 🆕 Feature ใหม่ใน v3
+
+### 👨‍👩‍👧 Family Account
+- 1 ครอบครัว = 1 เบอร์โทร = หลายสมาชิก
+- คนแรกที่สมัครเป็น "หัวหน้าครอบครัว"
+- ตั้งชื่อครอบครัวเองได้ (เช่น "บ้านใจดี")
+- ดูคอร์สและโควต้าของทุกคนในครอบครัวจอเดียว
+
+### 🔐 PIN 6 หลัก
+- ตอนสมัคร: กรอก PIN 2 ครั้ง ยืนยัน
+- login ครั้งถัดไป: กรอกเบอร์ + PIN
+- PIN เก็บแบบ hash (SHA-256) ปลอดภัย
+
+### 📱 SPA (Single Page App)
+- เปลี่ยนหน้าทันที ไม่ต้องโหลดใหม่
+- ปุ่ม Back ของ browser ใช้ได้
+- URL hash routing (#/portal, #/kiosk, ฯลฯ)
 
 ## วิธี Deploy
 
 1. ลบไฟล์เก่าทั้งหมดใน GitHub repo
-2. Upload 4 ไฟล์ใหม่
+2. Upload **`index.html` ไฟล์เดียว**
 3. รอ 1-2 นาที
-4. เปิด URL + Hard refresh
+4. เปิด site + Hard refresh (Ctrl+Shift+R)
 
-## วิธีใช้
+## หน้าทั้งหมดในระบบ
 
+| URL | หน้า | ใช้ทำอะไร |
+|---|---|---|
+| `#/home` | หน้าแรก | เลือกเมนู |
+| `#/register` | สมัครครอบครัวใหม่ | เริ่มต้นครั้งแรก |
+| `#/login` | เข้าสู่ระบบ | กรอกเบอร์ + PIN |
+| `#/portal` | Family Portal | ดูสมาชิกทั้งครอบครัว |
+| `#/add-member` | เพิ่มสมาชิก | เพิ่มลูก/พ่อ/แม่ ในครอบครัวเดียวกัน |
+| `#/face-register?uuid=xxx` | ลงทะเบียนใบหน้า | 3 ท่า |
+| `#/kiosk` | Kiosk เช็คชื่อ | สำหรับ iPad หน้าร้าน |
+
+## โครงสร้างข้อมูล
+
+Family data เก็บใน **browser localStorage** (ไม่ส่งไป server):
 ```
-1. สมัครสมาชิกใหม่
-   → เปิด register.html → กรอกฟอร์ม → ได้ User ID เช่น F26001
-   
-2. ลงทะเบียนใบหน้า  
-   → เปิด face-register.html → ค้นชื่อ → 3 ท่า
-   (หรือกดจากหน้า "สมัครสำเร็จ" เลย)
-   
-3. เช็คชื่อ
-   → เปิด kiosk.html (ตั้งเป็น iPad หน้าร้าน)
-   → นักเรียนมองกล้อง → เลือกคอร์ส → ✓
+{
+  phone: "0812345678",
+  familyName: "บ้านใจดี",
+  pinHash: "sha256...",
+  memberUUIDs: ["...", "...", "..."],
+  headUUID: "...",
+}
 ```
 
-## Design system
+Member data ยังเก็บใน Google Sheet ปกติ (ผ่าน Apps Script)
 
-- **Font:** IBM Plex Sans Thai (Google Fonts)
-- **Colors:** Teal 600 (primary) · Coral 500 (accent) · Cream (bg)
-- **Radius:** 8 / 12 / 16 / 24px
-- **Touch targets:** 44px+ height ทุกปุ่ม
-- **Dark text on light cream** = อ่านสบายตา ทุกวัย
+**สมาชิกในครอบครัวเดียวกัน** = มี `ParentPhone` ตรงกัน
 
 ## เปลี่ยน API_KEY
 
-แก้ใน **4 ไฟล์ HTML** ค้นหา (Ctrl+F): `API_KEY:`
+แก้ที่เดียวใน `index.html` ค้นหา: `API_KEY:`
