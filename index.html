@@ -283,10 +283,20 @@ textarea { resize: vertical; min-height: 80px; font-family: inherit; }
 .menu-item-arrow { color: var(--stone-300); font-size: 1.25rem; transition: transform 0.2s; }
 .menu-item:hover .menu-item-arrow { transform: translateX(4px); color: var(--teal-600); }
 
-/* PIN input */
+/* PIN input — ให้ 2 ช่องดูเหมือนกัน */
 .pin-input {
-  font-size: 1.5rem !important; font-weight: 700; text-align: center;
-  letter-spacing: 0.5em; padding-left: 0.5em !important;
+  font-size: 1.5rem !important;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.4em;
+  padding: 14px !important;
+  font-family: 'IBM Plex Sans Thai', monospace;
+}
+.pin-input::placeholder {
+  font-size: 1rem;
+  letter-spacing: 0.3em;
+  color: var(--stone-300);
+  font-weight: 400;
 }
 
 /* Family member card */
@@ -429,6 +439,11 @@ const api = {
     return this.call('checkIn', { personUuid, enrollmentUuid, coachUuid, method });
   },
   getAttendanceToday() { return this.call('getAttendanceToday'); },
+  // Admin endpoints
+  setupAdmin(data) { Cache.clear(); return this.call('setupAdmin', data); },
+  getAllMembers() { return this.call('getAllMembers', {}); },
+  getAttendanceRange(startDate, endDate) { return this.call('getAttendanceRange', { startDate, endDate }); },
+  getAllEnrollments(status) { return this.call('getAllEnrollments', { status }); },
   // Note: Family endpoints (familyLookup, familyRegister, familyLogin, familyAddMember)
   // are simulated using existing createMember + searchMember by phone for now.
   // For full server-side family support, Apps Script needs new endpoints.
@@ -496,6 +511,13 @@ const Family = {
       fam.memberUUIDs.push(memberUUID);
     }
     if (isHead && !fam.headUUID) fam.headUUID = memberUUID;
+    this.storage.save(fam);
+    return fam;
+  },
+  setAdminFlag(phone, isAdmin) {
+    const fam = this.storage.get(phone);
+    if (!fam) return null;
+    fam.isAdmin = !!isAdmin;
     this.storage.save(fam);
     return fam;
   },
@@ -635,7 +657,16 @@ Router.add('home', () => {
       </section>
 
       <div class="menu-grid">
-        ${family ? `
+        ${family ? (family.isAdmin ? `
+          <div class="menu-item" onclick="Router.go('admin')">
+            <span class="menu-item-icon warm">👑</span>
+            <div class="menu-item-text">
+              <div class="menu-item-title">Admin Dashboard</div>
+              <div class="menu-item-sub">${family.familyName} · จัดการสมาชิก คอร์ส รายงาน</div>
+            </div>
+            <span class="menu-item-arrow">→</span>
+          </div>
+        ` : `
           <div class="menu-item" onclick="Router.go('portal')">
             <span class="menu-item-icon blue">👨‍👩‍👧</span>
             <div class="menu-item-text">
@@ -644,7 +675,7 @@ Router.add('home', () => {
             </div>
             <span class="menu-item-arrow">→</span>
           </div>
-        ` : ''}
+        `) : ''}
 
         <div class="menu-item" onclick="Router.go('kiosk')">
           <span class="menu-item-icon">📷</span>
@@ -705,11 +736,11 @@ Router.add('login', () => `
       <form onsubmit="event.preventDefault(); doLogin();">
         <div class="form-group">
           <label class="form-label form-label-required">เบอร์โทรศัพท์</label>
-          <input type="tel" id="loginPhone" required pattern="[0-9]{9,10}" placeholder="0812345678" autocomplete="tel">
+          <input type="tel" id="loginPhone" required pattern="[0-9]{10}" maxlength="10" inputmode="numeric" placeholder="0812345678" autocomplete="tel">
         </div>
         <div class="form-group">
           <label class="form-label form-label-required">PIN 6 หลัก</label>
-          <input type="password" id="loginPin" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="• • • • • •" autocomplete="off">
+          <input type="password" id="loginPin" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="••••••" autocomplete="current-password">
         </div>
         <button class="btn btn-primary btn-block btn-lg mt-4" id="loginBtn">เข้าสู่ระบบ</button>
       </form>
@@ -736,7 +767,7 @@ async function doLogin() {
       return;
     }
     toast('เข้าสู่ระบบ ' + fam.familyName + ' สำเร็จ', 'success');
-    Router.go('portal');
+    Router.go(fam.isAdmin ? 'admin' : 'portal');
   } catch (e) {
     toast(e.message, 'danger');
     btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
@@ -770,8 +801,8 @@ function registerStep1Html() {
         <form onsubmit="event.preventDefault(); regNext1();">
           <div class="form-group">
             <label class="form-label form-label-required">เบอร์โทรครอบครัว</label>
-            <input type="tel" id="regPhone" required pattern="[0-9]{9,10}" placeholder="0812345678" autocomplete="tel">
-            <p class="form-hint">ใช้เบอร์เดียวสำหรับทั้งครอบครัว</p>
+            <input type="tel" id="regPhone" required pattern="[0-9]{10}" maxlength="10" inputmode="numeric" placeholder="0812345678" autocomplete="tel">
+            <p class="form-hint">เบอร์ 10 หลัก · ใช้เบอร์เดียวสำหรับทั้งครอบครัว</p>
           </div>
 
           <div class="form-group">
@@ -782,12 +813,12 @@ function registerStep1Html() {
 
           <div class="form-group">
             <label class="form-label form-label-required">PIN 6 หลัก</label>
-            <input type="password" id="regPin1" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="• • • • • •" autocomplete="off">
+            <input type="password" id="regPin1" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="••••••" autocomplete="new-password">
           </div>
 
           <div class="form-group">
             <label class="form-label form-label-required">ยืนยัน PIN 6 หลัก</label>
-            <input type="password" id="regPin2" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="• • • • • •" autocomplete="off">
+            <input type="password" id="regPin2" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="••••••" autocomplete="new-password">
             <p class="form-hint">กรอกซ้ำเพื่อยืนยัน</p>
           </div>
 
@@ -870,7 +901,7 @@ function registerStep2Html() {
             <label class="form-label form-label-required">ประเภทลูกค้า</label>
             <div class="radio-group">
               <label class="radio-card"><input type="radio" name="CustomerType" value="thai" checked> 🇹🇭 คนไทย</label>
-              <label class="radio-card"><input type="radio" name="CustomerType" value="foreigner"> 🌍 ต่างชาติ (x2)</label>
+              <label class="radio-card"><input type="radio" name="CustomerType" value="foreigner"> 🌍 ต่างชาติ</label>
             </div>
           </div>
           <div class="form-group">
@@ -886,7 +917,18 @@ function registerStep2Html() {
             </label>
           </div>
 
+          <div id="adminCodeSection" style="display:none;" class="mt-4">
+            <div class="card" style="background: var(--coral-50); border-color: var(--coral-200);">
+              <h3 style="font-size:1rem;color:var(--coral-700);">🔑 Admin Setup Code</h3>
+              <div class="form-group mt-3">
+                <input type="password" id="m_SetupCode" placeholder="กรอก setup code ถ้าจะสมัครเป็น admin">
+                <p class="form-hint">เว้นว่างไว้ถ้าสมัครเป็นลูกค้าธรรมดา</p>
+              </div>
+            </div>
+          </div>
+
           <button class="btn btn-primary btn-block btn-lg mt-4" id="regFinalBtn">✓ สมัครครอบครัว</button>
+          <button type="button" class="btn btn-ghost btn-block btn-sm mt-2" id="toggleAdminCode" onclick="document.getElementById('adminCodeSection').style.display = document.getElementById('adminCodeSection').style.display === 'none' ? 'block' : 'none';">⚙️ เป็น admin?</button>
         </form>
       </div>
 
@@ -901,6 +943,7 @@ async function regFinalize() {
 
   const gender = document.querySelector('input[name="Gender"]:checked');
   const custType = document.querySelector('input[name="CustomerType"]:checked');
+  const setupCode = (document.getElementById('m_SetupCode') || {}).value || '';
 
   const memberData = {
     FirstName: document.getElementById('m_FirstName').value.trim(),
@@ -916,20 +959,36 @@ async function regFinalize() {
   };
 
   try {
-    const result = await api.createMember(memberData);
+    let result;
+    let isAdmin = false;
+    if (setupCode.trim()) {
+      // Try admin setup
+      try {
+        memberData.setupCode = setupCode.trim();
+        result = await api.setupAdmin(memberData);
+        isAdmin = true;
+      } catch (e) {
+        toast('Setup code ผิด: ' + e.message, 'danger');
+        btn.disabled = false; btn.textContent = '✓ สมัครครอบครัว';
+        return;
+      }
+    } else {
+      result = await api.createMember(memberData);
+    }
     const family = await Family.createFamily(regState.phone, regState.familyName, regState.pin);
     Family.addMemberToFamily(regState.phone, result.UUID, true);
+    if (isAdmin) Family.setAdminFlag(regState.phone, true);
 
     document.getElementById('app').innerHTML = `
       <div class="container animate-in">
         <div class="card card-elevated text-center">
-          <div style="font-size:4rem;margin-bottom:12px;">🎉</div>
-          <h2>สมัครครอบครัวสำเร็จ!</h2>
-          <p class="text-muted mt-2">ยินดีต้อนรับ ครอบครัว <strong>${family.familyName}</strong></p>
+          <div style="font-size:4rem;margin-bottom:12px;">${isAdmin ? '👑' : '🎉'}</div>
+          <h2>${isAdmin ? 'สมัคร Admin สำเร็จ!' : 'สมัครครอบครัวสำเร็จ!'}</h2>
+          <p class="text-muted mt-2">${isAdmin ? 'ยินดีต้อนรับ Admin' : 'ยินดีต้อนรับ ครอบครัว'} <strong>${family.familyName}</strong></p>
           <div class="card mt-4" style="background: var(--teal-50); border-color: var(--teal-100); padding: 18px;">
-            <p class="text-sm text-muted">User ID ของหัวหน้าครอบครัว</p>
+            <p class="text-sm text-muted">User ID</p>
             <p style="font-size:2.25rem;font-weight:700;color:var(--teal-700);letter-spacing:0.05em;margin:4px 0;">${result.DisplayID}</p>
-            <p class="text-xs text-muted">${memberData.FirstName} ${memberData.LastName}</p>
+            <p class="text-xs text-muted">${memberData.FirstName} ${memberData.LastName}${isAdmin ? ' (admin)' : ''}</p>
           </div>
           <div class="alert alert-info mt-4" style="text-align:left;">
             <span>💡</span>
@@ -938,7 +997,7 @@ async function regFinalize() {
           </div>
           <div class="flex flex-col gap-2 mt-4">
             <button class="btn btn-primary btn-block" onclick="Router.go('face-register', {uuid: '${result.UUID}'})">🎭 ลงทะเบียนใบหน้าเลย</button>
-            <button class="btn btn-block" onclick="Router.go('portal')">ไปที่ Portal (ทำทีหลัง)</button>
+            <button class="btn btn-block" onclick="Router.go('${isAdmin ? 'admin' : 'portal'}')">ไปที่ ${isAdmin ? 'Admin Dashboard' : 'Portal'} (ทำทีหลัง)</button>
           </div>
         </div>
       </div>
@@ -1269,6 +1328,357 @@ async function submitFaceData() {
     document.getElementById('faceResult').innerHTML = `<div class="alert alert-danger mt-4"><span>✗</span><div>${e.message}</div></div>`;
   }
 }
+
+// ============================================================
+// PAGE: ADMIN — Dashboard สำหรับ admin
+// ============================================================
+Router.add('admin', async () => {
+  const family = Family.storage.getActive();
+  if (!family || !family.isAdmin) {
+    return `<div class="container animate-in">
+      <div class="alert alert-danger"><span>🔒</span><div>ต้อง login เป็น admin ก่อน</div></div>
+      <button class="btn btn-primary btn-block mt-4" onclick="Router.go('login')">→ เข้าสู่ระบบ</button>
+      <button class="btn btn-ghost btn-block mt-2" onclick="Router.go('home')">← กลับหน้าแรก</button>
+    </div>`;
+  }
+  setTimeout(() => {
+    const el = document.getElementById('familyBadge');
+    if (el) el.innerHTML = `<span class="pill pill-warning">👑 Admin</span>`;
+  }, 0);
+
+  return `
+    <div class="container container-wide animate-in">
+      <div class="text-center mb-4">
+        <p class="text-muted text-sm">👑 Admin Dashboard</p>
+        <h2>${family.familyName}</h2>
+      </div>
+
+      <div class="menu-grid">
+        <div class="menu-item" onclick="Router.go('admin-members')">
+          <span class="menu-item-icon blue">👥</span>
+          <div class="menu-item-text">
+            <div class="menu-item-title">รายชื่อสมาชิก</div>
+            <div class="menu-item-sub">ดูสมาชิกทั้งหมด · ค้นหา · ดูประวัติ</div>
+          </div>
+          <span class="menu-item-arrow">→</span>
+        </div>
+
+        <div class="menu-item" onclick="Router.go('admin-attendance')">
+          <span class="menu-item-icon coral">📋</span>
+          <div class="menu-item-text">
+            <div class="menu-item-title">ประวัติเช็คชื่อ</div>
+            <div class="menu-item-sub">ดูได้ทุกวัน · void รายการที่ผิด</div>
+          </div>
+          <span class="menu-item-arrow">→</span>
+        </div>
+
+        <div class="menu-item" onclick="Router.go('admin-enroll')">
+          <span class="menu-item-icon warm">📚</span>
+          <div class="menu-item-text">
+            <div class="menu-item-title">สมัครคอร์สให้นักเรียน</div>
+            <div class="menu-item-sub">เลือกคน → เลือกคอร์ส → ระบุการชำระ</div>
+          </div>
+          <span class="menu-item-arrow">→</span>
+        </div>
+
+        <div class="menu-item" onclick="Router.go('kiosk')">
+          <span class="menu-item-icon">📷</span>
+          <div class="menu-item-text">
+            <div class="menu-item-title">เปิด Kiosk เช็คชื่อ</div>
+            <div class="menu-item-sub">สำหรับ iPad หน้าร้าน</div>
+          </div>
+          <span class="menu-item-arrow">→</span>
+        </div>
+
+        <div class="menu-item" onclick="Family.storage.clear(); Router.go('home');">
+          <span class="menu-item-icon">🚪</span>
+          <div class="menu-item-text">
+            <div class="menu-item-title">ออกจากระบบ</div>
+            <div class="menu-item-sub">กลับสู่หน้าแรก</div>
+          </div>
+          <span class="menu-item-arrow">→</span>
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+// ============================================================
+// PAGE: ADMIN-MEMBERS — รายชื่อสมาชิก
+// ============================================================
+Router.add('admin-members', async () => {
+  const family = Family.storage.getActive();
+  if (!family || !family.isAdmin) { Router.go('home'); return ''; }
+
+  let members = [];
+  try {
+    members = await api.getAllMembers();
+  } catch (e) {
+    return `<div class="container"><div class="alert alert-danger">${e.message}</div>
+      <button class="btn btn-ghost btn-block mt-4" onclick="Router.go('admin')">← กลับ</button></div>`;
+  }
+
+  // Group by Role
+  const byRole = { admin: [], staff: [], student: [] };
+  members.forEach(m => {
+    const r = m.Role || 'student';
+    if (byRole[r]) byRole[r].push(m);
+  });
+
+  function renderList(arr, emptyText) {
+    if (!arr.length) return `<p class="text-muted text-sm">${emptyText}</p>`;
+    return arr.map(m => {
+      const initials = ((m.Nickname || m.FirstName || '?').slice(0, 1) + (m.LastName || '').slice(0, 1)).toUpperCase();
+      const hasFace = !!m.FaceDescriptors || (m.FaceData && m.FaceData !== '');
+      return `<div class="member-card" style="padding:14px;">
+        <div class="member-card-header" style="margin-bottom:0;">
+          <div class="member-avatar">${initials}</div>
+          <div style="flex:1;min-width:0;">
+            <div class="member-name">${m.Nickname || m.FirstName || ''} ${m.LastName || ''}</div>
+            <div class="member-id">${m.DisplayID} · ${m.Phone || '-'} ${m.ParentName ? '· '+m.ParentName : ''}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  return `
+    <div class="container animate-in">
+      <div class="flex justify-between items-center mb-4">
+        <h2>รายชื่อสมาชิก</h2>
+        <span class="pill pill-stone">${members.length} คน</span>
+      </div>
+      <div class="form-group">
+        <input type="text" id="memberFilter" placeholder="🔍 ค้นหา ชื่อ/ID/เบอร์/ครอบครัว" oninput="filterAdminMembers(this.value)">
+      </div>
+
+      <div id="memberResults">
+        ${byRole.admin.length ? '<h3 class="mt-4 mb-3">👑 Admin</h3>' + renderList(byRole.admin, '') : ''}
+        ${byRole.staff.length ? '<h3 class="mt-4 mb-3">👨‍🏫 ผู้ช่วยสอน</h3>' + renderList(byRole.staff, '') : ''}
+        <h3 class="mt-4 mb-3">👥 นักเรียน (${byRole.student.length})</h3>
+        ${renderList(byRole.student, 'ยังไม่มีนักเรียน')}
+      </div>
+
+      <button class="btn btn-ghost btn-block mt-6" onclick="Router.go('admin')">← กลับ Admin</button>
+    </div>
+  `;
+});
+
+function filterAdminMembers(q) {
+  q = q.toLowerCase().trim();
+  document.querySelectorAll('#memberResults .member-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = (!q || text.includes(q)) ? '' : 'none';
+  });
+}
+
+// ============================================================
+// PAGE: ADMIN-ATTENDANCE — ประวัติเช็คชื่อ
+// ============================================================
+Router.add('admin-attendance', async (params) => {
+  const family = Family.storage.getActive();
+  if (!family || !family.isAdmin) { Router.go('home'); return ''; }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const startDate = params.start || today;
+  const endDate = params.end || today;
+
+  let records = [];
+  try {
+    records = await api.getAttendanceRange(startDate, endDate);
+  } catch (e) {
+    return `<div class="container"><div class="alert alert-danger">${e.message}</div></div>`;
+  }
+
+  const rowsHtml = records.length === 0 ?
+    '<p class="text-muted text-center mt-4">ไม่มีรายการในช่วงนี้</p>' :
+    records.map(r => {
+      const tm = new Date(r.CheckInDateTime).toLocaleString('th-TH', {
+        day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'
+      });
+      const voided = r.IsVoided || r.IsVoided === 'TRUE';
+      const pillCls = voided ? 'pill-danger' : (r.Role === 'student' ? 'pill-info' : 'pill-success');
+      const roleLabel = voided ? 'void' : (r.Role === 'student' ? 'นักเรียน' : (r.Role === 'staff' ? 'ผู้ช่วย' : 'admin'));
+      return `<div class="member-card" style="padding:14px;${voided?'opacity:0.5;':''}">
+        <div class="flex items-center gap-3">
+          <span style="font-variant-numeric:tabular-nums;font-size:13px;min-width:90px;color:var(--stone-500);">${tm}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;">${r.Name || '-'} <span class="text-muted text-sm">${r.DisplayID || ''}</span></div>
+            <div class="text-muted text-sm">${r.CourseName || '(ไม่มีคอร์ส · พนักงาน)'}</div>
+          </div>
+          <span class="pill ${pillCls}">${roleLabel}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+  return `
+    <div class="container animate-in">
+      <div class="flex justify-between items-center mb-4">
+        <h2>ประวัติเช็คชื่อ</h2>
+        <span class="pill pill-stone">${records.length} รายการ</span>
+      </div>
+
+      <div class="card mb-4">
+        <div class="flex gap-3">
+          <div style="flex:1;">
+            <label class="form-label">จาก</label>
+            <input type="date" id="attStart" value="${startDate}">
+          </div>
+          <div style="flex:1;">
+            <label class="form-label">ถึง</label>
+            <input type="date" id="attEnd" value="${endDate}">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block mt-3" onclick="Router.go('admin-attendance', {start: document.getElementById('attStart').value, end: document.getElementById('attEnd').value})">🔍 ค้นหา</button>
+      </div>
+
+      ${rowsHtml}
+
+      <button class="btn btn-ghost btn-block mt-6" onclick="Router.go('admin')">← กลับ Admin</button>
+    </div>
+  `;
+});
+
+// ============================================================
+// PAGE: ADMIN-ENROLL — สมัครคอร์สให้นักเรียน
+// ============================================================
+Router.add('admin-enroll', async () => {
+  const family = Family.storage.getActive();
+  if (!family || !family.isAdmin) { Router.go('home'); return ''; }
+
+  let members = [];
+  let courses = [];
+  try {
+    [members, courses] = await Promise.all([
+      api.getAllMembers(),
+      api.getCourses(),
+    ]);
+  } catch (e) {
+    return `<div class="container"><div class="alert alert-danger">${e.message}</div></div>`;
+  }
+
+  members = members.filter(m => m.Role !== 'admin' && m.Role !== 'staff');
+  const activeCourses = courses.filter(c => c.IsActive === true || c.IsActive === 'TRUE' || c.IsActive === undefined);
+
+  return `
+    <div class="container animate-in">
+      <h2>สมัครคอร์สให้นักเรียน</h2>
+      <p class="text-muted text-sm mt-2 mb-4">เลือกนักเรียน → เลือกคอร์ส → ระบุการชำระเงิน</p>
+
+      <div class="card">
+        <h3 class="mb-3">1️⃣ เลือกนักเรียน</h3>
+        <input type="text" id="enrollSearch" placeholder="🔍 ค้นหา ชื่อ/ID/เบอร์" oninput="filterEnrollList(this.value)">
+        <div id="enrollMemberList" class="mt-3" style="max-height:300px;overflow-y:auto;">
+          ${members.map(m => `
+            <div class="list-item" data-search="${(m.Nickname||'')+' '+(m.FirstName||'')+' '+(m.LastName||'')+' '+(m.DisplayID||'')+' '+(m.Phone||'')+' '+(m.ParentName||'')}" onclick="selectEnrollMember('${m.UUID}', '${(m.Nickname||m.FirstName||'').replace(/'/g,"\\\\'")}','${(m.DisplayID||'')}')">
+              <div class="list-item-main">
+                <div class="list-item-title">${m.Nickname || m.FirstName || ''} ${m.LastName || ''}</div>
+                <div class="list-item-sub">${m.DisplayID} · ${m.ParentName || ''} · ${m.Phone || ''}</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="card mt-4" id="enrollCourseCard" style="display:none;">
+        <h3 class="mb-3">2️⃣ เลือกคอร์ส</h3>
+        <p class="text-sm" id="enrollMemberLabel"></p>
+        <div class="mt-3">
+          ${activeCourses.map(c => `
+            <div class="list-item" onclick="selectEnrollCourse('${c.UUID}', '${(c.CourseName||'').replace(/'/g,"\\\\'")}','${c.Sessions}','${c.PriceThai}')">
+              <div class="list-item-main">
+                <div class="list-item-title">${c.CourseName}</div>
+                <div class="list-item-sub">${c.Sessions} ครั้ง · ฿${Number(c.PriceThai).toLocaleString()} (ไทย) / ฿${Number(c.PriceForeigner||c.PriceThai*2).toLocaleString()} (ต่างชาติ)</div>
+              </div>
+              <span class="menu-item-arrow">→</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="card mt-4" id="enrollPayCard" style="display:none;">
+        <h3 class="mb-3">3️⃣ การชำระเงิน</h3>
+        <p class="text-sm" id="enrollFinalLabel"></p>
+        <div class="form-group mt-3">
+          <label class="form-label">สถานะการชำระ</label>
+          <div class="radio-group">
+            <label class="radio-card"><input type="radio" name="payStatus" value="paid" checked> 💰 จ่ายแล้ว</label>
+            <label class="radio-card"><input type="radio" name="payStatus" value="pending"> ⏳ ค้างชำระ</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">หมายเหตุ</label>
+          <textarea id="enrollNotes" placeholder="เช่น โอนผ่าน SCB, จ่ายเงินสด"></textarea>
+        </div>
+        <button class="btn btn-primary btn-block btn-lg mt-3" id="enrollConfirmBtn" onclick="confirmEnroll()">✓ ยืนยันสมัครคอร์ส</button>
+      </div>
+
+      <button class="btn btn-ghost btn-block mt-6" onclick="Router.go('admin')">← กลับ Admin</button>
+    </div>
+  `;
+});
+
+let enrollState = { memberUuid: null, memberLabel: '', courseUuid: null, courseLabel: '', courseSessions: 0, coursePrice: 0 };
+
+function filterEnrollList(q) {
+  q = q.toLowerCase().trim();
+  document.querySelectorAll('#enrollMemberList .list-item').forEach(item => {
+    const s = (item.dataset.search || '').toLowerCase();
+    item.style.display = (!q || s.includes(q)) ? '' : 'none';
+  });
+}
+window.filterEnrollList = filterEnrollList;
+
+window.selectEnrollMember = function(uuid, name, displayId) {
+  enrollState.memberUuid = uuid;
+  enrollState.memberLabel = name + ' (' + displayId + ')';
+  document.getElementById('enrollMemberLabel').textContent = '👤 ' + enrollState.memberLabel;
+  document.getElementById('enrollCourseCard').style.display = 'block';
+  document.getElementById('enrollCourseCard').scrollIntoView({ behavior: 'smooth' });
+};
+
+window.selectEnrollCourse = function(uuid, name, sessions, price) {
+  enrollState.courseUuid = uuid;
+  enrollState.courseLabel = name;
+  enrollState.courseSessions = sessions;
+  enrollState.coursePrice = price;
+  document.getElementById('enrollFinalLabel').innerHTML =
+    '👤 ' + enrollState.memberLabel + '<br>📚 ' + name + ' · ' + sessions + ' ครั้ง · ฿' + Number(price).toLocaleString();
+  document.getElementById('enrollPayCard').style.display = 'block';
+  // Bind new radio cards
+  document.querySelectorAll('#enrollPayCard .radio-card').forEach(card => {
+    const input = card.querySelector('input[type="radio"]');
+    if (input.checked) card.classList.add('selected');
+    input.addEventListener('change', () => {
+      document.querySelectorAll('#enrollPayCard .radio-card').forEach(c => {
+        const ci = c.querySelector('input[type="radio"]');
+        if (ci.name === input.name) c.classList.toggle('selected', ci.checked);
+      });
+    });
+  });
+  document.getElementById('enrollPayCard').scrollIntoView({ behavior: 'smooth' });
+};
+
+window.confirmEnroll = async function() {
+  const btn = document.getElementById('enrollConfirmBtn');
+  const payStatus = (document.querySelector('input[name="payStatus"]:checked') || {}).value || 'paid';
+  const notes = document.getElementById('enrollNotes').value.trim();
+  btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...';
+  try {
+    await api.call('createEnrollment', {
+      memberUuid: enrollState.memberUuid,
+      courseUuid: enrollState.courseUuid,
+      paymentStatus: payStatus,
+      notes,
+    });
+    toast('สมัครคอร์ส ' + enrollState.courseLabel + ' สำเร็จ', 'success');
+    setTimeout(() => Router.go('admin'), 1500);
+  } catch (e) {
+    toast(e.message, 'danger');
+    btn.disabled = false; btn.textContent = '✓ ยืนยันสมัครคอร์ส';
+  }
+};
 
 // ============================================================
 // PAGE: KIOSK — เช็คชื่อ
