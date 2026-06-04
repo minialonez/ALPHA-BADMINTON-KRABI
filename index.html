@@ -367,7 +367,7 @@ textarea { resize: vertical; min-height: 80px; font-family: inherit; }
     </div>
   </div>
 </header>
-  
+
 <main id="app"></main>
 
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
@@ -430,6 +430,7 @@ const api = {
   searchMember(query) { return this.call('searchMember', { query }); },
   getMembersForFaceMatch() { return this.callCached('getMembersForFaceMatch', {}, 60000); },
   createMember(data) { Cache.clear(); return this.call('createMember', data); },
+  updateMember(uuid, patch) { Cache.clear(); return this.call('updateMember', { uuid, ...patch }); },
   registerFace(personUuid, descriptors) {
     Cache.clear();
     return this.call('registerFace', { personUuid, descriptors });
@@ -439,7 +440,13 @@ const api = {
     return this.call('checkIn', { personUuid, enrollmentUuid, coachUuid, method });
   },
   getAttendanceToday() { return this.call('getAttendanceToday'); },
-  // Admin endpoints
+  // Family + Admin
+  checkSetupCode(code) { return this.call('checkSetupCode', { code }); },
+  loginByPhone(phone, pinHash) { return this.call('loginByPhone', { phone, pinHash }); },
+  setFamilyPIN(phone, pinHash, familyName) { return this.call('setFamilyPIN', { phone, pinHash, familyName }); },
+  getFamilyByPhone(phone) { return this.call('getFamilyByPhone', { phone }); },
+  getAllFamilies() { return this.call('getAllFamilies'); },
+  // ⚠️ DEPRECATED — เก่า อยู่เพื่อ backward compat
   setupAdmin(data) { Cache.clear(); return this.call('setupAdmin', data); },
   getAllMembers() { return this.call('getAllMembers', {}); },
   getAttendanceRange(startDate, endDate) { return this.call('getAttendanceRange', { startDate, endDate }); },
@@ -959,22 +966,38 @@ async function regFinalize() {
   };
 
   try {
-    let result;
-    let isAdmin = false;
+    // 1. เช็ค setup code ถ้ามี (ตอนนี้ ALPHA-ADMIN-2026 / ALPHA-STAFF-2026)
+    let assignedRole = 'student';
     if (setupCode.trim()) {
-      // Try admin setup
       try {
-        memberData.setupCode = setupCode.trim();
-        result = await api.setupAdmin(memberData);
-        isAdmin = true;
+        const check = await api.checkSetupCode(setupCode.trim());
+        assignedRole = check.role;
       } catch (e) {
         toast('Setup code ผิด: ' + e.message, 'danger');
         btn.disabled = false; btn.textContent = '✓ สมัครครอบครัว';
         return;
       }
-    } else {
-      result = await api.createMember(memberData);
     }
+    const isAdmin = assignedRole === 'admin';
+    const isStaff = assignedRole === 'staff';
+
+    // 2. สร้างสมาชิกเป็นปกติก่อน
+    const result = await api.createMember(memberData);
+
+    // 3. ถ้า role ไม่ใช่ student → updateMember เปลี่ยน role
+    if (assignedRole !== 'student') {
+      try { await api.updateMember(result.UUID, { Role: assignedRole }); }
+      catch (e) { console.warn('updateMember role failed', e); }
+    }
+
+    // 4. บันทึก PIN ที่ server (ใน MemberProfile.PinHash) — ฝั่ง server
+    let pinHash;
+    try {
+      pinHash = await Family.hashPIN(regState.pin);
+      await api.setFamilyPIN(regState.phone, pinHash, regState.familyName);
+    } catch (e) { console.warn('setFamilyPIN failed', e); }
+
+    // 5. บันทึก family ใน localStorage ด้วย (เผื่อ login ต่อ)
     const family = await Family.createFamily(regState.phone, regState.familyName, regState.pin);
     Family.addMemberToFamily(regState.phone, result.UUID, true);
     if (isAdmin) Family.setAdminFlag(regState.phone, true);
@@ -982,13 +1005,13 @@ async function regFinalize() {
     document.getElementById('app').innerHTML = `
       <div class="container animate-in">
         <div class="card card-elevated text-center">
-          <div style="font-size:4rem;margin-bottom:12px;">${isAdmin ? '👑' : '🎉'}</div>
-          <h2>${isAdmin ? 'สมัคร Admin สำเร็จ!' : 'สมัครครอบครัวสำเร็จ!'}</h2>
-          <p class="text-muted mt-2">${isAdmin ? 'ยินดีต้อนรับ Admin' : 'ยินดีต้อนรับ ครอบครัว'} <strong>${family.familyName}</strong></p>
+          <div style="font-size:4rem;margin-bottom:12px;">${isAdmin ? '👑' : isStaff ? '🎓' : '🎉'}</div>
+          <h2>${isAdmin ? 'สมัคร Admin สำเร็จ!' : isStaff ? 'สมัครพนักงานสำเร็จ!' : 'สมัครครอบครัวสำเร็จ!'}</h2>
+          <p class="text-muted mt-2">ยินดีต้อนรับ <strong>${regState.familyName}</strong></p>
           <div class="card mt-4" style="background: var(--teal-50); border-color: var(--teal-100); padding: 18px;">
             <p class="text-sm text-muted">User ID</p>
             <p style="font-size:2.25rem;font-weight:700;color:var(--teal-700);letter-spacing:0.05em;margin:4px 0;">${result.DisplayID}</p>
-            <p class="text-xs text-muted">${memberData.FirstName} ${memberData.LastName}${isAdmin ? ' (admin)' : ''}</p>
+            <p class="text-xs text-muted">${memberData.FirstName} ${memberData.LastName}${isAdmin ? ' · 👑 admin' : isStaff ? ' · 🎓 พนักงาน' : ''}</p>
           </div>
           <div class="alert alert-info mt-4" style="text-align:left;">
             <span>💡</span>
@@ -997,7 +1020,7 @@ async function regFinalize() {
           </div>
           <div class="flex flex-col gap-2 mt-4">
             <button class="btn btn-primary btn-block" onclick="Router.go('face-register', {uuid: '${result.UUID}'})">🎭 ลงทะเบียนใบหน้าเลย</button>
-            <button class="btn btn-block" onclick="Router.go('${isAdmin ? 'admin' : 'portal'}')">ไปที่ ${isAdmin ? 'Admin Dashboard' : 'Portal'} (ทำทีหลัง)</button>
+            <button class="btn btn-block" onclick="Router.go('${isAdmin ? 'admin' : 'portal'}')">ไปที่ ${isAdmin ? 'Admin' : 'Portal'} (ทำทีหลัง)</button>
           </div>
         </div>
       </div>
