@@ -1076,6 +1076,12 @@ function registerStep2Html() {
     langNote: '🇹🇭 กรอกข้อมูลเป็นภาษาไทย',
     adminBtn: '⚙️ เป็น admin?', adminPlaceholder: 'กรอก setup code ถ้าจะสมัครเป็น admin',
     adminHint: 'เว้นว่างไว้ถ้าสมัครเป็นลูกค้าธรรมดา',
+    ownPhone: 'เบอร์โทรของตัวเอง', ownPhoneHint: 'เบอร์ส่วนตัว (สำหรับผู้ใหญ่)',
+    parentSection: '👪 ข้อมูลผู้ปกครอง', parentName: 'ชื่อผู้ปกครอง', parentRel: 'ความสัมพันธ์',
+    childPhoneNote: 'เด็กอายุต่ำกว่า 15 ปี · ใช้เบอร์ครอบครัวเป็นเบอร์ติดต่อ',
+    emerSection: '🚨 ติดต่อฉุกเฉิน', emerRel: 'ความสัมพันธ์', emerPhone: 'เบอร์ฉุกเฉิน',
+    relPick: '-- เลือก --',
+    rels: { mother:'แม่', father:'พ่อ', grandparent:'ปู่ย่า/ตายาย', uncle_aunt:'ลุงป้า/น้าอา', sibling:'พี่น้อง', spouse:'คู่สมรส', friend:'เพื่อน', other:'อื่นๆ' },
   } : {
     title: 'First Member Information',
     sub: 'The first member becomes the family head (usually a parent)',
@@ -1089,6 +1095,12 @@ function registerStep2Html() {
     langNote: '🌍 Fill in English only',
     adminBtn: '⚙️ Register as admin?', adminPlaceholder: 'Enter setup code for admin',
     adminHint: 'Leave blank for normal customer',
+    ownPhone: 'Personal Phone Number', ownPhoneHint: 'Personal number (for adults)',
+    parentSection: '👪 Parent / Guardian', parentName: 'Parent Name', parentRel: 'Relationship',
+    childPhoneNote: 'Children under 15 · Family phone used as contact',
+    emerSection: '🚨 Emergency Contact', emerRel: 'Relationship', emerPhone: 'Emergency Phone',
+    relPick: '-- Select --',
+    rels: { mother:'Mother', father:'Father', grandparent:'Grandparent', uncle_aunt:'Uncle/Aunt', sibling:'Sibling', spouse:'Spouse', friend:'Friend', other:'Other' },
   };
   return `
     <div class="container animate-in">
@@ -1121,7 +1133,7 @@ function registerStep2Html() {
           </div>
           <div class="form-group">
             <label class="form-label form-label-required">${t.dob}</label>
-            <input type="date" id="m_DOB" required>
+            <input type="date" id="m_DOB" required onchange="updateAgeFields()">
           </div>
           <div class="form-group">
             <label class="form-label">${t.gender}</label>
@@ -1130,6 +1142,49 @@ function registerStep2Html() {
               <label class="radio-card"><input type="radio" name="Gender" value="female"> ${t.female}</label>
             </div>
           </div>
+
+          <!-- ผู้ใหญ่: เบอร์ตัวเอง -->
+          <div class="form-group" id="adultPhoneSection" style="display:none;">
+            <label class="form-label form-label-required">${t.ownPhone}</label>
+            <input type="tel" id="m_OwnPhone" pattern="[0-9]{10}" maxlength="10" inputmode="numeric" placeholder="0812345678">
+            <p class="form-hint">${t.ownPhoneHint}</p>
+          </div>
+
+          <!-- เด็ก: ผู้ปกครอง -->
+          <div id="childParentSection" style="display:none;">
+            <div style="border-top:1px solid var(--stone-200);margin:16px 0;padding-top:8px;">
+              <p style="font-weight:600;color:var(--teal-700);font-size:14px;">${t.parentSection}</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label form-label-required">${t.parentName}</label>
+              <input type="text" id="m_ParentName">
+            </div>
+            <div class="form-group">
+              <label class="form-label form-label-required">${t.parentRel}</label>
+              <select id="m_ParentRelation">
+                <option value="">${t.relPick}</option>
+                ${Object.keys(t.rels).map(k => `<option value="${k}">${t.rels[k]}</option>`).join('')}
+              </select>
+            </div>
+            <p class="form-hint" style="margin-top:-8px;">📞 ${t.childPhoneNote}</p>
+          </div>
+
+          <!-- ทุกคน: ติดต่อฉุกเฉิน -->
+          <div style="border-top:1px solid var(--stone-200);margin:16px 0;padding-top:8px;">
+            <p style="font-weight:600;color:var(--coral-700);font-size:14px;">${t.emerSection}</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label-required">${t.emerRel}</label>
+            <select id="m_EmerRelation" required>
+              <option value="">${t.relPick}</option>
+              ${Object.keys(t.rels).map(k => `<option value="${k}">${t.rels[k]}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label form-label-required">${t.emerPhone}</label>
+            <input type="tel" id="m_EmerPhone" required pattern="[0-9]{9,10}" maxlength="10" inputmode="numeric" placeholder="0811112222">
+          </div>
+
           <div class="form-group">
             <label class="form-label">${t.medical}</label>
             <textarea id="m_MedicalNotes" placeholder="${t.medicalPlaceholder}"></textarea>
@@ -1166,6 +1221,42 @@ function registerStep2Html() {
 // helper เลือกข้อความตามภาษา
 function t_lang(isThai, th, en) { return isThai ? th : en; }
 
+// คำนวณอายุจาก DOB
+function calcAge(dobStr) {
+  if (!dobStr) return null;
+  const dob = new Date(dobStr);
+  if (isNaN(dob)) return null;
+  const now = new Date();
+  let age = now.getFullYear() - dob.getFullYear();
+  const m = now.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+  return age;
+}
+
+// เปลี่ยนฟอร์มตามอายุ (เด็ก < 15 → ผู้ปกครอง · ผู้ใหญ่ → เบอร์ตัวเอง)
+function updateAgeFields() {
+  const dob = document.getElementById('m_DOB');
+  if (!dob) return;
+  const age = calcAge(dob.value);
+  const childSec = document.getElementById('childParentSection');
+  const adultSec = document.getElementById('adultPhoneSection');
+  const parentName = document.getElementById('m_ParentName');
+  const parentRel = document.getElementById('m_ParentRelation');
+  const ownPhone = document.getElementById('m_OwnPhone');
+  if (age === null) {
+    if (childSec) childSec.style.display = 'none';
+    if (adultSec) adultSec.style.display = 'none';
+    return;
+  }
+  const isChild = age < 15;
+  if (childSec) childSec.style.display = isChild ? 'block' : 'none';
+  if (adultSec) adultSec.style.display = isChild ? 'none' : 'block';
+  // ตั้ง required ตามกรณี
+  if (parentName) parentName.required = isChild;
+  if (parentRel) parentRel.required = isChild;
+  if (ownPhone) ownPhone.required = !isChild;
+}
+
 async function regFinalize() {
   const btn = document.getElementById('regFinalBtn');
   const isThai = regState.nationality === 'thai';
@@ -1190,16 +1281,50 @@ async function regFinalize() {
     .toUpperCase()
     .trim();
 
+  const age = calcAge(document.getElementById('m_DOB').value);
+  const isChild = age !== null && age < 15;
+
+  // เบอร์: เด็กใช้เบอร์ครอบครัว · ผู้ใหญ่ใช้เบอร์ตัวเอง (ถ้ากรอก)
+  const ownPhone = (document.getElementById('m_OwnPhone') || {}).value || '';
+  const memberPhone = isChild ? regState.phone : (ownPhone.trim() || regState.phone);
+
+  const parentName = (document.getElementById('m_ParentName') || {}).value || '';
+  const parentRel = (document.getElementById('m_ParentRelation') || {}).value || '';
+  const emerRel = (document.getElementById('m_EmerRelation') || {}).value || '';
+  const emerPhone = (document.getElementById('m_EmerPhone') || {}).value || '';
+
+  // เช็คเบอร์ฉุกเฉิน required
+  if (!emerRel || !emerPhone.trim()) {
+    toast(isThai ? 'กรุณากรอกข้อมูลติดต่อฉุกเฉิน' : 'Please fill emergency contact', 'danger');
+    return;
+  }
+  // เด็ก: ต้องมีผู้ปกครอง
+  if (isChild && (!parentName.trim() || !parentRel)) {
+    toast(isThai ? 'กรุณากรอกข้อมูลผู้ปกครอง' : 'Please fill parent information', 'danger');
+    return;
+  }
+  // ผู้ใหญ่: เช็คภาษาชื่อผู้ปกครอง (ถ้ามี)
+  if (isChild) {
+    const pnCheck = checkLanguage(parentName, regState.nationality);
+    if (!pnCheck.ok) { toast(t_lang(isThai,'ชื่อผู้ปกครอง','Parent name') + ': ' + pnCheck.msg, 'danger'); return; }
+  }
+
+  // EmergencyContact = "ความสัมพันธ์:เบอร์" เก็บรวม
+  const emergencyContact = emerRel + ':' + emerPhone.trim();
+
   const memberData = {
     FirstName: firstName,
     LastName: lastName,
     Nickname: nickname,
     DOB: document.getElementById('m_DOB').value,
     Gender: gender ? gender.value : '',
-    Phone: regState.phone,
+    Phone: memberPhone,
     CustomerType: regState.nationality,  // thai / foreigner จาก step แรก
+    Nationality: regState.nationality === 'thai' ? 'TH' : 'OTHER',
     ParentPhone: regState.phone,
-    ParentName: '',
+    ParentName: isChild ? parentName.trim() : '',
+    ParentRelation: isChild ? parentRel : '',
+    EmergencyContact: emergencyContact,
     MedicalNotes: document.getElementById('m_MedicalNotes').value.trim(),
   };
 
