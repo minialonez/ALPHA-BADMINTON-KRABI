@@ -950,7 +950,13 @@ async function regFinalize() {
 
   const gender = document.querySelector('input[name="Gender"]:checked');
   const custType = document.querySelector('input[name="CustomerType"]:checked');
-  const setupCode = (document.getElementById('m_SetupCode') || {}).value || '';
+  // normalize setup code: ตัดช่องว่าง + แปลง dash แปลก ๆ (–—‐‑) เป็น dash ปกติ
+  let setupCode = (document.getElementById('m_SetupCode') || {}).value || '';
+  setupCode = setupCode
+    .replace(/[\u2010\u2011\u2012\u2013\u2014\u2015\u2212]/g, '-')  // dashes ทุกแบบ → -
+    .replace(/\s+/g, '')                                            // ลบช่องว่างทั้งหมด
+    .toUpperCase()
+    .trim();
 
   const memberData = {
     FirstName: document.getElementById('m_FirstName').value.trim(),
@@ -968,12 +974,12 @@ async function regFinalize() {
   try {
     // 1. เช็ค setup code ถ้ามี (ตอนนี้ ALPHA-ADMIN-2026 / ALPHA-STAFF-2026)
     let assignedRole = 'student';
-    if (setupCode.trim()) {
+    if (setupCode) {
       try {
-        const check = await api.checkSetupCode(setupCode.trim());
+        const check = await api.checkSetupCode(setupCode);
         assignedRole = check.role;
       } catch (e) {
-        toast('Setup code ผิด: ' + e.message, 'danger');
+        toast('Setup code ผิด: ' + e.message + ' (ที่ส่ง: "' + setupCode + '")', 'danger');
         btn.disabled = false; btn.textContent = '✓ สมัครครอบครัว';
         return;
       }
