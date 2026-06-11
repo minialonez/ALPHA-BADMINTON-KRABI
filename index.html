@@ -1408,61 +1408,102 @@ function drawFaceRing(progress, active, detected) {
 
 async function initFaceCamera() {
   try {
+    const instr = document.getElementById('faceInstruction');
+    if (instr) instr.textContent = '⏳ กำลังโหลด...';
     await Face.loadModels();
     const v = document.getElementById('faceVideo');
-    const c = document.getElementById('faceOverlay');
     if (!v) return;
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
     v.srcObject = stream;
     await new Promise(r => v.onloadedmetadata = r);
-    c.width = v.videoWidth; c.height = v.videoHeight;
     faceState.capturing = true;
+    faceState.holdCount = 0;
+    drawFaceRing(0, true, false);
     faceCaptureLoop();
   } catch (e) {
     toast('เปิดกล้องไม่ได้: ' + e.message, 'danger');
   }
 }
 
+// เกณฑ์การหันแต่ละท่า (yaw: ลบ=ซ้าย บวก=ขวา ในมุมมองจริง)
+// หมายเหตุ: เพราะ mirror ภาพ ผู้ใช้ "หันซ้าย" ของตัวเอง = หน้าหันไปทางที่ระบบเห็นเป็นขวา
+// แต่เราเทียบจาก landmark ตรง ๆ ซึ่งเป็นพิกัดจริง — ปรับ sign ให้ตรงกับคำสั่ง
+const POSE_RULES = {
+  1: { name: 'front', label: 'มองตรงเข้ากล้อง', check: (yaw) => Math.abs(yaw) < 0.18, arrow: '' },
+  2: { name: 'left',  label: 'ค่อย ๆ หันหน้าไปทางซ้าย', check: (yaw) => yaw > 0.22, arrow: 'left' },
+  3: { name: 'right', label: 'ค่อย ๆ หันหน้าไปทางขวา', check: (yaw) => yaw < -0.22, arrow: 'right' },
+};
+
 async function faceCaptureLoop() {
   if (!faceState.capturing) return;
   const v = document.getElementById('faceVideo');
-  const c = document.getElementById('faceOverlay');
-  if (!v || !c) return;
+  if (!v) return;
+  const rule = POSE_RULES[faceState.step];
+  const needed = CONFIG.FACE_DESCRIPTOR_SAMPLES;
+
   try {
     const detection = await Face.detectFaceWithDescriptor(v);
-    const ctx = c.getContext('2d');
-    ctx.clearRect(0, 0, c.width, c.height);
+    const instr = document.getElementById('faceInstruction');
+    const lb = document.getElementById('faceLabel');
+
     if (detection) {
-      const box = detection.detection.box;
-      ctx.strokeStyle = '#14B8A6';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(box.x, box.y, box.width, box.height);
+      const yawInfo = Face.estimateHeadYaw(detection.landmarks);
+      const poseOk = rule.check(yawInfo.yaw);
+      const key = rule.name;
+      const collected = faceState.samples[key].length;
 
-      const stepKeys = ['', 'front', 'left', 'right'];
-      const key = stepKeys[faceState.step];
-      faceState.samples[key].push(Array.from(detection.descriptor));
-      const n = faceState.samples[key].length;
-      const pct = (n / CONFIG.FACE_DESCRIPTOR_SAMPLES) * 100;
-      const pg = document.getElementById('faceProgress');
-      if (pg) pg.style.width = pct + '%';
-      const lb = document.getElementById('faceLabel');
-      if (lb) lb.textContent = `เก็บตัวอย่าง ${n} / ${CONFIG.FACE_DESCRIPTOR_SAMPLES}`;
-
-      if (n >= CONFIG.FACE_DESCRIPTOR_SAMPLES) {
-        faceState.capturing = false;
-        if (faceState.step < 3) {
-          faceState.step++;
-          await new Promise(r => setTimeout(r, 1200));
-          document.getElementById('app').innerHTML = faceRegisterHtml();
-          setTimeout(() => initFaceCamera(), 100);
-        } else {
-          submitFaceData();
+      if (poseOk) {
+        // ท่าถูก → เก็บภาพ
+        faceState.samples[key].push(Array.from(detection.descriptor));
+        const n = faceState.samples[key].length;
+        const progress = n / needed;
+        drawFaceRing(progress, true, true);
+        if (instr) {
+          instr.textContent = '✓ ดีมาก! ค้างไว้...';
+          instr.style.color = 'var(--teal-600)';
         }
-        return;
+        if (lb) lb.textContent = `${n} / ${needed}`;
+
+        if (n >= needed) {
+          faceState.capturing = false;
+          drawFaceRing(1, true, true);
+          // โชว์เครื่องหมายถูก
+          const chk = document.getElementById('faceCheck');
+          if (chk) chk.innerHTML = '<div class="faceid-check">✅</div>';
+          await new Promise(r => setTimeout(r, 900));
+          if (faceState.step < 3) {
+            faceState.step++;
+            document.getElementById('app').innerHTML = faceRegisterHtml();
+            setTimeout(() => initFaceCamera(), 100);
+          } else {
+            submitFaceData();
+          }
+          return;
+        }
+      } else {
+        // ท่ายังไม่ถูก → บอกให้หัน
+        const progress = collected / needed;
+        drawFaceRing(progress, true, true);
+        if (instr) {
+          const arrowHtml = rule.arrow === 'left' ? '<span class="faceid-arrow left">←</span> '
+                          : rule.arrow === 'right' ? '<span class="faceid-arrow">→</span> '
+                          : '';
+          instr.innerHTML = arrowHtml + rule.label;
+          instr.style.color = '';
+        }
+        if (lb) lb.textContent = collected > 0 ? `เก็บแล้ว ${collected} / ${needed}` : '';
       }
+    } else {
+      // ไม่เจอหน้า
+      const instr2 = document.getElementById('faceInstruction');
+      if (instr2) {
+        instr2.textContent = 'ขยับหน้าให้อยู่ในวงกลม';
+        instr2.style.color = '';
+      }
+      drawFaceRing(faceState.samples[rule.name].length / needed, true, false);
     }
   } catch (e) { console.error(e); }
-  setTimeout(faceCaptureLoop, 300);
+  setTimeout(faceCaptureLoop, 200);
 }
 
 async function submitFaceData() {
