@@ -179,6 +179,68 @@ textarea { resize: vertical; min-height: 80px; font-family: inherit; }
   -webkit-backdrop-filter: blur(8px); font-size: 12px; font-weight: 600;
 }
 
+/* ===== Face ID circular scanner ===== */
+.faceid-stage {
+  position: relative;
+  width: 280px; height: 280px;
+  margin: 0 auto;
+}
+.faceid-video-wrap {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 230px; height: 230px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--stone-900);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+}
+.faceid-video-wrap video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+.faceid-ring {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  transform: scaleX(-1);
+  pointer-events: none;
+}
+.faceid-hint {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 20px;
+  min-height: 28px;
+  transition: color 0.3s;
+}
+.faceid-arrow {
+  font-size: 2rem;
+  display: inline-block;
+  animation: arrowPulse 1s ease-in-out infinite;
+}
+@keyframes arrowPulse {
+  0%, 100% { transform: translateX(0); opacity: 0.6; }
+  50% { transform: translateX(8px); opacity: 1; }
+}
+.faceid-arrow.left { animation-name: arrowPulseLeft; }
+@keyframes arrowPulseLeft {
+  0%, 100% { transform: translateX(0); opacity: 0.6; }
+  50% { transform: translateX(-8px); opacity: 1; }
+}
+.faceid-check {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 4rem;
+  animation: checkPop 0.5s ease forwards;
+  z-index: 5;
+}
+@keyframes checkPop {
+  to { transform: translate(-50%, -50%) scale(1); }
+}
+
 .stepper { display: flex; gap: 4px; margin: 20px 0 24px; }
 .step {
   flex: 1; text-align: center; padding: 10px 12px;
@@ -554,6 +616,27 @@ const Face = {
     return await faceapi
       .detectSingleFace(videoEl, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 }))
       .withFaceLandmarks().withFaceDescriptor();
+  },
+  // ประเมินทิศการหันหน้า (yaw) จาก landmark
+  // return: { yaw: number (-1..1, ลบ=หันซ้าย บวก=หันขวา), ok: bool }
+  estimateHeadYaw(landmarks) {
+    try {
+      const pts = landmarks.positions;
+      // จมูกปลาย = 30, ขอบหน้าซ้าย = 0, ขอบหน้าขวา = 16
+      const nose = pts[30];
+      const leftJaw = pts[0];
+      const rightJaw = pts[16];
+      const distLeft = Math.abs(nose.x - leftJaw.x);
+      const distRight = Math.abs(rightJaw.x - nose.x);
+      const total = distLeft + distRight;
+      if (total === 0) return { yaw: 0, ok: false };
+      // ratio: 0.5 = ตรงกลาง, <0.5 = จมูกใกล้ซ้าย(หันขวา), >0.5 = ใกล้ขวา(หันซ้าย)
+      const ratio = distLeft / total;
+      const yaw = (ratio - 0.5) * 2; // -1..1
+      return { yaw, ok: true };
+    } catch (e) {
+      return { yaw: 0, ok: false };
+    }
   },
   computeMatch(queryDescriptor, candidates, threshold) {
     threshold = threshold || CONFIG.FACE_MATCH_THRESHOLD;
@@ -1256,26 +1339,28 @@ Router.add('face-register', async (params) => {
 
 function faceRegisterHtml() {
   const m = faceState.member;
-  const stepLabels = ['', 'หน้าตรง', 'หันซ้าย ~30°', 'หันขวา ~30°'];
+  const stepLabels = ['', 'หน้าตรง', 'หันซ้าย', 'หันขวา'];
   return `
     <div class="container animate-in">
       <div class="card card-elevated">
-        <p class="text-muted text-sm">ลงทะเบียนใบหน้าให้</p>
-        <h2>${m.Nickname || m.FirstName} <span class="text-muted text-sm" style="font-weight:500;">· ${m.DisplayID}</span></h2>
+        <p class="text-muted text-sm text-center">ลงทะเบียนใบหน้าให้</p>
+        <h2 class="text-center">${m.Nickname || m.FirstName} <span class="text-muted text-sm" style="font-weight:500;">· ${m.DisplayID}</span></h2>
 
-        <div class="stepper">
-          <div class="step ${faceState.step >= 1 ? (faceState.step > 1 ? 'done' : 'active') : ''}">1. หน้าตรง</div>
-          <div class="step ${faceState.step >= 2 ? (faceState.step > 2 ? 'done' : 'active') : ''}">2. หันซ้าย</div>
-          <div class="step ${faceState.step >= 3 ? 'active' : ''}">3. หันขวา</div>
+        <div class="stepper mt-4">
+          <div class="step ${faceState.step >= 1 ? (faceState.step > 1 ? 'done' : 'active') : ''}">หน้าตรง</div>
+          <div class="step ${faceState.step >= 2 ? (faceState.step > 2 ? 'done' : 'active') : ''}">หันซ้าย</div>
+          <div class="step ${faceState.step >= 3 ? (faceState.step > 3 ? 'done' : 'active') : ''}">หันขวา</div>
         </div>
 
-        <div class="camera-card" style="aspect-ratio:1;max-width:380px;margin:0 auto;">
-          <video id="faceVideo" autoplay muted playsinline></video>
-          <canvas id="faceOverlay"></canvas>
+        <div class="faceid-stage mt-4">
+          <div class="faceid-video-wrap">
+            <video id="faceVideo" autoplay muted playsinline></video>
+          </div>
+          <canvas id="faceRing" class="faceid-ring" width="280" height="280"></canvas>
+          <div id="faceCheck"></div>
         </div>
 
-        <p id="faceInstruction" class="text-center mt-4" style="font-size:1.05rem;font-weight:600;">กรุณา${stepLabels[faceState.step] || 'หน้าตรง'}</p>
-        <div class="progress-bar mt-3"><div class="progress-bar-fill" id="faceProgress" style="width:0%;"></div></div>
+        <p id="faceInstruction" class="faceid-hint">เตรียมพร้อม...</p>
         <p class="text-muted text-sm text-center mt-2" id="faceLabel"></p>
 
         <div id="faceResult"></div>
@@ -1284,6 +1369,41 @@ function faceRegisterHtml() {
       <button class="btn btn-ghost btn-block mt-4" onclick="faceState.capturing=false; Router.go(Family.storage.getActive() ? 'portal' : 'home');">← ยกเลิก</button>
     </div>
   `;
+}
+
+// วาดวงแหวนขีด ๆ รอบหน้า (เหมือน Face ID)
+function drawFaceRing(progress, active, detected) {
+  const canvas = document.getElementById('faceRing');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const radius = 122;
+  const ticks = 60;
+  ctx.clearRect(0, 0, W, H);
+
+  for (let i = 0; i < ticks; i++) {
+    const angle = (i / ticks) * Math.PI * 2 - Math.PI / 2;
+    const filled = (i / ticks) < progress;
+    const tickLen = filled ? 14 : 9;
+    const r1 = radius;
+    const r2 = radius + tickLen;
+    const x1 = cx + Math.cos(angle) * r1;
+    const y1 = cy + Math.sin(angle) * r1;
+    const x2 = cx + Math.cos(angle) * r2;
+    const y2 = cy + Math.sin(angle) * r2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineWidth = filled ? 4 : 2.5;
+    if (filled) {
+      ctx.strokeStyle = '#14B8A6';
+    } else {
+      ctx.strokeStyle = detected ? 'rgba(20,184,166,0.35)' : 'rgba(255,255,255,0.25)';
+    }
+    ctx.lineCap = 'round';
+    ctx.stroke();
+  }
 }
 
 async function initFaceCamera() {
