@@ -767,16 +767,28 @@ async function doLogin() {
   const btn = document.getElementById('loginBtn');
   btn.disabled = true; btn.textContent = '⏳ ตรวจสอบ...';
   try {
-    const fam = await Family.verifyPIN(phone, pin);
-    if (!fam) {
-      toast('เบอร์โทรหรือ PIN ไม่ถูกต้อง', 'danger');
-      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
-      return;
-    }
-    toast('เข้าสู่ระบบ ' + fam.familyName + ' สำเร็จ', 'success');
-    Router.go(fam.isAdmin ? 'admin' : 'portal');
+    // hash PIN แล้วเช็คกับ server (แหล่งข้อมูลจริง)
+    const pinHash = await Family.hashPIN(pin);
+    const result = await api.loginByPhone(phone, pinHash);
+
+    // สร้าง/อัปเดต family ใน localStorage จากข้อมูล server
+    const fam = {
+      phone: phone,
+      familyName: result.familyName,
+      pinHash: pinHash,
+      headUUID: result.head.UUID,
+      isAdmin: result.role === 'admin',
+      isStaff: result.role === 'staff',
+      role: result.role,
+      memberUUIDs: (result.members || []).map(m => m.UUID),
+      members: result.members || [],
+    };
+    Family.storage.save(fam);
+
+    toast('เข้าสู่ระบบ ' + result.familyName + ' สำเร็จ', 'success');
+    Router.go(result.role === 'admin' ? 'admin' : 'portal');
   } catch (e) {
-    toast(e.message, 'danger');
+    toast(e.message || 'เบอร์โทรหรือ PIN ไม่ถูกต้อง', 'danger');
     btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
   }
 }
@@ -993,12 +1005,15 @@ async function regFinalize() {
       catch (e) { console.warn('updateMember role failed', e); }
     }
 
-    // 4. บันทึก PIN ที่ server (ใน MemberProfile.PinHash) — ฝั่ง server
-    let pinHash;
+    // 4. บันทึก PIN ที่ server (ใน MemberProfile.PinHash) — สำคัญมาก ถ้าพลาด login ไม่ได้
+    const pinHash = await Family.hashPIN(regState.pin);
     try {
-      pinHash = await Family.hashPIN(regState.pin);
       await api.setFamilyPIN(regState.phone, pinHash, regState.familyName);
-    } catch (e) { console.warn('setFamilyPIN failed', e); }
+    } catch (e) {
+      // ถ้าเก็บ PIN ไม่ได้ — แจ้งเตือนชัด ๆ (มักเพราะยังไม่ได้รัน setupFamilyColumns)
+      toast('⚠️ บันทึก PIN ไม่สำเร็จ: ' + e.message + ' — แจ้งแอดมินรัน setupFamilyColumns', 'danger');
+      console.error('setFamilyPIN failed:', e);
+    }
 
     // 5. บันทึก family ใน localStorage ด้วย (เผื่อ login ต่อ)
     const family = await Family.createFamily(regState.phone, regState.familyName, regState.pin);
