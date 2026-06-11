@@ -972,18 +972,15 @@ async function regFinalize() {
   };
 
   try {
-    // 1. เช็ค setup code ถ้ามี (ตอนนี้ ALPHA-ADMIN-2026 / ALPHA-STAFF-2026)
+    // 1. เช็ค setup code ในเครื่อง (ไม่เรียก API — เร็วและไม่ block)
+    //    ถ้า code ตรง → admin/staff · ถ้าไม่ตรง/ว่าง → นักเรียนปกติ
     let assignedRole = 'student';
-    if (setupCode) {
-      try {
-        const check = await api.checkSetupCode(setupCode);
-        assignedRole = check.role;
-      } catch (e) {
-        toast('Setup code ผิด: ' + e.message + ' (ที่ส่ง: "' + setupCode + '")', 'danger');
-        btn.disabled = false; btn.textContent = '✓ สมัครครอบครัว';
-        return;
-      }
+    if (setupCode === 'ALPHA-ADMIN-2026') {
+      assignedRole = 'admin';
+    } else if (setupCode === 'ALPHA-STAFF-2026') {
+      assignedRole = 'staff';
     }
+    // หมายเหตุ: ถ้า setupCode มีค่าแต่ไม่ตรง = พิมพ์ผิด → ปล่อยเป็นนักเรียน (ไม่ block การสมัคร)
     const isAdmin = assignedRole === 'admin';
     const isStaff = assignedRole === 'staff';
 
