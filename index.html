@@ -881,54 +881,134 @@ async function doLogin() {
 // Step 1: เบอร์ + ชื่อครอบครัว + PIN
 // Step 2: ข้อมูลสมาชิกคนแรก (หัวหน้าครอบครัว)
 // ============================================================
-let regState = { step: 1, phone: '', familyName: '', pin: '' };
+let regState = { step: 0, nationality: '', phone: '', familyName: '', pin: '' };
 
 Router.add('register', () => {
-  regState = { step: 1, phone: '', familyName: '', pin: '' };
-  return registerStep1Html();
+  regState = { step: 0, nationality: '', phone: '', familyName: '', pin: '' };
+  return registerStep0Html();
 });
 
-function registerStep1Html() {
+// ===== STEP 0: เลือกสัญชาติก่อน =====
+function registerStep0Html() {
   return `
     <div class="container animate-in">
       <div class="card card-elevated">
-        <h2>สมัครครอบครัวใหม่</h2>
-        <p class="text-muted text-sm mt-2 mb-4">เริ่มต้นด้วยเบอร์โทรและตั้งชื่อครอบครัว</p>
+        <h2>สมัครสมาชิกใหม่</h2>
+        <p class="text-muted text-sm mt-2 mb-4">เริ่มจากเลือกสัญชาติ เพื่อเตรียมฟอร์มให้เหมาะสม</p>
 
         <div class="stepper">
-          <div class="step active">1. ตั้งค่าครอบครัว</div>
-          <div class="step">2. สมาชิกคนแรก</div>
+          <div class="step active">1. สัญชาติ</div>
+          <div class="step">2. ครอบครัว</div>
+          <div class="step">3. ข้อมูล</div>
+        </div>
+
+        <p class="text-center text-muted mb-4">คุณเป็น...</p>
+        <div style="display:grid;gap:12px;">
+          <button class="menu-item" onclick="regPickNationality('thai')" style="cursor:pointer;border:1.5px solid var(--stone-200);">
+            <span class="menu-item-icon" style="font-size:2rem;">🇹🇭</span>
+            <div class="menu-item-text">
+              <div class="menu-item-title">คนไทย</div>
+              <div class="menu-item-sub">กรอกข้อมูลเป็นภาษาไทย</div>
+            </div>
+            <span class="menu-item-arrow">→</span>
+          </button>
+          <button class="menu-item" onclick="regPickNationality('foreigner')" style="cursor:pointer;border:1.5px solid var(--stone-200);">
+            <span class="menu-item-icon blue" style="font-size:2rem;">🌍</span>
+            <div class="menu-item-text">
+              <div class="menu-item-title">Foreigner / ชาวต่างชาติ</div>
+              <div class="menu-item-sub">Fill in all information in English</div>
+            </div>
+            <span class="menu-item-arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn btn-ghost btn-block mt-4" onclick="Router.go('home')">← กลับหน้าแรก</button>
+    </div>
+  `;
+}
+
+function regPickNationality(nat) {
+  regState.nationality = nat;
+  regState.step = 1;
+  document.getElementById('app').innerHTML = registerStep1Html();
+}
+
+function registerStep1Html() {
+  const isThai = regState.nationality === 'thai';
+  const t = isThai ? {
+    title: 'ตั้งค่าครอบครัว',
+    sub: 'กรอกเบอร์โทรและตั้งชื่อครอบครัว',
+    phoneLabel: 'เบอร์โทรครอบครัว',
+    phoneHint: 'เบอร์ 10 หลัก · ใช้เบอร์เดียวสำหรับทั้งครอบครัว',
+    famLabel: 'ชื่อครอบครัว',
+    famPlaceholder: 'เช่น ใจดี · บ้านโอ๊ต',
+    famHint: 'ตั้งชื่อให้สนุก ไว้ใช้เรียกในระบบ',
+    pinLabel: 'PIN 6 หลัก',
+    pin2Label: 'ยืนยัน PIN 6 หลัก',
+    pinHint: 'กรอกซ้ำเพื่อยืนยัน',
+    next: 'ถัดไป →',
+    back: '← กลับ',
+  } : {
+    title: 'Family Setup',
+    sub: 'Enter phone number and family name',
+    phoneLabel: 'Family Phone Number',
+    phoneHint: '10 digits · One number for the whole family',
+    famLabel: 'Family Name',
+    famPlaceholder: 'e.g. The Smiths · Johnson',
+    famHint: 'A friendly name used in the system',
+    pinLabel: '6-digit PIN',
+    pin2Label: 'Confirm 6-digit PIN',
+    pinHint: 'Enter again to confirm',
+    next: 'Next →',
+    back: '← Back',
+  };
+  return `
+    <div class="container animate-in">
+      <div class="card card-elevated">
+        <h2>${t.title}</h2>
+        <p class="text-muted text-sm mt-2 mb-4">${t.sub}</p>
+
+        <div class="stepper">
+          <div class="step done">✓ ${isThai ? 'สัญชาติ' : 'Nationality'}</div>
+          <div class="step active">2. ${isThai ? 'ครอบครัว' : 'Family'}</div>
+          <div class="step">3. ${isThai ? 'ข้อมูล' : 'Info'}</div>
+        </div>
+
+        <div class="alert alert-info mb-4" style="font-size:13px;">
+          <span>${isThai ? '🇹🇭' : '🌍'}</span>
+          <div>${isThai ? 'กรุณากรอกข้อมูลทั้งหมดเป็น<strong>ภาษาไทย</strong>' : 'Please fill in all fields in <strong>English</strong>'}</div>
         </div>
 
         <form onsubmit="event.preventDefault(); regNext1();">
           <div class="form-group">
-            <label class="form-label form-label-required">เบอร์โทรครอบครัว</label>
+            <label class="form-label form-label-required">${t.phoneLabel}</label>
             <input type="tel" id="regPhone" required pattern="[0-9]{10}" maxlength="10" inputmode="numeric" placeholder="0812345678" autocomplete="tel">
-            <p class="form-hint">เบอร์ 10 หลัก · ใช้เบอร์เดียวสำหรับทั้งครอบครัว</p>
+            <p class="form-hint">${t.phoneHint}</p>
           </div>
 
           <div class="form-group">
-            <label class="form-label form-label-required">ชื่อครอบครัว</label>
-            <input type="text" id="regFamilyName" required placeholder="เช่น ใจดี · บ้านโอ๊ต · The Smiths" maxlength="40">
-            <p class="form-hint">ตั้งชื่อให้สนุก ไว้ใช้เรียกในระบบ</p>
+            <label class="form-label form-label-required">${t.famLabel}</label>
+            <input type="text" id="regFamilyName" required placeholder="${t.famPlaceholder}" maxlength="40">
+            <p class="form-hint">${t.famHint}</p>
           </div>
 
           <div class="form-group">
-            <label class="form-label form-label-required">PIN 6 หลัก</label>
+            <label class="form-label form-label-required">${t.pinLabel}</label>
             <input type="password" id="regPin1" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="••••••" autocomplete="new-password">
           </div>
 
           <div class="form-group">
-            <label class="form-label form-label-required">ยืนยัน PIN 6 หลัก</label>
+            <label class="form-label form-label-required">${t.pin2Label}</label>
             <input type="password" id="regPin2" class="pin-input" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="••••••" autocomplete="new-password">
-            <p class="form-hint">กรอกซ้ำเพื่อยืนยัน</p>
+            <p class="form-hint">${t.pinHint}</p>
           </div>
 
-          <button class="btn btn-primary btn-block btn-lg mt-4">ถัดไป →</button>
+          <button class="btn btn-primary btn-block btn-lg mt-4">${t.next}</button>
         </form>
       </div>
 
-      <button class="btn btn-ghost btn-block mt-4" onclick="Router.go('home')">← กลับหน้าแรก</button>
+      <button class="btn btn-ghost btn-block mt-4" onclick="regState.step=0; document.getElementById('app').innerHTML = registerStep0Html();">${t.back}</button>
     </div>
   `;
 }
@@ -938,18 +1018,22 @@ function regNext1() {
   const familyName = document.getElementById('regFamilyName').value.trim();
   const pin1 = document.getElementById('regPin1').value.trim();
   const pin2 = document.getElementById('regPin2').value.trim();
+  const isThai = regState.nationality === 'thai';
 
-  if (pin1 !== pin2) { toast('PIN ทั้งสองครั้งไม่ตรงกัน', 'danger'); return; }
-  if (Family.storage.get(phone)) {
-    toast('เบอร์นี้มีบัญชีอยู่แล้ว · เข้าสู่ระบบแทน', 'warning');
-    setTimeout(() => Router.go('login'), 1200);
+  if (pin1 !== pin2) {
+    toast(isThai ? 'PIN ทั้งสองครั้งไม่ตรงกัน' : 'PINs do not match', 'danger');
     return;
   }
 
-  regState = { step: 2, phone, familyName, pin: pin1 };
+  regState.phone = phone;
+  regState.familyName = familyName;
+  regState.pin = pin1;
+  regState.step = 2;
   document.getElementById('app').innerHTML = registerStep2Html();
-  // re-bind radios
-  Router.render = Router.render; // noop
+  bindRadioCards();
+}
+
+function bindRadioCards() {
   document.querySelectorAll('.radio-card').forEach(card => {
     const input = card.querySelector('input[type="radio"]');
     if (!input) return;
@@ -963,119 +1047,178 @@ function regNext1() {
   });
 }
 
+// เช็คว่าข้อความตรงกับภาษาที่กำหนดไหม
+// thai: ต้องมีอักขระไทย · foreigner: ต้องไม่มีอักขระไทย
+function checkLanguage(text, nationality) {
+  if (!text) return { ok: true };
+  const hasThai = /[\u0E00-\u0E7F]/.test(text);
+  if (nationality === 'thai' && !hasThai) {
+    return { ok: false, msg: 'กรุณากรอกเป็นภาษาไทย' };
+  }
+  if (nationality === 'foreigner' && hasThai) {
+    return { ok: false, msg: 'Please use English only' };
+  }
+  return { ok: true };
+}
+
 function registerStep2Html() {
+  const isThai = regState.nationality === 'thai';
+  const t = isThai ? {
+    title: 'ข้อมูลสมาชิกคนแรก',
+    sub: 'คนแรกจะเป็นหัวหน้าครอบครัว (ปกติคือพ่อหรือแม่)',
+    firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น',
+    dob: 'วันเดือนปีเกิด', gender: 'เพศ', male: 'ชาย', female: 'หญิง',
+    medical: 'โรคประจำตัว / แพ้อาหาร',
+    medicalPlaceholder: 'เช่น แพ้ถั่ว, โรคหอบหืด — ไว้แจ้งโค้ช',
+    consent: 'ยินยอม PDPA',
+    consentText: 'ข้าพเจ้ายินยอมให้เก็บข้อมูลส่วนตัวรวมถึงข้อมูลใบหน้า เพื่อใช้ในระบบเช็คชื่อและการจัดการคอร์ส · ข้อมูลจะไม่ถูกเผยแพร่',
+    submit: '✓ สมัครครอบครัว', back: '← ย้อนกลับ',
+    langNote: '🇹🇭 กรอกข้อมูลเป็นภาษาไทย',
+    adminBtn: '⚙️ เป็น admin?', adminPlaceholder: 'กรอก setup code ถ้าจะสมัครเป็น admin',
+    adminHint: 'เว้นว่างไว้ถ้าสมัครเป็นลูกค้าธรรมดา',
+  } : {
+    title: 'First Member Information',
+    sub: 'The first member becomes the family head (usually a parent)',
+    firstName: 'First Name', lastName: 'Last Name', nickname: 'Nickname',
+    dob: 'Date of Birth', gender: 'Gender', male: 'Male', female: 'Female',
+    medical: 'Medical Conditions / Allergies',
+    medicalPlaceholder: 'e.g. nut allergy, asthma — for the coach',
+    consent: 'PDPA Consent',
+    consentText: 'I consent to the collection of personal data including facial data for attendance and course management. Data will not be shared.',
+    submit: '✓ Register Family', back: '← Back',
+    langNote: '🌍 Fill in English only',
+    adminBtn: '⚙️ Register as admin?', adminPlaceholder: 'Enter setup code for admin',
+    adminHint: 'Leave blank for normal customer',
+  };
   return `
     <div class="container animate-in">
       <div class="card card-elevated">
-        <h2>ข้อมูลสมาชิกคนแรก</h2>
-        <p class="text-muted text-sm mt-2 mb-4">คนแรกจะเป็นหัวหน้าครอบครัว (ปกติคือพ่อหรือแม่)</p>
+        <h2>${t.title}</h2>
+        <p class="text-muted text-sm mt-2 mb-4">${t.sub}</p>
 
         <div class="stepper">
-          <div class="step done">✓ ตั้งค่าครอบครัว</div>
-          <div class="step active">2. สมาชิกคนแรก</div>
+          <div class="step done">✓ ${isThai ? 'สัญชาติ' : 'Nationality'}</div>
+          <div class="step done">✓ ${isThai ? 'ครอบครัว' : 'Family'}</div>
+          <div class="step active">3. ${isThai ? 'ข้อมูล' : 'Info'}</div>
+        </div>
+
+        <div class="alert alert-info mb-4" style="font-size:13px;">
+          <span>${isThai ? '🇹🇭' : '🌍'}</span><div>${t.langNote}</div>
         </div>
 
         <form onsubmit="event.preventDefault(); regFinalize();">
           <div class="form-group">
-            <label class="form-label form-label-required">ชื่อจริง</label>
+            <label class="form-label form-label-required">${t.firstName}</label>
             <input type="text" id="m_FirstName" required>
           </div>
           <div class="form-group">
-            <label class="form-label form-label-required">นามสกุล</label>
+            <label class="form-label form-label-required">${t.lastName}</label>
             <input type="text" id="m_LastName" required>
           </div>
           <div class="form-group">
-            <label class="form-label">ชื่อเล่น</label>
+            <label class="form-label">${t.nickname}</label>
             <input type="text" id="m_Nickname">
           </div>
           <div class="form-group">
-            <label class="form-label form-label-required">วันเดือนปีเกิด</label>
+            <label class="form-label form-label-required">${t.dob}</label>
             <input type="date" id="m_DOB" required>
           </div>
           <div class="form-group">
-            <label class="form-label">เพศ</label>
+            <label class="form-label">${t.gender}</label>
             <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="Gender" value="male"> ชาย</label>
-              <label class="radio-card"><input type="radio" name="Gender" value="female"> หญิง</label>
+              <label class="radio-card"><input type="radio" name="Gender" value="male"> ${t.male}</label>
+              <label class="radio-card"><input type="radio" name="Gender" value="female"> ${t.female}</label>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label form-label-required">ประเภทลูกค้า</label>
-            <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="CustomerType" value="thai" checked> 🇹🇭 คนไทย</label>
-              <label class="radio-card"><input type="radio" name="CustomerType" value="foreigner"> 🌍 ต่างชาติ</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">โรคประจำตัว / แพ้อาหาร</label>
-            <textarea id="m_MedicalNotes" placeholder="เช่น แพ้ถั่ว, โรคหอบหืด — ไว้แจ้งโค้ช"></textarea>
+            <label class="form-label">${t.medical}</label>
+            <textarea id="m_MedicalNotes" placeholder="${t.medicalPlaceholder}"></textarea>
           </div>
 
           <div class="checkbox-row">
             <input type="checkbox" id="consent" required>
             <label for="consent">
-              <strong>ยินยอม PDPA</strong><br>
-              <span class="text-muted text-sm">ข้าพเจ้ายินยอมให้เก็บข้อมูลส่วนตัวรวมถึงข้อมูลใบหน้า เพื่อใช้ในระบบเช็คชื่อและการจัดการคอร์ส · ข้อมูลจะไม่ถูกเผยแพร่</span>
+              <strong>${t.consent}</strong><br>
+              <span class="text-muted text-sm">${t.consentText}</span>
             </label>
           </div>
 
           <div id="adminCodeSection" style="display:none;" class="mt-4">
-            <div class="card" style="background: var(--coral-50); border-color: var(--coral-200);">
+            <div class="card" style="background: var(--coral-50);">
               <h3 style="font-size:1rem;color:var(--coral-700);">🔑 Admin Setup Code</h3>
               <div class="form-group mt-3">
-                <input type="password" id="m_SetupCode" placeholder="กรอก setup code ถ้าจะสมัครเป็น admin">
-                <p class="form-hint">เว้นว่างไว้ถ้าสมัครเป็นลูกค้าธรรมดา</p>
+                <input type="password" id="m_SetupCode" placeholder="${t.adminPlaceholder}" autocomplete="off">
+                <p class="form-hint">${t.adminHint}</p>
               </div>
             </div>
           </div>
 
-          <button class="btn btn-primary btn-block btn-lg mt-4" id="regFinalBtn">✓ สมัครครอบครัว</button>
-          <button type="button" class="btn btn-ghost btn-block btn-sm mt-2" id="toggleAdminCode" onclick="document.getElementById('adminCodeSection').style.display = document.getElementById('adminCodeSection').style.display === 'none' ? 'block' : 'none';">⚙️ เป็น admin?</button>
+          <button class="btn btn-primary btn-block btn-lg mt-4" id="regFinalBtn">${t.submit}</button>
+          <button type="button" class="btn btn-ghost btn-block btn-sm mt-2" onclick="document.getElementById('adminCodeSection').style.display = document.getElementById('adminCodeSection').style.display === 'none' ? 'block' : 'none';">${t.adminBtn}</button>
         </form>
       </div>
 
-      <button class="btn btn-ghost btn-block mt-4" onclick="regState.step=1; document.getElementById('app').innerHTML = registerStep1Html();">← ย้อนกลับ</button>
+      <button class="btn btn-ghost btn-block mt-4" onclick="regState.step=1; document.getElementById('app').innerHTML = registerStep1Html();">${t.back}</button>
     </div>
   `;
 }
 
+// helper เลือกข้อความตามภาษา
+function t_lang(isThai, th, en) { return isThai ? th : en; }
+
 async function regFinalize() {
   const btn = document.getElementById('regFinalBtn');
-  btn.disabled = true; btn.textContent = '⏳ กำลังสมัคร...';
+  const isThai = regState.nationality === 'thai';
+
+  const firstName = document.getElementById('m_FirstName').value.trim();
+  const lastName = document.getElementById('m_LastName').value.trim();
+  const nickname = document.getElementById('m_Nickname').value.trim();
+
+  // 0. เช็คภาษาตามสัญชาติ (เตือนแบบ block — แต่อนุญาตชื่อเล่นภาษาอังกฤษของคนไทย)
+  const fnCheck = checkLanguage(firstName, regState.nationality);
+  const lnCheck = checkLanguage(lastName, regState.nationality);
+  if (!fnCheck.ok) { toast(t_lang(isThai, 'ชื่อจริง', 'First name') + ': ' + fnCheck.msg, 'danger'); return; }
+  if (!lnCheck.ok) { toast(t_lang(isThai, 'นามสกุล', 'Last name') + ': ' + lnCheck.msg, 'danger'); return; }
+
+  btn.disabled = true; btn.textContent = isThai ? '⏳ กำลังตรวจสอบ...' : '⏳ Checking...';
 
   const gender = document.querySelector('input[name="Gender"]:checked');
-  const custType = document.querySelector('input[name="CustomerType"]:checked');
-  // normalize setup code: ตัดช่องว่าง + แปลง dash แปลก ๆ (–—‐‑) เป็น dash ปกติ
   let setupCode = (document.getElementById('m_SetupCode') || {}).value || '';
   setupCode = setupCode
-    .replace(/[\u2010\u2011\u2012\u2013\u2014\u2015\u2212]/g, '-')  // dashes ทุกแบบ → -
-    .replace(/\s+/g, '')                                            // ลบช่องว่างทั้งหมด
+    .replace(/[\u2010\u2011\u2012\u2013\u2014\u2015\u2212]/g, '-')
+    .replace(/\s+/g, '')
     .toUpperCase()
     .trim();
 
   const memberData = {
-    FirstName: document.getElementById('m_FirstName').value.trim(),
-    LastName: document.getElementById('m_LastName').value.trim(),
-    Nickname: document.getElementById('m_Nickname').value.trim(),
+    FirstName: firstName,
+    LastName: lastName,
+    Nickname: nickname,
     DOB: document.getElementById('m_DOB').value,
     Gender: gender ? gender.value : '',
     Phone: regState.phone,
-    CustomerType: custType ? custType.value : 'thai',
+    CustomerType: regState.nationality,  // thai / foreigner จาก step แรก
     ParentPhone: regState.phone,
     ParentName: '',
     MedicalNotes: document.getElementById('m_MedicalNotes').value.trim(),
   };
 
   try {
-    // 1. เช็ค setup code ในเครื่อง (ไม่เรียก API — เร็วและไม่ block)
-    //    ถ้า code ตรง → admin/staff · ถ้าไม่ตรง/ว่าง → นักเรียนปกติ
+    // 1. เช็คชื่อ-นามสกุลซ้ำทั้งระบบ → ยืนยันก่อนผ่าน
+    try {
+      const dup = await api.call('checkDuplicateName', { firstName, lastName });
+      if (dup && dup.exists) {
+        const ok = confirm(isThai
+          ? `มีสมาชิกชื่อ "${firstName} ${lastName}" อยู่แล้วในระบบ (${dup.displayId})\n\nต้องการสมัครต่อหรือไม่?`
+          : `A member named "${firstName} ${lastName}" already exists (${dup.displayId})\n\nContinue anyway?`);
+        if (!ok) { btn.disabled = false; btn.textContent = isThai ? '✓ สมัครครอบครัว' : '✓ Register Family'; return; }
+      }
+    } catch (e) { console.warn('checkDuplicateName skipped', e); }
+
+    // 2. เช็ค setup code
     let assignedRole = 'student';
-    if (setupCode === 'ALPHA-ADMIN-2026') {
-      assignedRole = 'admin';
-    } else if (setupCode === 'ALPHA-STAFF-2026') {
-      assignedRole = 'staff';
-    }
-    // หมายเหตุ: ถ้า setupCode มีค่าแต่ไม่ตรง = พิมพ์ผิด → ปล่อยเป็นนักเรียน (ไม่ block การสมัคร)
+    if (setupCode === 'ALPHA-ADMIN-2026') assignedRole = 'admin';
+    else if (setupCode === 'ALPHA-STAFF-2026') assignedRole = 'staff';
     const isAdmin = assignedRole === 'admin';
     const isStaff = assignedRole === 'staff';
 
@@ -1184,11 +1327,13 @@ Router.add('portal', async () => {
             </div>
             <div class="member-id">${m.DisplayID}</div>
           </div>
-          <span class="pill ${hasFace ? 'pill-success' : 'pill-warning'}">${hasFace ? '✓ ใบหน้า' : '⚠ ยังไม่ลง'}</span>
+          <span class="pill ${hasFace ? 'pill-success' : 'pill-warning'}">${hasFace ? '✓ ลงทะเบียนใบหน้าแล้ว' : '⚠ ยังไม่ลงใบหน้า'}</span>
         </div>
         ${enrHtml}
         <div class="flex gap-2 mt-4">
-          ${!hasFace ? `<button class="btn btn-primary btn-sm flex-1" onclick="Router.go('face-register', {uuid: '${m.UUID}'})">🎭 ลงใบหน้า</button>` : ''}
+          ${hasFace
+            ? `<button class="btn btn-sm flex-1" onclick="Router.go('face-register', {uuid: '${m.UUID}', redo: '1'})">🔄 ลงทะเบียนใบหน้าใหม่</button>`
+            : `<button class="btn btn-primary btn-sm flex-1" onclick="Router.go('face-register', {uuid: '${m.UUID}'})">🎭 ลงทะเบียนใบหน้า</button>`}
         </div>
       </div>
     `;
@@ -1329,6 +1474,7 @@ Router.add('face-register', async (params) => {
   try {
     faceState.member = await api.getMember(params.uuid);
     faceState.step = 1;
+    faceState.isRedo = params.redo === '1' || !!faceState.member.FaceDescriptors;
     faceState.samples = { front: [], left: [], right: [] };
     setTimeout(() => initFaceCamera(), 100);
     return faceRegisterHtml();
@@ -1343,8 +1489,9 @@ function faceRegisterHtml() {
   return `
     <div class="container animate-in">
       <div class="card card-elevated">
-        <p class="text-muted text-sm text-center">ลงทะเบียนใบหน้าให้</p>
+        <p class="text-muted text-sm text-center">${faceState.isRedo ? '🔄 ลงทะเบียนใบหน้าใหม่ให้' : 'ลงทะเบียนใบหน้าให้'}</p>
         <h2 class="text-center">${m.Nickname || m.FirstName} <span class="text-muted text-sm" style="font-weight:500;">· ${m.DisplayID}</span></h2>
+        ${faceState.isRedo ? '<div class="alert alert-info mt-3" style="font-size:13px;"><span>ℹ️</span><div>ข้อมูลใบหน้าเดิมจะถูกแทนที่ด้วยข้อมูลใหม่</div></div>' : ''}
 
         <div class="stepper mt-4">
           <div class="step ${faceState.step >= 1 ? (faceState.step > 1 ? 'done' : 'active') : ''}">หน้าตรง</div>
@@ -1366,7 +1513,7 @@ function faceRegisterHtml() {
         <div id="faceResult"></div>
       </div>
 
-      <button class="btn btn-ghost btn-block mt-4" onclick="faceState.capturing=false; Router.go(Family.storage.getActive() ? 'portal' : 'home');">← ยกเลิก</button>
+      <button class="btn btn-ghost btn-block mt-4" onclick="cancelFaceRegister();">← ยกเลิก</button>
     </div>
   `;
 }
@@ -1404,6 +1551,13 @@ function drawFaceRing(progress, active, detected) {
     ctx.lineCap = 'round';
     ctx.stroke();
   }
+}
+
+function cancelFaceRegister() {
+  faceState.capturing = false;
+  const v = document.getElementById('faceVideo');
+  if (v && v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
+  Router.go(Family.storage.getActive() ? 'portal' : 'home');
 }
 
 async function initFaceCamera() {
@@ -1507,7 +1661,7 @@ async function faceCaptureLoop() {
 }
 
 async function submitFaceData() {
-  document.getElementById('faceInstruction').textContent = '⏳ กำลังบันทึก...';
+  document.getElementById('faceInstruction').textContent = '⏳ กำลังตรวจสอบ...';
   document.getElementById('faceLabel').textContent = '';
   try {
     const descriptors = {
@@ -1515,6 +1669,31 @@ async function submitFaceData() {
       left:  Face.averageDescriptors(faceState.samples.left),
       right: Face.averageDescriptors(faceState.samples.right),
     };
+
+    // เช็คใบหน้าซ้ำกับคนอื่นในระบบ (กันลงทะเบียนซ้ำคน)
+    try {
+      const candidates = await api.getMembersForFaceMatch();
+      const others = candidates.filter(c => c.UUID !== faceState.member.UUID);
+      const frontDesc = new Float32Array(descriptors.front);
+      const match = Face.computeMatch(frontDesc, others, 0.42);
+      if (match) {
+        const stop = !confirm(
+          `⚠️ ใบหน้านี้คล้ายกับ "${match.member.Nickname || match.member.FirstName}" (${match.member.DisplayID}) ที่ลงทะเบียนไว้แล้ว\n\n` +
+          `ถ้านี่เป็นคนละคน กด "ตกลง" เพื่อบันทึกต่อ\nถ้าเป็นคนเดียวกัน กด "ยกเลิก"`
+        );
+        if (stop) {
+          const v0 = document.getElementById('faceVideo');
+          if (v0 && v0.srcObject) v0.srcObject.getTracks().forEach(t => t.stop());
+          document.getElementById('faceResult').innerHTML = `
+            <div class="alert alert-warning mt-4"><span>⚠️</span>
+            <div>ยกเลิกการลงทะเบียน · ใบหน้าซ้ำกับ ${match.member.Nickname || match.member.FirstName}</div></div>
+            <button class="btn btn-block mt-4" onclick="Router.go(Family.storage.getActive() ? 'portal' : 'home')">กลับ</button>`;
+          return;
+        }
+      }
+    } catch (e) { console.warn('duplicate face check skipped', e); }
+
+    document.getElementById('faceInstruction').textContent = '⏳ กำลังบันทึก...';
     await api.registerFace(faceState.member.UUID, descriptors);
     const v = document.getElementById('faceVideo');
     if (v && v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
