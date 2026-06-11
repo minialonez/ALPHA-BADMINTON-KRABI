@@ -1062,7 +1062,7 @@ async function regFinalize() {
     Phone: regState.phone,
     CustomerType: custType ? custType.value : 'thai',
     ParentPhone: regState.phone,
-    ParentName: regState.familyName,
+    ParentName: '',
     MedicalNotes: document.getElementById('m_MedicalNotes').value.trim(),
   };
 
@@ -1283,7 +1283,7 @@ async function addMemberSubmit() {
     Gender: gender ? gender.value : '',
     Phone: family.phone,
     ParentPhone: family.phone,
-    ParentName: family.familyName,
+    ParentName: '',
     CustomerType: 'thai',
     MedicalNotes: document.getElementById('am_MedicalNotes').value.trim(),
   };
